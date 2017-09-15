@@ -1,0 +1,1 @@
+include ':app', ':basic', ':contract', ':p_web', ':p_pic'

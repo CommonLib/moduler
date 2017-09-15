@@ -1,0 +1,333 @@
+package com.architecture.extend.baselib.base;
+
+import android.databinding.ViewDataBinding;
+import android.support.annotation.LayoutRes;
+import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
+import android.view.ViewGroup;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @author:dongpo: 6/21/2016
+ *
+ */
+public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
+    private SparseArray<List<? extends Object>> mDataLayouts;
+    private SparseArray<ViewDataBinding> headerFooters;
+    private List<Integer> mHeaders;
+    private List<Integer> mFooters;
+    private int mHeaderCount;
+    private int mFooterCount;
+    private int mUserItemCount;
+
+    public BaseRecycleAdapter(List<T> data, int layoutId) {
+        mDataLayouts = new SparseArray<>();
+        mDataLayouts.put(layoutId, data);
+        mUserItemCount = reCountUserItem();
+    }
+
+    public BaseRecycleAdapter() {
+        mDataLayouts = new SparseArray<>();
+    }
+
+    public void addItemType(List<? extends Object> data, int layoutId) {
+        mDataLayouts.put(layoutId, data);
+        mUserItemCount = reCountUserItem();
+        notifyDataSetChanged();
+    }
+
+    public void replaceData(List data, int layoutId) {
+        if (containsKey(layoutId, mDataLayouts)) {
+            List<?> objects = mDataLayouts.get(layoutId);
+            objects.clear();
+            objects.addAll(data);
+            mUserItemCount = reCountUserItem();
+            notifyDataSetChanged();
+            return;
+        }
+        mDataLayouts.put(layoutId, data);
+        mUserItemCount = reCountUserItem();
+        notifyDataSetChanged();
+    }
+
+    public void addData(List data, int layoutId) {
+        List<? extends Object> datas = mDataLayouts.get(layoutId);
+        datas.addAll(data);
+        mUserItemCount = reCountUserItem();
+        notifyDataSetChanged();
+    }
+
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        int layoutId = getLayoutIdFromViewType(viewType);
+        ViewHolder holder;
+        if ((mHeaders != null && mHeaders.contains(layoutId)) || (mFooters != null && mFooters
+                .contains(layoutId))) {
+            ViewDataBinding binding = headerFooters.get(layoutId);
+            if (binding == null) {
+                holder = ViewHolder.get(parent.getContext(), parent, layoutId);
+                headerFooters.put(layoutId, holder.getBinding());
+            } else {
+                holder = ViewHolder.get(parent.getContext(), binding);
+            }
+        } else {
+            holder = ViewHolder.get(parent.getContext(), parent, layoutId);
+        }
+        return holder;
+    }
+
+    @Override
+    public void onBindViewHolder(final ViewHolder holder, int position) {
+        int viewType = getItemViewType(position);
+        if (mHeaders != null) {
+            if (mHeaders.contains(viewType)) {
+                onBindHeaderData(holder, position, viewType);
+                return;
+            }
+        }
+
+        if (mFooters != null) {
+            if (mFooters.contains(viewType)) {
+                onBindBottomData(holder, position, viewType);
+                return;
+            }
+        }
+
+        final int userPosition = convertUserPosition(position);
+        holder.updatePosition(userPosition);
+        onBindItemData(holder, userPosition, viewType);
+    }
+
+    protected abstract void onBindItemData(ViewHolder holder, int userPosition, int viewType);
+
+    protected void onBindHeaderData(ViewHolder holder, int position, int viewType) {
+    }
+
+    protected void onBindBottomData(ViewHolder holder, int position, int viewType) {
+    }
+
+
+    @Override
+    public int getItemCount() {
+        int totalCount = mHeaderCount + mFooterCount + mUserItemCount;
+        return totalCount;
+    }
+
+    private List<? extends Object> getDataFromViewType(int viewType) {
+        return mDataLayouts.get(viewType);
+    }
+
+    private int getLayoutIdFromViewType(int viewType) {
+        return viewType;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (isHeaderType(position)) {
+            return mHeaders.get(position);
+        } else if (isFooterType(position)) {
+            position = convertFootPosition(position);
+            return mFooters.get(position);
+        } else {
+            position = convertUserPosition(position);
+            return getUserHolderType(position);
+        }
+    }
+
+    public int convertUserPosition(int position) {
+        return position - mHeaderCount;
+    }
+
+    private int convertFootPosition(int position) {
+        return position - mHeaderCount - mUserItemCount;
+    }
+
+    protected int getUserHolderType(int userPosition) {
+        return mDataLayouts.keyAt(0);
+    }
+
+    public <K> List<K> getData(int layoutId) {
+        return (List<K>) mDataLayouts.get(layoutId);
+    }
+
+    public boolean isHeaderType(int position) {
+        if (position < mHeaderCount) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isFooterType(int position) {
+
+        int beforeFooterCount = mHeaderCount + mUserItemCount;
+        int totalItemCount = getItemCount();
+        if (position >= beforeFooterCount && position < totalItemCount) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isUserItemType(int position) {
+        if (position >= mHeaderCount && position < mHeaderCount + mUserItemCount) {
+            return true;
+        }
+        return false;
+    }
+
+    private int getHeaderCount() {
+        if (mHeaders != null) {
+            return mHeaders.size();
+        }
+        return 0;
+    }
+
+    private int getFooterCount() {
+        if (mFooters != null) {
+            return mFooters.size();
+        }
+        return 0;
+    }
+
+    private final int reCountUserItem() {
+        int userItemCount = 0;
+
+        for (int i = 0; i < mDataLayouts.size(); i++) {
+            int layoutId = mDataLayouts.keyAt(i);
+            List<?> data = mDataLayouts.get(layoutId);
+            userItemCount += data.size();
+        }
+        return userItemCount;
+    }
+
+    public int getUserItemCounts() {
+        return mUserItemCount;
+    }
+
+    public void addHeader(@LayoutRes int resId) {
+        if (resId > 0) {
+            if (mHeaders == null) {
+                mHeaders = new ArrayList<>();
+            }
+            if (headerFooters == null) {
+                headerFooters = new SparseArray<>();
+            }
+            mHeaders.add(resId);
+            mHeaderCount = getHeaderCount();
+        }
+    }
+
+    public void addHeader(int viewType, ViewDataBinding header) {
+        if (header != null && header.getRoot().getParent() == null) {
+            if (headerFooters == null) {
+                headerFooters = new SparseArray<>();
+            }
+
+            int layoutId = viewType;
+            if (mHeaders == null) {
+                mHeaders = new ArrayList<>();
+            }
+            mHeaders.add(layoutId);
+            headerFooters.put(layoutId, header);
+            mHeaderCount = getHeaderCount();
+        } else {
+            throw new IllegalArgumentException("header view should not have a parent");
+        }
+    }
+
+    public ViewDataBinding getHeader() {
+        if (mHeaders != null && mHeaders.size() > 0) {
+            return headerFooters.get(mHeaders.get(mHeaders.size() - 1));
+        }
+        return null;
+    }
+
+    public ViewDataBinding getHeader(int index) {
+        if (mHeaders != null && mHeaders.size() > 0) {
+            int size = mHeaders.size();
+            if (index < size) {
+                return headerFooters.get(mHeaders.get(index));
+            } else {
+                throw new IllegalArgumentException("position should not over size of collection");
+            }
+
+        }
+        return null;
+    }
+
+    public void addFooter(@LayoutRes int resId) {
+        if (resId > 0) {
+            if (mFooters == null) {
+                mFooters = new ArrayList<>();
+            }
+            if (headerFooters == null) {
+                headerFooters = new SparseArray<>();
+            }
+            mFooters.add(resId);
+            mFooterCount = getFooterCount();
+        }
+    }
+
+    public void addFooter(int type, ViewDataBinding footer) {
+        if (footer != null && footer.getRoot().getParent() == null) {
+            if (headerFooters == null) {
+                headerFooters = new SparseArray<>();
+            }
+
+            if (mFooters == null) {
+                mFooters = new ArrayList<>();
+            }
+            mFooters.add(type);
+            headerFooters.put(type, footer);
+            mFooterCount = getFooterCount();
+        } else {
+            throw new IllegalArgumentException("footer view should not have a parent");
+        }
+    }
+
+    public ViewDataBinding getFooter() {
+        if (mFooters != null && mFooters.size() > 0) {
+            return headerFooters.get(mFooters.get(mFooters.size() - 1));
+        }
+        return null;
+    }
+
+    public ViewDataBinding getFooter(int index) {
+        if (mFooters != null && mFooters.size() > 0) {
+            int size = mFooters.size();
+            if (index < size) {
+                return headerFooters.get(mFooters.get(index));
+            } else {
+                throw new IllegalArgumentException("position should not over size of collection");
+            }
+        }
+        return null;
+    }
+
+    public boolean containsKey(int key, SparseArray sa) {
+        int size = sa.size();
+        for (int i = 0; i < size; i++) {
+            int i1 = sa.keyAt(i);
+            if (i1 == key) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void hideFooterView() {
+        if (mFooterCount >= 1) {
+            mFooterCount--;
+            notifyDataSetChanged();
+        }
+    }
+
+    public void showFooterView() {
+        if (mFooterCount < getFooterCount()) {
+            mFooterCount++;
+            notifyDataSetChanged();
+        }
+    }
+}
