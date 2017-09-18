@@ -21,8 +21,8 @@ public class Router {
         return sInstance;
     }
 
-    public void registerProvider(String providerName, Provider provider) {
-        mProviders.put(providerName, provider);
+    public void registerProvider(Class<? extends Contract> clazz, Provider provider) {
+        mProviders.put(clazz.getName(), provider);
     }
 
     public Contract service(Class<? extends Contract> clazz) {

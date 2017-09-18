@@ -5,5 +5,9 @@ package com.architecture.extend.baselib.router;
  */
 
 public class Provider implements Contract{
+    public Provider(){
+        onCreate();
+    }
 
+    protected void onCreate(){}
 }

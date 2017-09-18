@@ -103,10 +103,16 @@ public abstract class BaseApplication extends Application {
         mHandler.postDelayed(runnable, millis);
     }
 
-
     protected abstract void pluginProviders();
 
     protected void plugin(Class<? extends Contract> clazz, Provider provider) {
-        Router.getInstance().registerProvider(clazz.getName(), provider);
+        Router.getInstance().registerProvider(clazz, provider);
+    }
+
+    protected void plugin(Class<? extends Contract> clazz, String providerPackageName)
+            throws Exception {
+        Class<?> providerClass = Class.forName(providerPackageName);
+        Provider provider = (Provider) providerClass.newInstance();
+        Router.getInstance().registerProvider(clazz, provider);
     }
 }

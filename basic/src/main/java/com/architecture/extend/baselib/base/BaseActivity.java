@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.widget.LoadStateFrameLayout;
 
