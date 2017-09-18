@@ -1,33 +1,36 @@
 package com.architecture.extend.architecture;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
-import android.arch.lifecycle.Observer;
-import android.support.annotation.Nullable;
+import com.architecture.extend.baselib.base.Configuration;
+import com.architecture.extend.baselib.base.ViewModel;
 
-import com.architecture.extend.baselib.base.BaseViewModel;
-import com.architecture.extend.baselib.util.LogUtil;
+import org.reactivestreams.Subscriber;
+
+import io.reactivex.Flowable;
 
 /**
  * Created by byang059 on 5/27/17.
  */
 
-public class MainViewModel extends BaseViewModel<MainContract.View, MainModel, MainContract.Model>
+@Configuration(model = MainModel.class)
+public class MainViewModel extends ViewModel<MainContract.View, MainContract.Model>
         implements MainContract.ViewModel {
 
-    MediatorLiveData<String> mUserData = new MediatorLiveData<>();
-
     @Override
-    public LiveData<String> getUserString() {
-        LiveData<String> stringObservable = getModel().readDatabase("a","b");
-        LogUtil.d("LiveData<String> get");
-        stringObservable.observe(this, new Observer<String>() {
+    public Flowable<String> getUserString() {
+        Flowable<String> observable = Flowable.fromPublisher(new Flowable<String>() {
             @Override
-            public void onChanged(@Nullable String s) {
-                LogUtil.d("viewModel readDatabase =>  current "
-                        + "Thread" + Thread.currentThread().getName());
+            protected void subscribeActual(Subscriber<? super String> s) {
+                String result = getModel().readDatabase("a", "b");
+
+                s.onNext(result);
             }
         });
-        return mUserData;
+        return observable;
+    }
+
+    @Override
+    public void onViewCreate() {
+        super.onViewCreate();
+        shareData("abc", "sharted abc");
     }
 }

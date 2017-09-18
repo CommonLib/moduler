@@ -1,17 +1,33 @@
 package com.reference.apublic.web;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
+
+import com.architecture.extend.baselib.base.BaseActivity;
+import com.architecture.extend.baselib.base.Configuration;
+
 
 /**
  * Created by byang059 on 9/15/17.
  */
 
-public class WebActivity extends AppCompatActivity {
+@Configuration(viewModel = WebViewModel.class)
+public class WebActivity extends BaseActivity<WebContract> {
+
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.web);
+        setContentView(R.layout.web_activity_main);
+    }
+
+    @Override
+    protected void initData() {
+        String abc = (String) getSharedData("abc");
+        Toast.makeText(this, abc, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void initView() {
+
     }
 }

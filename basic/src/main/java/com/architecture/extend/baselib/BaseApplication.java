@@ -64,7 +64,7 @@ public abstract class BaseApplication extends Application {
     }
 
     /**
-     * get App versionCode
+     * take App versionCode
      *
      * @return
      */
@@ -82,7 +82,7 @@ public abstract class BaseApplication extends Application {
     }
 
     /**
-     * get App versionName
+     * take App versionName
      *
      * @return
      */

@@ -1,12 +1,11 @@
 package com.architecture.extend.baselib.base;
 
-import android.arch.lifecycle.LifecycleActivity;
-import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +13,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.architecture.extend.baselib.util.GenericUtil;
+import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.widget.LoadStateFrameLayout;
-
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 
@@ -24,20 +22,29 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
  * Created by byang059 on 12/19/16.
  */
 
-public abstract class BaseActivity<VM extends BaseViewModel, VMC> extends LifecycleActivity
-        implements ViewLayer {
+public abstract class BaseActivity<VMC> extends AppCompatActivity implements ViewLayer {
 
-    private VM mViewModel;
+    private ViewModel mViewModel;
     private boolean mIsForeground;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Class<VM> vmType = GenericUtil.getGenericsSuperType(this, 0);
-        mViewModel = ViewModelProviders.of(this).get(vmType);
+        Configuration configuration = getClass().getAnnotation(Configuration.class);
+        int layout = configuration.layout();
+        Class<?> aClass = configuration.viewModel();
+        mViewModel = ViewModelProviders.getInstance().get(aClass);
         mViewModel.setView(this);
-        getLifecycle().addObserver(mViewModel);
+        if (layout != -1) {
+            setContentView(layout);
+        }
+        initView();
+        initData();
+        mViewModel.onViewCreate();
     }
+
+    protected abstract void initData();
+    protected abstract void initView();
 
     @Override
     public BaseActivity getBaseActivity() {
@@ -48,28 +55,39 @@ public abstract class BaseActivity<VM extends BaseViewModel, VMC> extends Lifecy
     protected void onStart() {
         super.onStart();
         mIsForeground = false;
+        mViewModel.onViewStart();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         mIsForeground = true;
+        mViewModel.onViewResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mIsForeground = false;
+        mViewModel.onViewPause();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mViewModel.onViewRestart();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        mViewModel.onViewStop();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        mViewModel.onViewDestroy();
     }
 
     public VMC getViewModel() {
@@ -79,6 +97,56 @@ public abstract class BaseActivity<VM extends BaseViewModel, VMC> extends Lifecy
     @Override
     public boolean isForeground() {
         return mIsForeground;
+    }
+
+    protected View inflate(@LayoutRes int id) {
+        return inflate(id, null);
+    }
+
+    protected View inflate(@LayoutRes int id, @Nullable ViewGroup root) {
+        return LayoutInflater.from(this).inflate(id, root);
+    }
+
+    protected Intent newIntent(Class<?> cls) {
+        return new Intent(this, cls);
+    }
+
+    protected void startActivity(Class<?> cls) {
+        startActivity(newIntent(cls));
+    }
+
+    protected void showToast(@StringRes int resId) {
+        Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
+    }
+
+    protected void showLongToast(@StringRes int resId) {
+        Toast.makeText(this, resId, Toast.LENGTH_LONG).show();
+    }
+
+    protected void showToast(CharSequence text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
+    }
+
+    protected void showLongToast(CharSequence text) {
+        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
+    }
+
+    protected DisplayMetrics getDisplayMetrics() {
+        return getResources().getDisplayMetrics();
+    }
+
+    protected int getWidthPixels() {
+        return getDisplayMetrics().widthPixels;
+    }
+
+    protected int getHeightPixels() {
+        return getDisplayMetrics().heightPixels;
+    }
+
+    protected Object getSharedData(String key) {
+        ShareDataViewModel shareDataViewModel = (ShareDataViewModel) ViewModelProviders.getInstance()
+                .get(ShareDataViewModel.class);
+        return shareDataViewModel.take(key);
     }
 
     /**
@@ -142,55 +210,5 @@ public abstract class BaseActivity<VM extends BaseViewModel, VMC> extends Lifecy
 
         }
         return ptr;
-    }
-
-    protected View inflate(@LayoutRes int id) {
-        return inflate(id, null);
-    }
-
-    protected View inflate(@LayoutRes int id, @Nullable ViewGroup root) {
-        return LayoutInflater.from(this).inflate(id, root);
-    }
-
-    protected Intent getIntent(Class<?> cls) {
-        return new Intent(this, cls);
-    }
-
-    protected void startActivity(Class<?> cls) {
-        startActivity(getIntent(cls));
-    }
-
-    protected void showToast(@StringRes int resId) {
-        Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
-    }
-
-    protected void showLongToast(@StringRes int resId) {
-        Toast.makeText(this, resId, Toast.LENGTH_LONG).show();
-    }
-
-    protected void showToast(CharSequence text) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-    }
-
-    protected void showLongToast(CharSequence text) {
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
-    }
-
-    protected DisplayMetrics getDisplayMetrics() {
-        return getResources().getDisplayMetrics();
-    }
-
-    protected int getWidthPixels() {
-        return getDisplayMetrics().widthPixels;
-    }
-
-    protected int getHeightPixels() {
-        return getDisplayMetrics().heightPixels;
-    }
-
-    protected <T> T getSharedData(String key) {
-        ShareDataViewModel shareDataViewModel = ViewModelProviders.of(this)
-                .get(ShareDataViewModel.class);
-        return (T) shareDataViewModel.get(key);
     }
 }

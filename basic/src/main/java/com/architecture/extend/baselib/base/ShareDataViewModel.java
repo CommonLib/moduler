@@ -1,6 +1,5 @@
 package com.architecture.extend.baselib.base;
 
-import android.arch.lifecycle.ViewModel;
 
 import java.util.HashMap;
 
@@ -17,11 +16,19 @@ public class ShareDataViewModel extends ViewModel {
         mShareData = new HashMap<>();
     }
 
-    public void put(String key, Object value){
+    public void put(String key, Object value) {
         mShareData.put(key, value);
     }
 
-    public Object get(String key){
+    public Object take(String key) {
+        Object value = mShareData.get(key);
+        if (value != null) {
+            mShareData.remove(key);
+        }
+        return value;
+    }
+
+    public Object get(String key) {
         return mShareData.get(key);
     }
 }

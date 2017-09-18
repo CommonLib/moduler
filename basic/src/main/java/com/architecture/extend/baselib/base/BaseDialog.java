@@ -3,7 +3,6 @@ package com.architecture.extend.baselib.base;
 import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
@@ -24,10 +23,10 @@ public class BaseDialog extends DialogFragment {
 
     public static final String LAYOUT_ID = "layoutId";
     public static final String CLASS_VIEW_MODEL = "viewModel";
-    private BaseViewModel mViewModel;
+    private ViewModel mViewModel;
     private int mLayoutId;
 
-    public static BaseDialog newInstance(Class<? extends BaseViewModel> viewModel,
+    public static BaseDialog newInstance(Class<? extends ViewModel> viewModel,
                                          @LayoutRes int layoutId) {
         Bundle args = new Bundle();
         args.putSerializable(CLASS_VIEW_MODEL, viewModel);
@@ -47,11 +46,10 @@ public class BaseDialog extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle arguments = getArguments();
-        Class<? extends BaseViewModel> viewModel = (Class<? extends BaseViewModel>) arguments
+        Class<? extends ViewModel> viewModel = (Class<? extends ViewModel>) arguments
                 .getSerializable(CLASS_VIEW_MODEL);
         mLayoutId = arguments.getInt(LAYOUT_ID);
         initArguments(arguments);
-        mViewModel = ViewModelProviders.of(mActivity).get(viewModel);
     }
 
     @Nullable
@@ -81,9 +79,9 @@ public class BaseDialog extends DialogFragment {
         super.onDestroy();
     }
 
-    protected <T> T getSharedData(String key) {
-        ShareDataViewModel shareDataViewModel = ViewModelProviders.of(mActivity)
-                .get(ShareDataViewModel.class);
-        return (T) shareDataViewModel.get(key);
+    protected Object getSharedData(String key) {
+        ShareDataViewModel shareDataViewModel = (ShareDataViewModel) ViewModelProviders
+                .getInstance().get(ShareDataViewModel.class);
+        return shareDataViewModel.take(key);
     }
 }

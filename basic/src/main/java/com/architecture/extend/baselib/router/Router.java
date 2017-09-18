@@ -7,17 +7,14 @@ import java.util.HashMap;
  */
 
 public class Router {
-    private static Router sInstance = null;
+    private static Router sInstance = new Router();
     private HashMap<String, Provider> mProviders = null;
 
     private Router() {
         mProviders = new HashMap<>();
     }
 
-    public static synchronized Router getInstance() {
-        if (sInstance == null) {
-            sInstance = new Router();
-        }
+    public static Router getInstance() {
         return sInstance;
     }
 

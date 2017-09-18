@@ -8,10 +8,6 @@ public abstract class BaseModel<VMC> implements ModelLayer {
 
     private VMC mViewModel;
 
-    public BaseModel() {
-        onModelCreate();
-    }
-
     @Override
     public void setViewModel(ViewModelLayer viewModel) {
         mViewModel = (VMC) viewModel;
