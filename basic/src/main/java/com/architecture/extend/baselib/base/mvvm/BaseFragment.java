@@ -1,16 +1,19 @@
-package com.architecture.extend.baselib.base;
+package com.architecture.extend.baselib.base.mvvm;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
+import com.architecture.extend.baselib.base.ShareDataViewModel;
+import com.architecture.extend.baselib.util.GenericUtil;
+
 /**
  * Created by appledev116 on 3/10/16.
  */
-public abstract class BaseFragment<VMC> extends Fragment implements ViewLayer {
+public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment implements ViewLayer {
 
-    private BaseViewModel mViewModel;
+    private VM mViewModel;
     private boolean mIsForeground;
     private BaseActivity mActivity;
 
@@ -28,10 +31,8 @@ public abstract class BaseFragment<VMC> extends Fragment implements ViewLayer {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ViewModel viewModel = getClass().getAnnotation(ViewModel.class);
-        Class<?> aClass = viewModel.viewModel();
-        mViewModel = ViewModelProviders.getInstance().get(aClass);
-        mViewModel.setView(this);
+        Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
+        mViewModel = ViewModelProviders.getInstance().get(viewModelClazz);
         mViewModel.onViewCreate();
     }
 
@@ -86,13 +87,13 @@ public abstract class BaseFragment<VMC> extends Fragment implements ViewLayer {
         return false;
     }
 
-    public VMC getViewModel() {
-        return (VMC) mViewModel;
+    public VM getViewModel() {
+        return mViewModel;
     }
 
     protected Object getSharedData(String key) {
-        ShareDataViewModel shareDataViewModel = (ShareDataViewModel) ViewModelProviders
-                .getInstance().get(ShareDataViewModel.class);
+        ShareDataViewModel shareDataViewModel = ViewModelProviders.getInstance()
+                .get(ShareDataViewModel.class);
         return shareDataViewModel.take(key);
     }
 }

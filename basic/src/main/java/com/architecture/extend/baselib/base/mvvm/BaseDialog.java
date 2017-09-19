@@ -1,4 +1,4 @@
-package com.architecture.extend.baselib.base;
+package com.architecture.extend.baselib.base.mvvm;
 
 import android.app.Activity;
 import android.app.Dialog;
@@ -11,6 +11,8 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.architecture.extend.baselib.base.ShareDataViewModel;
 
 
 /**

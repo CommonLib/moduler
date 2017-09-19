@@ -1,19 +1,19 @@
-package com.architecture.extend.baselib.base;
+package com.architecture.extend.baselib.base.mvvm;
 
 /**
  * Created by byang059 on 5/25/17.
  */
 
-public abstract class BaseModel<VMC> {
+public abstract class BaseModel<VM> {
 
-    private BaseViewModel mViewModel;
+    private VM mViewModel;
 
-    public void setViewModel(BaseViewModel viewModel) {
+    public void setViewModel(VM viewModel) {
         mViewModel = viewModel;
     }
 
-    public VMC getViewModel() {
-        return (VMC) mViewModel;
+    public VM getViewModel() {
+        return mViewModel;
     }
 
     protected void onModelCreate() {

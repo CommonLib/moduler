@@ -1,14 +1,13 @@
 package com.architecture.extend.architecture;
 
-import com.architecture.extend.baselib.base.BaseModel;
+import com.architecture.extend.baselib.base.mvvm.BaseModel;
 
 /**
  * Created by byang059 on 5/27/17.
  */
 
-public class MainModel extends BaseModel<MainContract.ViewModel> implements MainContract.Model {
+public class MainModel extends BaseModel<MainViewModel> {
 
-    @Override
     public String readDatabase(String a, String b) {
         return a + b;
     }

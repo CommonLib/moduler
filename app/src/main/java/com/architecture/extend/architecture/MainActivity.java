@@ -4,16 +4,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
-import com.architecture.extend.baselib.base.BaseActivity;
-import com.architecture.extend.baselib.base.ViewModel;
+import com.architecture.extend.baselib.base.mvvm.BaseActivity;
 import com.architecture.extend.baselib.router.Router;
 import com.module.contract.web.IWeb;
 
 import io.reactivex.functions.Consumer;
 
-@ViewModel(viewModel = MainViewModel.class)
-public class MainActivity extends BaseActivity<MainContract.ViewModel>
-        implements MainContract.View {
+public class MainActivity extends BaseActivity<MainViewModel> {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

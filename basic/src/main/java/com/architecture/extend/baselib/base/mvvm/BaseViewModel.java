@@ -1,26 +1,21 @@
-package com.architecture.extend.baselib.base;
+package com.architecture.extend.baselib.base.mvvm;
 
 import android.databinding.BaseObservable;
 
-import com.architecture.extend.baselib.util.ReflectUtil;
+import com.architecture.extend.baselib.base.ShareDataViewModel;
+import com.architecture.extend.baselib.util.GenericUtil;
 
 /**
  * Created by byang059 on 5/24/17.
  */
 
-public abstract class BaseViewModel<VC, MC> extends BaseObservable{
-    private ViewLayer mView;
-    private BaseModel mModel;
+public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable {
+    private M mModel;
 
     public BaseViewModel() {
         super();
-        Model model = getClass().getAnnotation(Model.class);
-        if(model != null){
-            mModel = (BaseModel) ReflectUtil.newInstance(model.model());
-            mModel.setViewModel(this);
-            mModel.onModelCreate();
-        }
-        onViewModelCreate();
+        mModel = GenericUtil.instanceT(this, 0);
+        onCreate();
     }
 
     public void onViewCreate() {
@@ -42,37 +37,29 @@ public abstract class BaseViewModel<VC, MC> extends BaseObservable{
     }
 
     public void onViewDestroy() {
-        onViewModelDestroy();
+        onDestroy();
         mModel.onModelDestroy();
     }
 
-    public VC getView() {
-        return (VC) mView;
-    }
-
-    public MC getModel() {
-        return (MC) mModel;
-    }
-
-    public void setView(ViewLayer view) {
-        mView = view;
+    public M getModel() {
+        return mModel;
     }
 
     protected void shareData(String key, Object data) {
-        ShareDataViewModel shareDataViewModel = (ShareDataViewModel) ViewModelProviders
-                .getInstance().get(ShareDataViewModel.class);
+        ShareDataViewModel shareDataViewModel = ViewModelProviders.getInstance()
+                .get(ShareDataViewModel.class);
         shareDataViewModel.put(key, data);
     }
 
     protected Object getSharedData(String key) {
-        ShareDataViewModel shareDataViewModel = (ShareDataViewModel) ViewModelProviders
-                .getInstance().get(ShareDataViewModel.class);
+        ShareDataViewModel shareDataViewModel = ViewModelProviders.getInstance()
+                .get(ShareDataViewModel.class);
         return shareDataViewModel.take(key);
     }
 
-    protected void onViewModelCreate() {
+    protected void onCreate() {
     }
 
-    protected void onViewModelDestroy() {
+    protected void onDestroy() {
     }
 }

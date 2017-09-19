@@ -1,7 +1,6 @@
 package com.architecture.extend.architecture;
 
-import com.architecture.extend.baselib.base.BaseViewModel;
-import com.architecture.extend.baselib.base.Model;
+import com.architecture.extend.baselib.base.mvvm.BaseViewModel;
 
 import org.reactivestreams.Subscriber;
 
@@ -11,11 +10,8 @@ import io.reactivex.Flowable;
  * Created by byang059 on 5/27/17.
  */
 
-@Model(model = MainModel.class)
-public class MainViewModel extends BaseViewModel<MainContract.View, MainContract.Model>
-        implements MainContract.ViewModel {
+public class MainViewModel extends BaseViewModel<MainModel> {
 
-    @Override
     public Flowable<String> getUserString() {
         Flowable<String> observable = Flowable.fromPublisher(new Flowable<String>() {
             @Override

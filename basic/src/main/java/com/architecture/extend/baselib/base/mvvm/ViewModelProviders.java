@@ -1,4 +1,4 @@
-package com.architecture.extend.baselib.base;
+package com.architecture.extend.baselib.base.mvvm;
 
 import java.util.HashMap;
 
@@ -18,11 +18,11 @@ public class ViewModelProviders {
         return sInstance;
     }
 
-    public BaseViewModel get(Class<?> clazz) {
-        BaseViewModel viewModel = mViewModels.get(clazz.getName());
+    public <T extends BaseViewModel> T get(Class<T> clazz) {
+        T viewModel = (T) mViewModels.get(clazz.getName());
         if (viewModel == null) {
             try {
-                viewModel = (BaseViewModel) clazz.newInstance();
+                viewModel = clazz.newInstance();
                 mViewModels.put(clazz.getName(), viewModel);
             } catch (InstantiationException e) {
                 e.printStackTrace();

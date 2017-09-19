@@ -1,4 +1,4 @@
-package com.architecture.extend.baselib.base;
+package com.architecture.extend.baselib.base.mvvm;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,6 +14,8 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.architecture.extend.baselib.R;
+import com.architecture.extend.baselib.base.ShareDataViewModel;
+import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.widget.LoadStateFrameLayout;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -22,18 +24,17 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
  * Created by byang059 on 12/19/16.
  */
 
-public abstract class BaseActivity<VMC> extends AppCompatActivity implements ViewLayer{
+public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatActivity
+        implements ViewLayer {
 
-    private BaseViewModel mViewModel;
+    private VM mViewModel;
     private boolean mIsForeground;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ViewModel viewModel = getClass().getAnnotation(ViewModel.class);
-        Class<?> aClass = viewModel.viewModel();
-        mViewModel = ViewModelProviders.getInstance().get(aClass);
-        mViewModel.setView(this);
+        Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
+        mViewModel = ViewModelProviders.getInstance().get(viewModelClazz);
         mViewModel.onViewCreate();
     }
 
@@ -81,8 +82,8 @@ public abstract class BaseActivity<VMC> extends AppCompatActivity implements Vie
         mViewModel.onViewDestroy();
     }
 
-    public VMC getViewModel() {
-        return (VMC) mViewModel;
+    public VM getViewModel() {
+        return mViewModel;
     }
 
     @Override
@@ -135,8 +136,8 @@ public abstract class BaseActivity<VMC> extends AppCompatActivity implements Vie
     }
 
     protected Object getSharedData(String key) {
-        ShareDataViewModel shareDataViewModel = (ShareDataViewModel) ViewModelProviders.getInstance()
-                .get(ShareDataViewModel.class);
+        ShareDataViewModel shareDataViewModel = (ShareDataViewModel) ViewModelProviders
+                .getInstance().get(ShareDataViewModel.class);
         return shareDataViewModel.take(key);
     }
 

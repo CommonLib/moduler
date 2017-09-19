@@ -5,7 +5,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.architecture.extend.baselib.R;
-import com.architecture.extend.baselib.base.BaseFragment;
+import com.architecture.extend.baselib.base.mvvm.BaseFragment;
 
 import java.util.LinkedList;
 

@@ -3,16 +3,14 @@ package com.reference.apublic.web;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import com.architecture.extend.baselib.base.BaseActivity;
-import com.architecture.extend.baselib.base.ViewModel;
+import com.architecture.extend.baselib.base.mvvm.BaseActivity;
 
 
 /**
  * Created by byang059 on 9/15/17.
  */
 
-@ViewModel(viewModel = WebViewModel.class)
-public class WebActivity extends BaseActivity<WebContract> {
+public class WebActivity extends BaseActivity<WebViewModel> {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
