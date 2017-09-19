@@ -1,4 +1,4 @@
-package com.architecture.extend.baselib.base.mvvm;
+package com.architecture.extend.baselib.mvvm;
 
 import android.app.Activity;
 import android.app.Dialog;

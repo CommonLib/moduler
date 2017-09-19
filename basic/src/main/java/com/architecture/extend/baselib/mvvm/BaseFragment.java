@@ -1,9 +1,14 @@
-package com.architecture.extend.baselib.base.mvvm;
+package com.architecture.extend.baselib.mvvm;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.architecture.extend.baselib.base.ShareDataViewModel;
 import com.architecture.extend.baselib.util.GenericUtil;
@@ -11,16 +16,11 @@ import com.architecture.extend.baselib.util.GenericUtil;
 /**
  * Created by appledev116 on 3/10/16.
  */
-public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment implements ViewLayer {
+public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment{
 
     private VM mViewModel;
     private boolean mIsForeground;
     private BaseActivity mActivity;
-
-    @Override
-    public BaseActivity getBaseActivity() {
-        return mActivity;
-    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -34,6 +34,23 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
         mViewModel = ViewModelProviders.getInstance().get(viewModelClazz);
         mViewModel.onViewCreate();
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            handleArguments(arguments);
+        }
+        if (savedInstanceState != null) {
+            onRestoreInitData(savedInstanceState);
+        }
+        View contentView = inflater.inflate(getLayoutId(), container, false);
+        initView();
+        initData();
+        return contentView;
     }
 
     @Override
@@ -78,7 +95,18 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         }
     }
 
-    @Override
+    protected abstract void initData();
+
+    protected abstract void initView();
+
+    protected abstract @LayoutRes int getLayoutId();
+
+    protected void handleArguments(@NonNull Bundle arguments) {
+    }
+
+    protected void onRestoreInitData(@NonNull Bundle savedInstanceState) {
+    }
+
     public boolean isForeground() {
         return mIsForeground;
     }

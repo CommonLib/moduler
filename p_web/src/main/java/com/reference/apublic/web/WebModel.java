@@ -1,6 +1,6 @@
 package com.reference.apublic.web;
 
-import com.architecture.extend.baselib.base.mvvm.BaseModel;
+import com.architecture.extend.baselib.mvvm.BaseModel;
 
 /**
  * Created by byang059 on 9/18/17.

@@ -1,7 +1,7 @@
 package com.architecture.extend.baselib.base;
 
 
-import com.architecture.extend.baselib.base.mvvm.BaseViewModel;
+import com.architecture.extend.baselib.mvvm.BaseViewModel;
 
 import java.util.HashMap;
 

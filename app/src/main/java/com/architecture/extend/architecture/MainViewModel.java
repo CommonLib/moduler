@@ -1,6 +1,6 @@
 package com.architecture.extend.architecture;
 
-import com.architecture.extend.baselib.base.mvvm.BaseViewModel;
+import com.architecture.extend.baselib.mvvm.BaseViewModel;
 
 import org.reactivestreams.Subscriber;
 

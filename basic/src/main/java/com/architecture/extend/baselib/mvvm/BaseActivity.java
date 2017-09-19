@@ -1,8 +1,9 @@
-package com.architecture.extend.baselib.base.mvvm;
+package com.architecture.extend.baselib.mvvm;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
@@ -24,8 +25,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
  * Created by byang059 on 12/19/16.
  */
 
-public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatActivity
-        implements ViewLayer {
+public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatActivity {
 
     private VM mViewModel;
     private boolean mIsForeground;
@@ -36,12 +36,18 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
         mViewModel = ViewModelProviders.getInstance().get(viewModelClazz);
         mViewModel.onViewCreate();
+        setContentView(getLayoutId());
+        initView();
+        Intent intent = getIntent();
+        if (intent != null) {
+            handleIntent(intent);
+        }
+        if (savedInstanceState != null) {
+            onRestoreInitData(savedInstanceState);
+        }
+        initData();
     }
 
-    @Override
-    public BaseActivity getBaseActivity() {
-        return this;
-    }
 
     @Override
     protected void onStart() {
@@ -86,7 +92,6 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         return mViewModel;
     }
 
-    @Override
     public boolean isForeground() {
         return mIsForeground;
     }
@@ -136,7 +141,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     }
 
     protected Object getSharedData(String key) {
-        ShareDataViewModel shareDataViewModel = (ShareDataViewModel) ViewModelProviders
+        ShareDataViewModel shareDataViewModel = ViewModelProviders
                 .getInstance().get(ShareDataViewModel.class);
         return shareDataViewModel.take(key);
     }
@@ -202,5 +207,17 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
         }
         return ptr;
+    }
+
+    protected abstract void initData();
+
+    protected abstract void initView();
+
+    protected abstract @LayoutRes int getLayoutId();
+
+    protected void handleIntent(@NonNull Intent intent) {
+    }
+
+    protected void onRestoreInitData(@NonNull Bundle savedInstanceState) {
     }
 }

@@ -1,4 +1,4 @@
-package com.architecture.extend.baselib.base.mvvm;
+package com.architecture.extend.baselib.mvvm;
 
 import android.databinding.BaseObservable;
 

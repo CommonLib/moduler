@@ -1,4 +1,4 @@
-package com.architecture.extend.baselib.base.mvvm;
+package com.architecture.extend.baselib.mvvm;
 
 /**
  * Created by byang059 on 5/25/17.
