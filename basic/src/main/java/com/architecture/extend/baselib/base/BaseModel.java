@@ -4,21 +4,21 @@ package com.architecture.extend.baselib.base;
  * Created by byang059 on 5/25/17.
  */
 
-public abstract class BaseModel<VMC> implements ModelLayer {
+public abstract class BaseModel<VMC> {
 
-    private VMC mViewModel;
+    private BaseViewModel mViewModel;
 
-    @Override
-    public void setViewModel(ViewModelLayer viewModel) {
-        mViewModel = (VMC) viewModel;
+    public void setViewModel(BaseViewModel viewModel) {
+        mViewModel = viewModel;
     }
 
     public VMC getViewModel() {
-        return mViewModel;
+        return (VMC) mViewModel;
     }
 
+    protected void onModelCreate() {
+    }
 
-
-    protected void onModelCreate(){}
-    protected void onModelDestroy(){}
+    protected void onModelDestroy() {
+    }
 }

@@ -8,7 +8,7 @@ import com.architecture.extend.baselib.util.ReflectUtil;
  * Created by byang059 on 5/24/17.
  */
 
-public abstract class BaseViewModel<VC, MC> extends BaseObservable implements ViewModelLayer {
+public abstract class BaseViewModel<VC, MC> extends BaseObservable{
     private ViewLayer mView;
     private BaseModel mModel;
 
@@ -54,7 +54,6 @@ public abstract class BaseViewModel<VC, MC> extends BaseObservable implements Vi
         return (MC) mModel;
     }
 
-    @Override
     public void setView(ViewLayer view) {
         mView = view;
     }

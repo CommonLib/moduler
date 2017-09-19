@@ -22,7 +22,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
  * Created by byang059 on 12/19/16.
  */
 
-public abstract class BaseActivity<VMC> extends AppCompatActivity implements ViewLayer {
+public abstract class BaseActivity<VMC> extends AppCompatActivity implements ViewLayer{
 
     private BaseViewModel mViewModel;
     private boolean mIsForeground;
