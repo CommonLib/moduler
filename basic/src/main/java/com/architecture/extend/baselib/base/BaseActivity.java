@@ -24,27 +24,18 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 
 public abstract class BaseActivity<VMC> extends AppCompatActivity implements ViewLayer {
 
-    private ViewModel mViewModel;
+    private BaseViewModel mViewModel;
     private boolean mIsForeground;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Configuration configuration = getClass().getAnnotation(Configuration.class);
-        int layout = configuration.layout();
-        Class<?> aClass = configuration.viewModel();
+        ViewModel viewModel = getClass().getAnnotation(ViewModel.class);
+        Class<?> aClass = viewModel.viewModel();
         mViewModel = ViewModelProviders.getInstance().get(aClass);
         mViewModel.setView(this);
-        if (layout != -1) {
-            setContentView(layout);
-        }
-        initView();
-        initData();
         mViewModel.onViewCreate();
     }
-
-    protected abstract void initData();
-    protected abstract void initView();
 
     @Override
     public BaseActivity getBaseActivity() {

@@ -23,10 +23,10 @@ public class BaseDialog extends DialogFragment {
 
     public static final String LAYOUT_ID = "layoutId";
     public static final String CLASS_VIEW_MODEL = "viewModel";
-    private ViewModel mViewModel;
+    private BaseViewModel mViewModel;
     private int mLayoutId;
 
-    public static BaseDialog newInstance(Class<? extends ViewModel> viewModel,
+    public static BaseDialog newInstance(Class<? extends BaseViewModel> viewModel,
                                          @LayoutRes int layoutId) {
         Bundle args = new Bundle();
         args.putSerializable(CLASS_VIEW_MODEL, viewModel);
@@ -46,7 +46,7 @@ public class BaseDialog extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle arguments = getArguments();
-        Class<? extends ViewModel> viewModel = (Class<? extends ViewModel>) arguments
+        Class<? extends BaseViewModel> viewModel = (Class<? extends BaseViewModel>) arguments
                 .getSerializable(CLASS_VIEW_MODEL);
         mLayoutId = arguments.getInt(LAYOUT_ID);
         initArguments(arguments);

@@ -1,14 +1,14 @@
 package com.reference.apublic.web;
 
-import com.architecture.extend.baselib.base.Configuration;
-import com.architecture.extend.baselib.base.ViewModel;
+import com.architecture.extend.baselib.base.BaseViewModel;
+import com.architecture.extend.baselib.base.Model;
 
 /**
  * Created by byang059 on 9/18/17.
  */
 
-@Configuration(model = WebModel.class)
-public class WebViewModel extends ViewModel<WebContract.View, WebContract.Model> {
+@Model(model = WebModel.class)
+public class WebViewModel extends BaseViewModel<WebContract.View, WebContract.Model> {
 
 
 }

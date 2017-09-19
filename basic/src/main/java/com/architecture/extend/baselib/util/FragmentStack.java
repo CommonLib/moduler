@@ -1,10 +1,11 @@
-package com.architecture.extend.baselib.base;
+package com.architecture.extend.baselib.util;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 
 import com.architecture.extend.baselib.R;
+import com.architecture.extend.baselib.base.BaseFragment;
 
 import java.util.LinkedList;
 

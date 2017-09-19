@@ -4,19 +4,15 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 /**
  * Created by appledev116 on 3/10/16.
  */
 public abstract class BaseFragment<VMC> extends Fragment implements ViewLayer {
 
-    private ViewModel mViewModel;
+    private BaseViewModel mViewModel;
     private boolean mIsForeground;
     private BaseActivity mActivity;
-    private int mLayoutId;
 
     @Override
     public BaseActivity getBaseActivity() {
@@ -29,23 +25,11 @@ public abstract class BaseFragment<VMC> extends Fragment implements ViewLayer {
         mActivity = (BaseActivity) activity;
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        View contentView = null;
-        if (mLayoutId != -1) {
-            contentView = inflater.inflate(mLayoutId, container, false);
-        }
-        return contentView;
-    }
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Configuration configuration = getClass().getAnnotation(Configuration.class);
-        mLayoutId = configuration.layout();
-        Class<?> aClass = configuration.viewModel();
+        ViewModel viewModel = getClass().getAnnotation(ViewModel.class);
+        Class<?> aClass = viewModel.viewModel();
         mViewModel = ViewModelProviders.getInstance().get(aClass);
         mViewModel.setView(this);
         mViewModel.onViewCreate();

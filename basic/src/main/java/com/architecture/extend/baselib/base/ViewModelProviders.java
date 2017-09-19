@@ -8,7 +8,7 @@ import java.util.HashMap;
 
 public class ViewModelProviders {
     private static ViewModelProviders sInstance = new ViewModelProviders();
-    private HashMap<String, ViewModel> mViewModels = null;
+    private HashMap<String, BaseViewModel> mViewModels = null;
 
     private ViewModelProviders() {
         mViewModels = new HashMap<>();
@@ -18,11 +18,11 @@ public class ViewModelProviders {
         return sInstance;
     }
 
-    public ViewModel get(Class<?> clazz) {
-        ViewModel viewModel = mViewModels.get(clazz.getName());
+    public BaseViewModel get(Class<?> clazz) {
+        BaseViewModel viewModel = mViewModels.get(clazz.getName());
         if (viewModel == null) {
             try {
-                viewModel = (ViewModel) clazz.newInstance();
+                viewModel = (BaseViewModel) clazz.newInstance();
                 mViewModels.put(clazz.getName(), viewModel);
             } catch (InstantiationException e) {
                 e.printStackTrace();

@@ -11,13 +11,7 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Configuration {
-
-    int layout() default -1;
-
-    Class<?> viewModel() default Object.class;
-
-    Class<?> view() default Object.class;
+public @interface Model {
 
     Class<?> model() default Object.class;
 }

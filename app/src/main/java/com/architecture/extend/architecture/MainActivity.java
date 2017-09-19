@@ -1,26 +1,23 @@
 package com.architecture.extend.architecture;
 
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
 import com.architecture.extend.baselib.base.BaseActivity;
-import com.architecture.extend.baselib.base.Configuration;
+import com.architecture.extend.baselib.base.ViewModel;
 import com.architecture.extend.baselib.router.Router;
 import com.module.contract.web.IWeb;
 
 import io.reactivex.functions.Consumer;
 
-@Configuration(layout = R.layout.activity_main, viewModel = MainViewModel.class)
+@ViewModel(viewModel = MainViewModel.class)
 public class MainActivity extends BaseActivity<MainContract.ViewModel>
         implements MainContract.View {
-
     @Override
-    protected void initData() {
-
-    }
-
-    @Override
-    protected void initView() {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
         findViewById(R.id.act_btn_web).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -42,4 +39,6 @@ public class MainActivity extends BaseActivity<MainContract.ViewModel>
             }
         });
     }
+
+
 }

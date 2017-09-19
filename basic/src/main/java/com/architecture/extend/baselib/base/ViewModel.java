@@ -1,79 +1,19 @@
 package com.architecture.extend.baselib.base;
 
-import android.databinding.BaseObservable;
+import android.support.annotation.LayoutRes;
 
-import com.architecture.extend.baselib.util.ReflectUtil;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Created by byang059 on 5/24/17.
+ * Created by byang059 on 9/18/17.
  */
 
-public abstract class ViewModel<VC, MC> extends BaseObservable implements ViewModelLayer {
-    private ViewLayer mView;
-    private BaseModel mModel;
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ViewModel {
 
-    public ViewModel() {
-        super();
-        Configuration configuration = getClass().getAnnotation(Configuration.class);
-        if(configuration != null){
-            mModel = (BaseModel) ReflectUtil.newInstance(configuration.model());
-            mModel.setViewModel(this);
-            mModel.onModelCreate();
-        }
-        onViewModelCreate();
-    }
-
-    public void onViewCreate() {
-    }
-
-    public void onViewStart() {
-    }
-
-    public void onViewRestart() {
-    }
-
-    public void onViewResume() {
-    }
-
-    public void onViewPause() {
-    }
-
-    public void onViewStop() {
-    }
-
-    public void onViewDestroy() {
-        onViewModelDestroy();
-        mModel.onModelDestroy();
-    }
-
-    public VC getView() {
-        return (VC) mView;
-    }
-
-    public MC getModel() {
-        return (MC) mModel;
-    }
-
-    @Override
-    public void setView(ViewLayer view) {
-        mView = view;
-    }
-
-    protected void shareData(String key, Object data) {
-        ShareDataViewModel shareDataViewModel = (ShareDataViewModel) ViewModelProviders
-                .getInstance().get(ShareDataViewModel.class);
-        shareDataViewModel.put(key, data);
-    }
-
-    protected Object getSharedData(String key) {
-        ShareDataViewModel shareDataViewModel = (ShareDataViewModel) ViewModelProviders
-                .getInstance().get(ShareDataViewModel.class);
-        return shareDataViewModel.take(key);
-    }
-
-    protected void onViewModelCreate() {
-    }
-
-    protected void onViewModelDestroy() {
-    }
+    Class<?> viewModel() default Object.class;
 }

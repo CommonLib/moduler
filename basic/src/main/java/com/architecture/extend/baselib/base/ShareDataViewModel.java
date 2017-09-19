@@ -8,7 +8,7 @@ import java.util.HashMap;
  * this shard data scope is activity.
  */
 
-public class ShareDataViewModel extends ViewModel {
+public class ShareDataViewModel extends BaseViewModel {
 
     private HashMap<String, Object> mShareData;
 
