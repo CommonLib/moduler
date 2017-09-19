@@ -6,6 +6,9 @@ import android.support.annotation.IdRes;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 
 import java.io.File;
 
@@ -15,23 +18,42 @@ import java.io.File;
 
 public class ImageLoader {
 
-    public static void fromUrl(Context context, String url, ImageView imageView) {
-        Glide.with(context).load(url).into(imageView);
+    public static void fromUrl(Context context, final String url, final ImageCallBack callBack) {
+        Glide.with(context).load(url).into(new SimpleTarget<GlideDrawable>() {
+
+            @Override
+            public void onResourceReady(GlideDrawable resource,
+                                        GlideAnimation<? super GlideDrawable> glideAnimation) {
+                callBack.onBitmapLoaded(url, resource);
+            }
+        });
     }
 
-    public static void fromUrl(Context context, String url, ImageView imageView,
+    public static void fromUrl(Context context, final String url, final ImageCallBack callBack,
                                @IdRes int placeHolder, @IdRes int errorHolder) {
         Glide.with(context).load(url).placeholder(placeHolder).crossFade().error(errorHolder)
-                .into(imageView);
+                .into(new SimpleTarget<GlideDrawable>() {
+                    @Override
+                    public void onResourceReady(GlideDrawable resource,
+                                                GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        callBack.onBitmapLoaded(url, resource);
+                    }
+                });
     }
 
-    public static void fromUrl(Context context, String url, ImageView imageView,
+    public static void fromUrl(Context context, final String url, final ImageCallBack callBack,
                                @IdRes int placeHolder, @IdRes int errorHolder, float thumbnail) {
         Glide.with(context).load(url).placeholder(placeHolder).crossFade().error(errorHolder)
-                .thumbnail(thumbnail).into(imageView);
+                .thumbnail(thumbnail).into(new SimpleTarget<GlideDrawable>() {
+            @Override
+            public void onResourceReady(GlideDrawable resource,
+                                        GlideAnimation<? super GlideDrawable> glideAnimation) {
+                callBack.onBitmapLoaded(url, resource);
+            }
+        });
     }
 
-    public static void fromFile(Context context, File file, ImageView imageView) {
+    public static void fromFile(Context context, final File file, ImageView imageView) {
         Glide.with(context).load(file).into(imageView);
     }
 
