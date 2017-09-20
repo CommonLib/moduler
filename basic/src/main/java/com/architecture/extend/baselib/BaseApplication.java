@@ -1,11 +1,12 @@
 package com.architecture.extend.baselib;
 
 import android.app.ActivityManager;
-import android.app.Application;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.support.multidex.MultiDex;
+import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 
 import com.architecture.extend.baselib.router.Contract;
@@ -19,13 +20,19 @@ import java.util.List;
  * Created by byang059 on 12/19/16.
  */
 
-public abstract class BaseApplication extends Application {
+public abstract class BaseApplication extends MultiDexApplication {
 
     private static BaseApplication instance;
     private Handler mHandler;
 
     public static BaseApplication getInstance() {
         return instance;
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     @Override
@@ -101,6 +108,10 @@ public abstract class BaseApplication extends Application {
 
     public void postDelay(Runnable runnable, long millis) {
         mHandler.postDelayed(runnable, millis);
+    }
+
+    public Handler getHandler(){
+        return mHandler;
     }
 
     protected abstract void pluginProviders();

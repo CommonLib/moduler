@@ -25,7 +25,8 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
  * Created by byang059 on 12/19/16.
  */
 
-public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatActivity {
+public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatActivity
+        implements ViewAble {
 
     private VM mViewModel;
     private boolean mIsForeground;
@@ -92,8 +93,14 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         return mViewModel;
     }
 
+    @Override
     public boolean isForeground() {
         return mIsForeground;
+    }
+
+    @Override
+    public void setForegroundSwitchCallBack(ForegroundSwitchListener listener) {
+
     }
 
     protected View inflate(@LayoutRes int id) {
@@ -141,8 +148,8 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     }
 
     protected Object getSharedData(String key) {
-        ShareDataViewModel shareDataViewModel = ViewModelProviders
-                .getInstance().get(ShareDataViewModel.class);
+        ShareDataViewModel shareDataViewModel = ViewModelProviders.getInstance()
+                .get(ShareDataViewModel.class);
         return shareDataViewModel.take(key);
     }
 
@@ -213,7 +220,9 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     protected abstract void initView();
 
-    protected abstract @LayoutRes int getLayoutId();
+    protected abstract
+    @LayoutRes
+    int getLayoutId();
 
     protected void handleIntent(@NonNull Intent intent) {
     }

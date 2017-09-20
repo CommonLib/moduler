@@ -16,7 +16,7 @@ import com.architecture.extend.baselib.util.GenericUtil;
 /**
  * Created by appledev116 on 3/10/16.
  */
-public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment{
+public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment implements ViewAble{
 
     private VM mViewModel;
     private boolean mIsForeground;
@@ -107,6 +107,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment{
     protected void onRestoreInitData(@NonNull Bundle savedInstanceState) {
     }
 
+    @Override
     public boolean isForeground() {
         return mIsForeground;
     }

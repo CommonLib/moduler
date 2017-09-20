@@ -28,6 +28,10 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable 
     }
 
     public void onViewResume() {
+        synchronized (LiveData.class) {
+            LiveData.class.notifyAll();
+            //TODO check if there is an pending notify, if not then goon
+        }
     }
 
     public void onViewPause() {

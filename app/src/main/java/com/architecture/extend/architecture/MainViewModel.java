@@ -1,10 +1,8 @@
 package com.architecture.extend.architecture;
 
 import com.architecture.extend.baselib.mvvm.BaseViewModel;
-
-import org.reactivestreams.Subscriber;
-
-import io.reactivex.Flowable;
+import com.architecture.extend.baselib.mvvm.LiveData;
+import com.architecture.extend.baselib.mvvm.ViewModelCallBack;
 
 /**
  * Created by byang059 on 5/27/17.
@@ -12,15 +10,17 @@ import io.reactivex.Flowable;
 
 public class MainViewModel extends BaseViewModel<MainModel> {
 
-    public Flowable<String> getUserString() {
-        Flowable<String> observable = Flowable.fromPublisher(new Flowable<String>() {
+    private LiveData<String> mStringLiveData;
+
+    public LiveData<String> getUserString() {
+        LiveData<String> data = getModel().readDatabase("a", "b");
+        data.intercept(new ViewModelCallBack<String>() {
             @Override
-            protected void subscribeActual(Subscriber<? super String> s) {
-                String result = getModel().readDatabase("a", "b");
-                s.onNext(result);
+            public String onInterceptData(String s) {
+                return s + " viewmodel";
             }
         });
-        return observable;
+        return data;
     }
 
     @Override
