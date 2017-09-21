@@ -12,15 +12,20 @@ import com.architecture.extend.baselib.mvvm.LiveData;
 
 public class MainModel extends BaseModel {
 
+    private LiveData<String> mData;
+
     public LiveData<String> readDatabase(final String a, final String b) {
-        return new LiveData<>(new AsyncProducer<String>() {
-            @Override
-            public String produce(LiveData<String> liveData) {
-                SystemClock.sleep(3000);
-                liveData.setValue("first value");
-                liveData.setValue("second value");
-                return a + b;
-            }
-        });
+        if(mData == null){
+            mData = new LiveData<>(new AsyncProducer<String>() {
+                @Override
+                public String produce(LiveData<String> liveData) {
+                    SystemClock.sleep(3000);
+                    liveData.postValue("first value");
+                    liveData.postValue("second value");
+                    return a + b;
+                }
+            });
+        }
+        return mData;
     }
 }

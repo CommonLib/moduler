@@ -168,7 +168,7 @@ public class LiveData<T> {
         mViewModelCallBack = callBack;
     }
 
-    public void setValue(T t) {
+    public void postValue(T t) {
         if (mEmitter != null) {
             mEmitter.onNext(t);
         }
