@@ -4,12 +4,14 @@ import android.databinding.BaseObservable;
 
 import com.architecture.extend.baselib.base.ShareDataViewModel;
 import com.architecture.extend.baselib.util.GenericUtil;
+import com.architecture.extend.baselib.util.LogUtil;
 
 /**
  * Created by byang059 on 5/24/17.
  */
 
-public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable {
+public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable implements
+                                                                                ViewForegroundSwitchListener {
     private M mModel;
 
     public BaseViewModel() {
@@ -28,10 +30,7 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable 
     }
 
     public void onViewResume() {
-        synchronized (LiveData.class) {
-            LiveData.class.notifyAll();
-            //TODO check if there is an pending notify, if not then goon
-        }
+
     }
 
     public void onViewPause() {
@@ -42,7 +41,6 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable 
 
     public void onViewDestroy() {
         onDestroy();
-        mModel.onModelDestroy();
     }
 
     public M getModel() {
@@ -65,5 +63,18 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable 
     }
 
     protected void onDestroy() {
+    }
+
+    @Override
+    public void onViewForeground() {
+        synchronized (LiveData.class){
+            LogUtil.d("onViewForeground notifyAll");
+            LiveData.class.notifyAll();
+        }
+    }
+
+    @Override
+    public void onViewBackground() {
+
     }
 }

@@ -56,27 +56,26 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     @Override
     public void onStart() {
         super.onStart();
-        mIsForeground = false;
+        mIsForeground = true;
         mViewModel.onViewStart();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mIsForeground = true;
         mViewModel.onViewResume();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mIsForeground = false;
         mViewModel.onViewPause();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        mIsForeground = false;
         mViewModel.onViewStop();
     }
 

@@ -10,11 +10,14 @@ import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -24,34 +27,70 @@ import io.reactivex.schedulers.Schedulers;
 public class LiveData<T> {
 
     private final Flowable<T> mModelObservable;
+    private ProduceAble<T> mProducer;
     private WeakReference<ViewAble> mView;
     private UiCallBack<T> mViewCallBack;
     private ViewModelCallBack<T> mViewModelCallBack;
     private Handler mHandler = BaseApplication.getInstance().getHandler();
     private FlowableEmitter<T> mEmitter;
+    private Subscription mSubscription;
+    private static ExecutorService mViewModelThreadService = Executors.newFixedThreadPool(1);
+    private boolean mBackPressure;
 
-    public LiveData() {
-        mModelObservable = Flowable.create(new FlowableOnSubscribe<T>() {
+    public LiveData(Producer<T> producer) {
+        this(producer, true);
+    }
+
+    public LiveData(Producer<T> producer, boolean backPressure) {
+        mBackPressure = backPressure;
+        mModelObservable = initFlowAble(producer, backPressure);
+    }
+
+    public LiveData(AsyncProducer<T> producer) {
+        this(producer, true);
+    }
+
+    public LiveData(AsyncProducer<T> producer, boolean backPressure) {
+        mBackPressure = backPressure;
+        Flowable<T> flowAble = initFlowAble(producer, backPressure);
+        mModelObservable = flowAble.subscribeOn(Schedulers.io());
+    }
+
+    private Flowable<T> initFlowAble(ProduceAble<T> producer, boolean backPressure) {
+        mProducer = producer;
+        FlowableOnSubscribe<T> source = new FlowableOnSubscribe<T>() {
             @Override
             public void subscribe(FlowableEmitter<T> emitter) throws Exception {
+                LogUtil.d("subscribe" + Thread.currentThread().getName());
                 mEmitter = emitter;
+                T result = mProducer.produce(LiveData.this);
+                mEmitter.onNext(result);
             }
-        }, BackpressureStrategy.BUFFER);
+        };
+        if (backPressure) {
+            return Flowable.create(source, BackpressureStrategy.BUFFER);
+        } else {
+            return Flowable.create(source, BackpressureStrategy.BUFFER);
+        }
     }
 
     private boolean notifyViewChange(final T t) {
-        ViewAble view = mView.get();
-        if (view != null && view.isForeground()) {
-            mHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    mViewCallBack.onDataReady(t);
-                }
-            });
-            return true;
-        } else {
+        if (mView == null) {
             return false;
         }
+        ViewAble view = mView.get();
+        if (view == null || !view.isForeground()) {
+            return false;
+        }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mViewCallBack != null) {
+                    mViewCallBack.onDataReady(t);
+                }
+            }
+        });
+        return true;
     }
 
     /**
@@ -63,12 +102,28 @@ public class LiveData<T> {
         mView = new WeakReference<>(viewAble);
         mViewCallBack = callBack;
 
-        mModelObservable.observeOn(Schedulers.io()).subscribe(new Subscriber<T>() {
+        mModelObservable.observeOn(Schedulers.from(mViewModelThreadService))
+                .map(new Function<T, T>() {
+                    @Override
+                    public T apply(T t) throws Exception {
+                        T result = null;
+                        if (mViewModelCallBack != null) {
+                            LogUtil.d("map onInterceptData" + Thread.currentThread().getName());
+                            result = mViewModelCallBack.onInterceptData(t);
+                        } else {
+                            result = t;
+                        }
+                        return result;
+                    }
+                }).observeOn(Schedulers.io()).subscribe(new Subscriber<T>() {
+
+
             @Override
-            public void onSubscribe(Subscription s) {
-                s.request(1);
+            public void onSubscribe(Subscription subscription) {
+                mSubscription = subscription;
+                subscription.request(1);
                 if (mViewModelCallBack != null) {
-                    mViewModelCallBack.onSubscribe(s);
+                    mViewModelCallBack.onSubscribe(subscription);
                 }
             }
 
@@ -76,14 +131,7 @@ public class LiveData<T> {
             public void onNext(T t) {
                 //this can invoke in sub Thread.
                 // t is just get from model layer, viewModel need to pre deal with
-                T result = null;
-                if (mViewModelCallBack != null) {
-                    result = mViewModelCallBack.onInterceptData(t);
-                } else {
-                    result = t;
-                }
-
-                while (!notifyViewChange(result)) {
+                while (!notifyViewChange(t) && mBackPressure) {
                     //store call back and when act back to resume,then push data to callback to
                     // update ui
                     synchronized (LiveData.class) {
@@ -94,6 +142,9 @@ public class LiveData<T> {
                             e.printStackTrace();
                         }
                     }
+                }
+                if (mSubscription != null) {
+                    mSubscription.request(1);
                 }
             }
 

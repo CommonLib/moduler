@@ -30,6 +30,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     private VM mViewModel;
     private boolean mIsForeground;
+    private ViewForegroundSwitchListener mSwitchListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
         mViewModel = ViewModelProviders.getInstance().get(viewModelClazz);
         mViewModel.onViewCreate();
+        setForegroundSwitchCallBack(mViewModel);
         setContentView(getLayoutId());
         initView();
         Intent intent = getIntent();
@@ -53,21 +55,20 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     @Override
     protected void onStart() {
         super.onStart();
-        mIsForeground = false;
+        mIsForeground = true;
         mViewModel.onViewStart();
+        mSwitchListener.onViewForeground();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mIsForeground = true;
         mViewModel.onViewResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mIsForeground = false;
         mViewModel.onViewPause();
     }
 
@@ -80,7 +81,9 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     @Override
     protected void onStop() {
         super.onStop();
+        mIsForeground = false;
         mViewModel.onViewStop();
+        mSwitchListener.onViewBackground();
     }
 
     @Override
@@ -99,8 +102,8 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     }
 
     @Override
-    public void setForegroundSwitchCallBack(ForegroundSwitchListener listener) {
-
+    public void setForegroundSwitchCallBack(ViewForegroundSwitchListener switchListener) {
+        mSwitchListener = switchListener;
     }
 
     protected View inflate(@LayoutRes int id) {
