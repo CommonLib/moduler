@@ -68,8 +68,11 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable 
     @Override
     public void onViewForeground() {
         synchronized (LiveData.class){
-            LogUtil.d("onViewForeground notifyAll");
-            LiveData.class.notifyAll();
+            if(LiveData.hasBlock){
+                LogUtil.d("detect there is block tasks waiting for push view");
+                LiveData.hasBlock = false;
+                LiveData.class.notifyAll();
+            }
         }
     }
 

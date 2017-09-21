@@ -4,7 +4,6 @@ import android.os.Handler;
 import android.support.annotation.MainThread;
 
 import com.architecture.extend.baselib.BaseApplication;
-import com.architecture.extend.baselib.util.LogUtil;
 
 import org.reactivestreams.Subscriber;
 import org.reactivestreams.Subscription;
@@ -25,6 +24,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class LiveData<T> {
+    public static boolean hasBlock = false;
 
     private final Flowable<T> mModelObservable;
     private ProduceAble<T> mProducer;
@@ -61,7 +61,6 @@ public class LiveData<T> {
         FlowableOnSubscribe<T> source = new FlowableOnSubscribe<T>() {
             @Override
             public void subscribe(FlowableEmitter<T> emitter) throws Exception {
-                LogUtil.d("subscribe" + Thread.currentThread().getName());
                 mEmitter = emitter;
                 T result = mProducer.produce(LiveData.this);
                 mEmitter.onNext(result);
@@ -108,7 +107,6 @@ public class LiveData<T> {
                     public T apply(T t) throws Exception {
                         T result = null;
                         if (mViewModelCallBack != null) {
-                            LogUtil.d("map onInterceptData" + Thread.currentThread().getName());
                             result = mViewModelCallBack.onInterceptData(t);
                         } else {
                             result = t;
@@ -129,14 +127,10 @@ public class LiveData<T> {
 
             @Override
             public void onNext(T t) {
-                //this can invoke in sub Thread.
-                // t is just get from model layer, viewModel need to pre deal with
                 while (!notifyViewChange(t) && mBackPressure) {
-                    //store call back and when act back to resume,then push data to callback to
-                    // update ui
                     synchronized (LiveData.class) {
                         try {
-                            LogUtil.d("wait()");
+                            hasBlock = true;
                             LiveData.class.wait();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
