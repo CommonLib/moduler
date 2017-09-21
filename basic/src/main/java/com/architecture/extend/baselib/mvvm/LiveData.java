@@ -62,8 +62,7 @@ public class LiveData<T> {
             @Override
             public void subscribe(FlowableEmitter<T> emitter) throws Exception {
                 mEmitter = emitter;
-                T result = mProducer.produce(LiveData.this);
-                mEmitter.onNext(result);
+                mProducer.produce(LiveData.this);
             }
         };
         if (backPressure) {

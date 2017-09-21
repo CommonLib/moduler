@@ -18,11 +18,10 @@ public class MainModel extends BaseModel {
         if(mData == null){
             mData = new LiveData<>(new AsyncProducer<String>() {
                 @Override
-                public String produce(LiveData<String> liveData) {
+                public void produce(LiveData<String> liveData) {
                     SystemClock.sleep(3000);
                     liveData.postValue("first value");
                     liveData.postValue("second value");
-                    return a + b;
                 }
             });
         }

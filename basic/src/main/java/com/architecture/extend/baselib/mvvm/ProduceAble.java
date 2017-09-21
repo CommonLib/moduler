@@ -5,5 +5,5 @@ package com.architecture.extend.baselib.mvvm;
  */
 
 public interface ProduceAble<T> {
-    T produce(LiveData<T> liveData);
+    void produce(LiveData<T> liveData);
 }
