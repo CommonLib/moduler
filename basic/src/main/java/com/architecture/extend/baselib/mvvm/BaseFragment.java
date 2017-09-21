@@ -21,6 +21,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     private VM mViewModel;
     private boolean mIsForeground;
     private BaseActivity mActivity;
+    private ViewForegroundSwitchListener mSwitchListener;
 
     @Override
     public void onAttach(Activity activity) {
@@ -31,9 +32,10 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
+        Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this.getClass(), 0);
         mViewModel = ViewModelProviders.getInstance().get(viewModelClazz);
         mViewModel.onViewCreate();
+        setForegroundSwitchCallBack(mViewModel);
     }
 
     @Nullable
@@ -58,6 +60,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         super.onStart();
         mIsForeground = true;
         mViewModel.onViewStart();
+        mSwitchListener.onViewForeground();
     }
 
     @Override
@@ -77,6 +80,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         super.onStop();
         mIsForeground = false;
         mViewModel.onViewStop();
+        mSwitchListener.onViewBackground();
     }
 
     @Override
@@ -123,5 +127,10 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         ShareDataViewModel shareDataViewModel = ViewModelProviders.getInstance()
                 .get(ShareDataViewModel.class);
         return shareDataViewModel.take(key);
+    }
+
+    @Override
+    public void setForegroundSwitchCallBack(ViewForegroundSwitchListener switchListener) {
+        mSwitchListener = switchListener;
     }
 }

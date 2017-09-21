@@ -16,7 +16,7 @@ public class MainViewModel extends BaseViewModel<MainModel> {
         LiveData<String> data = getModel().readDatabase("a", "b");
         data.intercept(new ViewModelCallBack<String>() {
             @Override
-            public String onInterceptData(String s) {
+            public String onDealWithData(String s) {
                 return s + " viewmodel";
             }
         });

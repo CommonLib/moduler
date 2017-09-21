@@ -1,5 +1,7 @@
 package com.architecture.extend.baselib.mvvm;
 
+import com.architecture.extend.baselib.util.LogUtil;
+
 import java.util.HashMap;
 
 /**
@@ -24,9 +26,8 @@ public class ViewModelProviders {
             try {
                 viewModel = clazz.newInstance();
                 mViewModels.put(clazz.getName(), viewModel);
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
+            } catch (Exception e) {
+                LogUtil.e("instance " + clazz.getName() + " viewmodel error");
                 e.printStackTrace();
             }
         }

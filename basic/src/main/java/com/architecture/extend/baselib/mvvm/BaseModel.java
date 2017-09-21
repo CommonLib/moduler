@@ -5,5 +5,6 @@ package com.architecture.extend.baselib.mvvm;
  */
 
 public abstract class BaseModel {
-
+    public BaseModel() {
+    }
 }

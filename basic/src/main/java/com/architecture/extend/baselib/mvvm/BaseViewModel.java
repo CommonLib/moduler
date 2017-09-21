@@ -10,13 +10,18 @@ import com.architecture.extend.baselib.util.LogUtil;
  * Created by byang059 on 5/24/17.
  */
 
-public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable implements
-                                                                                ViewForegroundSwitchListener {
+public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
+        implements ViewForegroundSwitchListener {
     private M mModel;
 
     public BaseViewModel() {
         super();
-        mModel = GenericUtil.instanceT(this, 0);
+        try {
+            mModel = GenericUtil.instanceT(this, 0);
+        } catch (Exception e) {
+            LogUtil.e("instance " + this.getClass().getName() + " model error");
+            e.printStackTrace();
+        }
         onCreate();
     }
 
@@ -67,8 +72,8 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable 
 
     @Override
     public void onViewForeground() {
-        synchronized (LiveData.class){
-            if(LiveData.hasBlock){
+        synchronized (LiveData.class) {
+            if (LiveData.hasBlock) {
                 LogUtil.d("detect there is block tasks waiting for push view");
                 LiveData.hasBlock = false;
                 LiveData.class.notifyAll();
