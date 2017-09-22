@@ -3,6 +3,7 @@ package com.architecture.extend.baselib.util;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
+import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.github.kayvannj.permission_utils.Func;
 import com.github.kayvannj.permission_utils.PermissionUtil;
 
@@ -13,32 +14,32 @@ import com.github.kayvannj.permission_utils.PermissionUtil;
 public class PermissionAccessUtil {
 
     public static PermissionUtil.PermissionRequestObject requestPermission(
-            AppCompatActivity activity, String permission, final PermissionCallBack callBack) {
+            AppCompatActivity activity, final String permission, final PermissionCallBack callBack) {
         return PermissionUtil.with(activity).request(permission).onAllGranted(new Func() {
             @Override
             protected void call() {
-                callBack.onGranted();
+                callBack.onGranted(permission);
             }
         }).onAnyDenied(new Func() {
             @Override
             protected void call() {
-                callBack.onDenied();
+                callBack.onDenied(permission);
             }
         }).ask((short)permission.hashCode());
     }
 
     public static PermissionUtil.PermissionRequestObject requestPermission(Fragment fragment,
-                                                                           String permission,
+                                                                           final String permission,
                                                                            final PermissionCallBack callBack) {
         return PermissionUtil.with(fragment).request(permission).onAllGranted(new Func() {
             @Override
             protected void call() {
-                callBack.onGranted();
+                callBack.onGranted(permission);
             }
         }).onAnyDenied(new Func() {
             @Override
             protected void call() {
-                callBack.onDenied();
+                callBack.onDenied(permission);
             }
         }).ask((short)permission.hashCode());
     }
@@ -49,11 +50,5 @@ public class PermissionAccessUtil {
 
     public static boolean hasPermission(Fragment fragment, String permission) {
         return PermissionUtil.with(fragment).has(permission);
-    }
-
-    public interface PermissionCallBack {
-        void onGranted();
-
-        void onDenied();
     }
 }

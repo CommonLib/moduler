@@ -4,11 +4,11 @@ import android.Manifest;
 import android.view.View;
 import android.widget.Toast;
 
+import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.mvvm.BaseActivity;
 import com.architecture.extend.baselib.mvvm.UiCallBack;
 import com.architecture.extend.baselib.router.Router;
 import com.architecture.extend.baselib.util.LogUtil;
-import com.architecture.extend.baselib.util.PermissionAccessUtil;
 import com.module.contract.web.IWeb;
 
 public class MainActivity extends BaseActivity<MainViewModel> {
@@ -38,15 +38,14 @@ public class MainActivity extends BaseActivity<MainViewModel> {
                         Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
                     }
                 });
-                usePermission(Manifest.permission.READ_CONTACTS, new PermissionAccessUtil.PermissionCallBack
-                        () {
+                usePermission(Manifest.permission.READ_CONTACTS, new PermissionCallBack() {
                     @Override
-                    public void onGranted() {
+                    public void onGranted(String permission) {
                         LogUtil.d("onGranted");
                     }
 
                     @Override
-                    public void onDenied() {
+                    public void onDenied(String permission) {
                         LogUtil.d("onDenied");
                     }
                 });

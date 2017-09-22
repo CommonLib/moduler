@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.base.ShareDataViewModel;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.PermissionAccessUtil;
@@ -111,15 +112,16 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     /**
      * for android verision above 23 to apply permission
+     * TODO need to impl apply for mulit permission once
      *
      * @param permission
      * @param callBack
      */
     @TargetApi(Build.VERSION_CODES.M)
     protected void usePermission(@RequiresPermission String permission,
-                                 PermissionAccessUtil.PermissionCallBack callBack) {
+                                 PermissionCallBack callBack) {
         if (PermissionAccessUtil.hasPermission(this, permission)) {
-            callBack.onGranted();
+            callBack.onGranted(permission);
             return;
         }
         PermissionUtil.PermissionRequestObject permissionRequest = PermissionAccessUtil
