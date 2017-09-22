@@ -21,5 +21,5 @@ public class Environment {
         }
     }
 
-    public static final String BASE_URL = mProperties.getProperty("API_BASE_URL");
+    public static final String API_BASE_URL = mProperties.getProperty("API_BASE_URL");
 }

@@ -20,4 +20,10 @@ public class AppConfig {
      * config file store path
      */
     public static final String ENV_CONFIG_PATH = "assets/config.env";
+
+    /**
+     * API and Data Access Stuff
+     */
+    public static final int API_CONNECT_TIMEOUT = 10; //10 seconds
+    public static final int API_WRITE_READ_TIMEOUT = 15; //15 seconds
 }
