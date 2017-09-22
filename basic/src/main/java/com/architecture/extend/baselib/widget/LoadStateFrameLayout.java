@@ -2,13 +2,13 @@ package com.architecture.extend.baselib.widget;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 
 import com.architecture.extend.baselib.R;
+import com.architecture.extend.baselib.databinding.ViewLoadingStateBinding;
 
 
 /**
@@ -24,7 +24,7 @@ public class LoadStateFrameLayout extends FrameLayout {
 
     private int state = STATE_USER;
     private View mSuccessView;
-    private ViewDataBinding mBinding;
+    private ViewLoadingStateBinding mBinding;
 
     public LoadStateFrameLayout(Context context) {
         this(context, null);
@@ -56,7 +56,7 @@ public class LoadStateFrameLayout extends FrameLayout {
      * @param currentState
      */
     public void updateState(int currentState) {
-        /*switch (currentState) {
+        switch (currentState) {
             case STATE_USER:
                 mSuccessView.setVisibility(View.VISIBLE);
                 mBinding.viewStateEmpty.setVisibility(View.GONE);
@@ -83,19 +83,19 @@ public class LoadStateFrameLayout extends FrameLayout {
                 break;
             default:
                 throw new IllegalArgumentException("can't not recognize view state");
-        }*/
+        }
 
         state = currentState;
     }
 
     public void setEmptyText(String text, float size, int color){
-        /*mBinding.viewStateEmpty.setText(text);
+        mBinding.viewStateEmpty.setText(text);
         mBinding.viewStateEmpty.setTextSize(size);
-        mBinding.viewStateEmpty.setTextColor(color);*/
+        mBinding.viewStateEmpty.setTextColor(color);
     }
 
     public void setEmptyBackground(int color){
-//        mBinding.viewStateEmpty.setBackgroundColor(color);
+        mBinding.viewStateEmpty.setBackgroundColor(color);
     }
 
     public int getState(){

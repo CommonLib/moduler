@@ -10,7 +10,7 @@ import java.util.HashMap;
  * this shard data scope is activity.
  */
 
-public class ShareDataViewModel extends BaseViewModel {
+public class ShareDataViewModel extends BaseViewModel<ShareModel> {
 
     private HashMap<String, Object> mShareData;
 

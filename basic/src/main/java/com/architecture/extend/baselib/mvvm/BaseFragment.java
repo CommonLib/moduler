@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.base.ShareDataViewModel;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.PermissionAccessUtil;
@@ -22,7 +23,7 @@ import java.util.ArrayList;
 /**
  * Created by appledev116 on 3/10/16.
  */
-public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment implements ViewAble{
+public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment implements ViewAble {
 
     private VM mViewModel;
     private boolean mIsForeground;
@@ -109,7 +110,9 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
 
     protected abstract void initView();
 
-    protected abstract @LayoutRes int getLayoutId();
+    protected abstract
+    @LayoutRes
+    int getLayoutId();
 
     protected void handleArguments(@NonNull Bundle arguments) {
     }
@@ -124,10 +127,9 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
      * @param callBack
      */
     @TargetApi(Build.VERSION_CODES.M)
-    protected void usePermission(String permission,
-                                 PermissionAccessUtil.PermissionCallBack callBack) {
-        if(PermissionAccessUtil.hasPermission(this, permission)){
-            callBack.onGranted();
+    protected void usePermission(String permission, PermissionCallBack callBack) {
+        if (PermissionAccessUtil.hasPermission(this, permission)) {
+            callBack.onGranted(permission);
             return;
         }
         PermissionUtil.PermissionRequestObject permissionRequest = PermissionAccessUtil

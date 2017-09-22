@@ -15,4 +15,9 @@ public class AppConfig {
      * max cache file size
      */
     public static final int CACHE_MAX_SIZE = 1024 * 1024 * 50; // 50M
+
+    /**
+     * config file store path
+     */
+    public static final String ENV_CONFIG_PATH = "assets/config.env";
 }

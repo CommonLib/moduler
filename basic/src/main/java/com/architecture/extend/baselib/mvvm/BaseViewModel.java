@@ -20,7 +20,6 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
             mModel = GenericUtil.instanceT(this, 0);
         } catch (Exception e) {
             LogUtil.e("instance " + this.getClass().getName() + " model error");
-            e.printStackTrace();
         }
         onCreate();
     }
