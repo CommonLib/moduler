@@ -10,4 +10,9 @@ public class AppConfig {
      * default shared preferences file name
      */
     public static final String SHARED_FILE_NAME = "config";
+
+    /**
+     * max cache file size
+     */
+    public static final int CACHE_MAX_SIZE = 1024 * 1024 * 50; // 50M
 }

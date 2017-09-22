@@ -1,6 +1,8 @@
 package com.architecture.extend.baselib.mvvm;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
@@ -12,6 +14,10 @@ import android.view.ViewGroup;
 
 import com.architecture.extend.baselib.base.ShareDataViewModel;
 import com.architecture.extend.baselib.util.GenericUtil;
+import com.architecture.extend.baselib.util.PermissionAccessUtil;
+import com.github.kayvannj.permission_utils.PermissionUtil;
+
+import java.util.ArrayList;
 
 /**
  * Created by appledev116 on 3/10/16.
@@ -22,6 +28,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     private boolean mIsForeground;
     private BaseActivity mActivity;
     private ViewForegroundSwitchListener mSwitchListener;
+    private ArrayList<PermissionUtil.PermissionRequestObject> mPermissionRequests;
 
     @Override
     public void onAttach(Activity activity) {
@@ -108,6 +115,40 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     }
 
     protected void onRestoreInitData(@NonNull Bundle savedInstanceState) {
+    }
+
+    /**
+     * for android verision above 23 to apply permission
+     *
+     * @param permission
+     * @param callBack
+     */
+    @TargetApi(Build.VERSION_CODES.M)
+    protected void usePermission(String permission,
+                                 PermissionAccessUtil.PermissionCallBack callBack) {
+        if(PermissionAccessUtil.hasPermission(this, permission)){
+            callBack.onGranted();
+            return;
+        }
+        PermissionUtil.PermissionRequestObject permissionRequest = PermissionAccessUtil
+                .requestPermission(this, permission, callBack);
+        if (mPermissionRequests == null) {
+            mPermissionRequests = new ArrayList<>();
+        }
+        mPermissionRequests.add(permissionRequest);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (mPermissionRequests != null && mPermissionRequests.size() > 0) {
+            for (PermissionUtil.PermissionRequestObject permissionRequest : mPermissionRequests) {
+                permissionRequest
+                        .onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
+            mPermissionRequests.clear();
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

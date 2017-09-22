@@ -1,25 +1,27 @@
 package com.architecture.extend.baselib.mvvm;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresPermission;
 import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.base.ShareDataViewModel;
 import com.architecture.extend.baselib.util.GenericUtil;
-import com.architecture.extend.baselib.widget.LoadStateFrameLayout;
+import com.architecture.extend.baselib.util.PermissionAccessUtil;
+import com.github.kayvannj.permission_utils.PermissionUtil;
 
-import in.srain.cube.views.ptr.PtrFrameLayout;
+import java.util.ArrayList;
 
 /**
  * Created by byang059 on 12/19/16.
@@ -31,6 +33,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     private VM mViewModel;
     private boolean mIsForeground;
     private ViewForegroundSwitchListener mSwitchListener;
+    private ArrayList<PermissionUtil.PermissionRequestObject> mPermissionRequests;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +109,40 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         mSwitchListener = switchListener;
     }
 
+    /**
+     * for android verision above 23 to apply permission
+     *
+     * @param permission
+     * @param callBack
+     */
+    @TargetApi(Build.VERSION_CODES.M)
+    protected void usePermission(@RequiresPermission String permission,
+                                 PermissionAccessUtil.PermissionCallBack callBack) {
+        if (PermissionAccessUtil.hasPermission(this, permission)) {
+            callBack.onGranted();
+            return;
+        }
+        PermissionUtil.PermissionRequestObject permissionRequest = PermissionAccessUtil
+                .requestPermission(this, permission, callBack);
+        if (mPermissionRequests == null) {
+            mPermissionRequests = new ArrayList<>();
+        }
+        mPermissionRequests.add(permissionRequest);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (mPermissionRequests != null && mPermissionRequests.size() > 0) {
+            for (PermissionUtil.PermissionRequestObject permissionRequest : mPermissionRequests) {
+                permissionRequest
+                        .onRequestPermissionsResult(requestCode, permissions, grantResults);
+            }
+            mPermissionRequests.clear();
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     protected View inflate(@LayoutRes int id) {
         return inflate(id, null);
     }
@@ -156,74 +193,13 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         return shareDataViewModel.take(key);
     }
 
-    /**
-     * @param targetView 用户要添加加载状态的view
-     * @return 添加加载状态
-     */
-    public LoadStateFrameLayout addLoadingStateView(View targetView) {
-        LoadStateFrameLayout loadStateView = new LoadStateFrameLayout(this);
-        ViewGroup parent = (ViewGroup) targetView.getParent();
-        ViewGroup.LayoutParams targetParams = targetView.getLayoutParams();
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        if (targetParams == null) {
-            targetParams = params;
-        }
-
-        targetView.setLayoutParams(params);
-        if (parent != null) {
-            int index = parent.indexOfChild(targetView);
-            parent.removeView(targetView);
-            loadStateView.addSuccessView(targetView);
-            parent.addView(loadStateView, index, targetParams);
-        } else {
-            loadStateView.setLayoutParams(targetParams);
-            loadStateView.addSuccessView(targetView);
-        }
-        return loadStateView;
-    }
-
-    /**
-     * @param
-     * @return 给一个View添加下拉刷新
-     */
-    public PtrFrameLayout addPullToRefreshView(View targetView) {
-        ViewGroup parent = (ViewGroup) targetView.getParent();
-        ViewGroup.LayoutParams targetParams = targetView.getLayoutParams();
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        PtrFrameLayout ptr = null;
-
-        if (targetParams == null) {
-            targetParams = params;
-        }
-
-        targetView.setLayoutParams(params);
-        if (parent != null) {
-            int index = parent.indexOfChild(targetView);
-            parent.removeView(targetView);
-            ptr = (PtrFrameLayout) LayoutInflater.from(this)
-                    .inflate(R.layout.fragment_base, parent, false);
-            FrameLayout content = (FrameLayout) ptr.getContentView();
-            content.addView(targetView);
-            parent.addView(ptr, index, targetParams);
-        } else {
-            ptr = (PtrFrameLayout) LayoutInflater.from(this)
-                    .inflate(R.layout.fragment_base, null, false);
-            FrameLayout content = (FrameLayout) ptr.getContentView();
-            ptr.setLayoutParams(targetParams);
-            content.addView(targetView);
-
-        }
-        return ptr;
-    }
-
     protected abstract void initData();
 
     protected abstract void initView();
 
-    protected abstract @LayoutRes int getLayoutId();
+    protected abstract
+    @LayoutRes
+    int getLayoutId();
 
     protected void handleIntent(@NonNull Intent intent) {
     }

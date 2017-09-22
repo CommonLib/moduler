@@ -143,7 +143,7 @@ public class EncryptionUtil {
 
             byte[] bytes = new byte[values.size()];
             for (int i = 0; i < bytes.length; i++) {
-                bytes[i] = values.get(i).byteValue();
+                bytes[i] = values.get(i);
             }
 
             decryptStr = new String(bytes, 0, bytes.length, "UTF-8");
