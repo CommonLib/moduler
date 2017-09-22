@@ -3,7 +3,7 @@ package com.reference.apublic.pic;
 import android.content.Context;
 import android.content.Intent;
 
-import com.architecture.extend.baselib.router.Provider;
+import com.architecture.extend.baselib.router.PluginService;
 import com.module.contract.pic.IPic;
 
 
@@ -11,7 +11,7 @@ import com.module.contract.pic.IPic;
  * Created by byang059 on 9/15/17.
  */
 
-public class PicProvider extends Provider implements IPic {
+public class PicPluginService extends PluginService implements IPic {
 
     @Override
     public boolean playPic(Context context) {

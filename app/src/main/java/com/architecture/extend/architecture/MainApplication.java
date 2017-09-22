@@ -13,10 +13,10 @@ public class MainApplication extends BaseApplication {
 
 
     @Override
-    protected void pluginProviders() {
+    protected void pluginComponent() {
         try {
-            plugin(IWeb.class, "com.reference.apublic.web.WebProvider");
-            plugin(IPic.class, "com.reference.apublic.pic.PicProvider");
+            plugin(IWeb.class, "com.reference.apublic.web.WebPluginService");
+            plugin(IPic.class, "com.reference.apublic.pic.PicPluginService");
         } catch (Exception e) {
             e.printStackTrace();
         }

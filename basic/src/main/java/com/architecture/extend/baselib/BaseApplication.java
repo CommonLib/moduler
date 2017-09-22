@@ -9,8 +9,8 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 
+import com.architecture.extend.baselib.router.PluginService;
 import com.architecture.extend.baselib.router.Contract;
-import com.architecture.extend.baselib.router.Provider;
 import com.architecture.extend.baselib.router.Router;
 import com.architecture.extend.baselib.util.LogUtil;
 
@@ -48,7 +48,7 @@ public abstract class BaseApplication extends MultiDexApplication {
         instance = this;
         LogUtil.init(getPackageName(), true);
         mHandler = new Handler();
-        pluginProviders();
+        pluginComponent();
     }
 
     public static String getProcessName(Context cxt, int pid) {
@@ -114,16 +114,16 @@ public abstract class BaseApplication extends MultiDexApplication {
         return mHandler;
     }
 
-    protected abstract void pluginProviders();
+    protected abstract void pluginComponent();
 
-    protected void plugin(Class<? extends Contract> clazz, Provider provider) {
-        Router.getInstance().registerProvider(clazz, provider);
+    protected void plugin(Class<? extends Contract> clazz, PluginService pluginService) {
+        Router.getInstance().registerProvider(clazz, pluginService);
     }
 
     protected void plugin(Class<? extends Contract> clazz, String providerPackageName)
             throws Exception {
         Class<?> providerClass = Class.forName(providerPackageName);
-        Provider provider = (Provider) providerClass.newInstance();
-        Router.getInstance().registerProvider(clazz, provider);
+        PluginService pluginService = (PluginService) providerClass.newInstance();
+        Router.getInstance().registerProvider(clazz, pluginService);
     }
 }

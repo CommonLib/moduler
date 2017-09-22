@@ -223,9 +223,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     protected abstract void initView();
 
-    protected abstract
-    @LayoutRes
-    int getLayoutId();
+    protected abstract @LayoutRes int getLayoutId();
 
     protected void handleIntent(@NonNull Intent intent) {
     }

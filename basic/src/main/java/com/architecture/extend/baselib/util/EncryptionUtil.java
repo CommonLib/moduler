@@ -25,7 +25,7 @@ import javax.security.auth.x500.X500Principal;
  * 使用ksyStore加密工具类
  */
 
-public class EncryptionUtils {
+public class EncryptionUtil {
 
     private static String alias;
 
