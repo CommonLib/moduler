@@ -26,13 +26,13 @@ import io.reactivex.schedulers.Schedulers;
 public class LiveData<T> {
     public static boolean hasBlock = false;
 
-    private final Flowable<T> mModelObservable;
+    private final Flowable<LiveResponse<T>> mModelObservable;
     private ProduceAble<T> mProducer;
     private WeakReference<ViewAble> mView;
     private UiCallBack<T> mViewCallBack;
     private ViewModelCallBack<T> mViewModelCallBack;
     private Handler mHandler = BaseApplication.getInstance().getHandler();
-    private FlowableEmitter<T> mEmitter;
+    private FlowableEmitter<LiveResponse<T>> mEmitter;
     private static ExecutorService mViewModelThreadService = Executors.newFixedThreadPool(1);
     private boolean mBackPressure;
     private Disposable mSubscribe;
@@ -52,15 +52,15 @@ public class LiveData<T> {
 
     public LiveData(AsyncProducer<T> producer, boolean backPressure) {
         mBackPressure = backPressure;
-        Flowable<T> flowAble = initFlowAble(producer, backPressure);
+        Flowable<LiveResponse<T>> flowAble = initFlowAble(producer, backPressure);
         mModelObservable = flowAble.subscribeOn(Schedulers.io());
     }
 
-    private Flowable<T> initFlowAble(ProduceAble<T> producer, boolean backPressure) {
+    private Flowable<LiveResponse<T>> initFlowAble(ProduceAble<T> producer, boolean backPressure) {
         mProducer = producer;
-        FlowableOnSubscribe<T> source = new FlowableOnSubscribe<T>() {
+        FlowableOnSubscribe<LiveResponse<T>> source = new FlowableOnSubscribe<LiveResponse<T>>() {
             @Override
-            public void subscribe(FlowableEmitter<T> emitter) throws Exception {
+            public void subscribe(FlowableEmitter<LiveResponse<T>> emitter) throws Exception {
                 mEmitter = emitter;
                 mProducer.produce(LiveData.this);
             }
@@ -72,7 +72,7 @@ public class LiveData<T> {
         }
     }
 
-    private boolean notifyViewChange(final T t) {
+    private boolean notifyViewChange(final LiveResponse<T> response) {
         if (mView == null) {
             return false;
         }
@@ -84,7 +84,7 @@ public class LiveData<T> {
             @Override
             public void run() {
                 if (mViewCallBack != null) {
-                    mViewCallBack.onDataReady(t);
+                    mViewCallBack.onResponse(response);
                 }
             }
         });
@@ -100,22 +100,21 @@ public class LiveData<T> {
         mView = new WeakReference<>(viewAble);
         mViewCallBack = callBack;
 
+        callBack.onStart();
         mSubscribe = mModelObservable.observeOn(Schedulers.from(mViewModelThreadService))
-                .map(new Function<T, T>() {
+                .map(new Function<LiveResponse<T>, LiveResponse<T>>() {
                     @Override
-                    public T apply(T t) throws Exception {
-                        T result = null;
+                    public LiveResponse<T> apply(LiveResponse<T> liveResponse) throws Exception {
                         if (mViewModelCallBack != null) {
-                            result = mViewModelCallBack.onDealWithData(t);
-                        } else {
-                            result = t;
+                            liveResponse.result = mViewModelCallBack
+                                    .onDealWithData(liveResponse.result);
                         }
-                        return result;
+                        return liveResponse;
                     }
-                }).observeOn(Schedulers.io()).subscribe(new Consumer<T>() {
+                }).observeOn(Schedulers.io()).subscribe(new Consumer<LiveResponse<T>>() {
                     @Override
-                    public void accept(T t) throws Exception {
-                        while (!notifyViewChange(t) && mBackPressure) {
+                    public void accept(LiveResponse<T> liveResponse) throws Exception {
+                        while (!notifyViewChange(liveResponse) && mBackPressure) {
                             synchronized (LiveData.class) {
                                 try {
                                     hasBlock = true;
@@ -141,10 +140,27 @@ public class LiveData<T> {
     }
 
     public void postValue(T t) {
+        postValue(new LiveResponse<>(t));
+    }
+
+    public void postCache(T t) {
+        postValue(new LiveResponse<>(t, LiveResponse.TYPE_CACHE));
+    }
+
+    public void postProgress(int progress) {
+        postValue(new LiveResponse<T>(progress));
+    }
+
+    public void postError(Exception e) {
+        postValue(new LiveResponse<T>(e));
+    }
+
+    private void postValue(LiveResponse<T> response) {
         if (mEmitter != null) {
-            mEmitter.onNext(t);
+            mEmitter.onNext(response);
         } else {
-            LogUtil.e("not found emitter in liveData, post value failed: value = " + t.toString());
+            LogUtil.e("not found emitter in liveData, post value failed: value = " + response
+                    .toString());
         }
     }
 }

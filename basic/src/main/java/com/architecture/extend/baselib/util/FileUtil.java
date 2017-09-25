@@ -146,7 +146,7 @@ public class FileUtil {
             } else {
                 boolean isSuccess = folder.mkdirs();
                 if (!isSuccess) {
-                    throw new IllegalArgumentException("can't make dir according to given path");
+                    throw new IllegalArgumentException("can'result make dir according to given path");
                 }
             }
 
@@ -154,7 +154,7 @@ public class FileUtil {
                 boolean isSuccess = targetPath.delete();
                 if (!isSuccess) {
                     throw new IllegalArgumentException(
-                            "target file path is exists, can't delete file");
+                            "target file path is exists, can'result delete file");
                 }
             }
 

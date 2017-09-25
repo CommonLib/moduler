@@ -19,9 +19,17 @@ public class MainModel extends BaseModel {
             mData = new LiveData<>(new AsyncProducer<String>() {
                 @Override
                 public void produce(LiveData<String> liveData) {
-                    SystemClock.sleep(3000);
+                    SystemClock.sleep(1000);
+                    liveData.postCache("cache data");
+                    SystemClock.sleep(1000);
                     liveData.postValue("first value");
+                    liveData.postProgress(50);
+                    SystemClock.sleep(1000);
                     liveData.postValue("second value");
+                    liveData.postProgress(100);
+                    SystemClock.sleep(1000);
+                    liveData.postValue("result value");
+                    liveData.postError(new Exception());
                 }
             });
         }

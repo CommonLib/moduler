@@ -12,9 +12,14 @@ public class AppConfig {
     public static final String SHARED_FILE_NAME = "config";
 
     /**
-     * max cache file size
+     * acache max cache file size
      */
     public static final int CACHE_MAX_SIZE = 1024 * 1024 * 50; // 50M
+
+    /**
+     * okhttp response max cache
+     */
+    public static final int HTTP_CACHE_MAX_SIZE = 1024 * 1024 * 50; // 50M
 
     /**
      * config file store path

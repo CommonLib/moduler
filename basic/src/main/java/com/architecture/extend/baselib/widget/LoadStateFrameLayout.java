@@ -82,7 +82,7 @@ public class LoadStateFrameLayout extends FrameLayout {
                 mBinding.viewStateLoading.setVisibility(View.GONE);
                 break;
             default:
-                throw new IllegalArgumentException("can't not recognize view state");
+                throw new IllegalArgumentException("can'result not recognize view state");
         }
 
         state = currentState;

@@ -21,7 +21,7 @@ import okhttp3.Response;
  * 描述:
  * 修改:
  */
-public class TokenInterceptor implements Interceptor {
+public class HeaderInterceptor implements Interceptor {
 
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {

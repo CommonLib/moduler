@@ -14,7 +14,7 @@ import okhttp3.Response;
 
 /**
  * @author:dongpo 创建时间: 9/1/2016
- * 描述:
+ * 描述: no matter
  * 修改:
  */
 public class CacheControlInterceptor implements Interceptor {
@@ -23,6 +23,7 @@ public class CacheControlInterceptor implements Interceptor {
         Request request = chain.request();
         boolean hasInternet = AppUtil.isNetworkAvailable(BaseApplication.getInstance());
         if (!hasInternet) {
+            //network is not work, we will use force cache
             request = request.newBuilder()
                     .cacheControl(CacheControl.FORCE_CACHE)
                     .build();
@@ -31,13 +32,14 @@ public class CacheControlInterceptor implements Interceptor {
         Response response = chain.proceed(request);
 
         if (hasInternet) {
-            //获取请求头中的缓存时间
+            //this is real response from server, use user configure time, otherwise use default
             String cacheControl = request.cacheControl().toString();
             response = response.newBuilder()
                     .header("Cache-Control", cacheControl)
                     .removeHeader("Pragma")// 清除头信息，因为服务器如果不支持，会返回一些干扰信息，不清除下面无法生效
                     .build();
         } else {
+            //this is force cache response
             response = response.newBuilder()
                     .header("Cache-Control", "public, only-if-cached, max-stale=0")
                     .removeHeader("Pragma")

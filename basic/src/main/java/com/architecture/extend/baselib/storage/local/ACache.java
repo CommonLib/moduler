@@ -84,7 +84,7 @@ public class ACache {
 
     private ACache(File cacheDir, long maxSize, int maxCount) {
         if (!cacheDir.exists() && !cacheDir.mkdirs()) {
-            throw new RuntimeException("can't make dirs in " + cacheDir.getAbsolutePath());
+            throw new RuntimeException("can'result make dirs in " + cacheDir.getAbsolutePath());
         }
         mCache = new ACacheManager(cacheDir, maxSize, maxCount);
     }

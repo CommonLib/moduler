@@ -32,9 +32,34 @@ public class MainActivity extends BaseActivity<MainViewModel> {
                 //                IPic service = (IPic) Router.getInstance().service(IPic.class);
                 //                service.playPic(MainActivity.this);
                 getViewModel().getUserString().observe(MainActivity.this, new UiCallBack<String>() {
+
                     @Override
-                    public void onDataReady(String s) {
-                        LogUtil.d("ui onDataReady =>" + s);
+                    public void onStart() {
+                        super.onStart();
+                        LogUtil.d("ui onStart =>");
+                    }
+
+                    @Override
+                    public void onProgressUpdate(int progress) {
+                        super.onProgressUpdate(progress);
+                        LogUtil.d("ui onProgressUpdate =>" + progress);
+                    }
+
+                    @Override
+                    public void onCacheReturn(String s) {
+                        super.onCacheReturn(s);
+                        LogUtil.d("ui onCacheReturn =>" + s);
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        super.onError(t);
+                        LogUtil.d("ui onError =>");
+                    }
+
+                    @Override
+                    public void onComplete(String s) {
+                        LogUtil.d("ui onComplete =>" + s);
                         Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
                     }
                 });

@@ -57,7 +57,7 @@ public class RetrofitHelper {
         OkHttpClient okHttpClient;
         OkHttpClient.Builder builder = new OkHttpClient.Builder().retryOnConnectionFailure(true)
                 .cache(new Cache(BaseApplication.getInstance().getCacheDir(),
-                        AppConfig.CACHE_MAX_SIZE)).addInterceptor(new TokenInterceptor())
+                        AppConfig.HTTP_CACHE_MAX_SIZE)).addInterceptor(new HeaderInterceptor())
                 .addNetworkInterceptor(new CacheControlInterceptor())
                 .connectTimeout(AppConfig.API_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(AppConfig.API_WRITE_READ_TIMEOUT, TimeUnit.SECONDS)
