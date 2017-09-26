@@ -6,6 +6,7 @@ import android.widget.Toast;
 
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.mvvm.BaseActivity;
+import com.architecture.extend.baselib.mvvm.ConfigureInfo;
 import com.architecture.extend.baselib.mvvm.UiCallBack;
 import com.architecture.extend.baselib.router.Router;
 import com.architecture.extend.baselib.util.LogUtil;
@@ -76,7 +77,6 @@ public class MainActivity extends BaseActivity<MainViewModel> {
                 });
             }
         });
-
     }
 
     @Override
@@ -84,5 +84,9 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         return R.layout.activity_main;
     }
 
-
+    @Override
+    public ConfigureInfo getConfigureInfo() {
+        return new ConfigureInfo.Builder().asyncInflate(false).loadingState(true).pullToRefresh
+                (true).toolbar(true).build();
+    }
 }

@@ -35,4 +35,15 @@ public class MainModel extends BaseModel {
         }
         return mData;
     }
+
+    @Override
+    public LiveData<Void> onPullToRefresh() {
+        return new LiveData<Void>(new AsyncProducer<Void>() {
+            @Override
+            public void produce(LiveData<Void> liveData) {
+                SystemClock.sleep(3000);
+                liveData.postValue(null);
+            }
+        });
+    }
 }

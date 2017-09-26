@@ -6,23 +6,29 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
-import android.support.annotation.StringRes;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
+import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.base.ShareDataViewModel;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.PermissionAccessUtil;
+import com.architecture.extend.baselib.util.ViewUtil;
+import com.architecture.extend.baselib.widget.LoadStateFrameLayout;
 import com.github.kayvannj.permission_utils.PermissionUtil;
 
 import java.util.ArrayList;
+
+import in.srain.cube.views.ptr.PtrDefaultHandler;
+import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.header.MaterialHeader;
+
 
 /**
  * Created by byang059 on 12/19/16.
@@ -35,6 +41,10 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     private boolean mIsForeground;
     private ViewForegroundSwitchListener mSwitchListener;
     private ArrayList<PermissionUtil.PermissionRequestObject> mPermissionRequests;
+    private ConfigureInfo mConfigureInfo;
+    private PtrFrameLayout mPullToRefreshView;
+    private LoadStateFrameLayout mLoadStateFrameLayout;
+    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +53,8 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         mViewModel = ViewModelProviders.getInstance().get(viewModelClazz);
         mViewModel.onViewCreate();
         setForegroundSwitchCallBack(mViewModel);
-        setContentView(getLayoutId());
-        initView();
+        mConfigureInfo = getConfigureInfo();
+        inflateLayout(mConfigureInfo.isAsyncInflate());
         Intent intent = getIntent();
         if (intent != null) {
             handleIntent(intent);
@@ -52,9 +62,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         if (savedInstanceState != null) {
             onRestoreInitData(savedInstanceState);
         }
-        initData();
     }
-
 
     @Override
     protected void onStart() {
@@ -111,7 +119,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     }
 
     /**
-     * for android verision above 23 to apply permission
+     * for android version above 23 to apply permission
      * TODO need to impl apply for mulit permission once
      *
      * @param permission
@@ -145,48 +153,81 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-    protected View inflate(@LayoutRes int id) {
-        return inflate(id, null);
+    private void inflateLayout(boolean isAsyncInflate) {
+        int layoutId = getLayoutId();
+        if (layoutId <= 0) {
+            return;
+        }
+        ViewGroup parent = (ViewGroup) findViewById(android.R.id.content);
+        if (isAsyncInflate) {
+            LiveData<View> inflate = getViewModel()
+                    .asyncInflate(getLayoutInflater(), parent, layoutId);
+            inflate.observe(this, new UiCallBack<View>() {
+                @Override
+                public void onComplete(View view) {
+                    init(view);
+                }
+            });
+        } else {
+            View root = ViewUtil.inflate(this, layoutId, parent);
+            init(root);
+        }
     }
 
-    protected View inflate(@LayoutRes int id, @Nullable ViewGroup root) {
-        return LayoutInflater.from(this).inflate(id, root);
+    public void init(View root) {
+        setContentView(root);
+        initView();
+        initData();
     }
 
-    protected Intent newIntent(Class<?> cls) {
-        return new Intent(this, cls);
+    private void initToolBar(Toolbar toolbar) {
+        setSupportActionBar(toolbar);
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            //enable back button
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
     }
 
-    protected void startActivity(Class<?> cls) {
-        startActivity(newIntent(cls));
+    @Override
+    public void setContentView(View view) {
+        View contentView = view;
+        if (mConfigureInfo.isPullToRefresh()) {
+            mPullToRefreshView = ViewUtil.addPullToRefreshView(view);
+            initPullRefreshView(mPullToRefreshView);
+            contentView = mPullToRefreshView;
+        }
+
+        if (mConfigureInfo.isLoadingState()) {
+            mLoadStateFrameLayout = ViewUtil.addLoadingStateView(contentView);
+            contentView = mLoadStateFrameLayout;
+        }
+
+        if (mConfigureInfo.isEnableToolbar()) {
+            mLoadStateFrameLayout = ViewUtil.addLoadingStateView(contentView);
+            mLoadStateFrameLayout.updateState(LoadStateFrameLayout.STATE_USER);
+            contentView = mLoadStateFrameLayout;
+        }
+
+        if (mConfigureInfo.isEnableToolbar()) {
+            contentView = ViewUtil.addToolBarView(this, R.layout.view_tool_bar, contentView);
+            mToolbar = (Toolbar) contentView.findViewById(R.id.common_tl_toolbar);
+            initToolBar(mToolbar);
+        }
+        super.setContentView(contentView);
     }
 
-    protected void showToast(@StringRes int resId) {
-        Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
-    }
-
-    protected void showLongToast(@StringRes int resId) {
-        Toast.makeText(this, resId, Toast.LENGTH_LONG).show();
-    }
-
-    protected void showToast(CharSequence text) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
-    }
-
-    protected void showLongToast(CharSequence text) {
-        Toast.makeText(this, text, Toast.LENGTH_LONG).show();
-    }
-
-    protected DisplayMetrics getDisplayMetrics() {
-        return getResources().getDisplayMetrics();
-    }
-
-    protected int getWidthPixels() {
-        return getDisplayMetrics().widthPixels;
-    }
-
-    protected int getHeightPixels() {
-        return getDisplayMetrics().heightPixels;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     protected Object getSharedData(String key) {
@@ -199,13 +240,57 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     protected abstract void initView();
 
-    protected abstract
-    @LayoutRes
-    int getLayoutId();
+    protected abstract @LayoutRes int getLayoutId();
 
     protected void handleIntent(@NonNull Intent intent) {
     }
 
     protected void onRestoreInitData(@NonNull Bundle savedInstanceState) {
+    }
+
+
+    public ConfigureInfo getConfigureInfo() {
+        return ConfigureInfo.defaultConfigure();
+    }
+
+    private void initPullRefreshView(PtrFrameLayout refreshView) {
+        final MaterialHeader header = new MaterialHeader(this);
+        int[] colors = getResources().getIntArray(R.array.google_colors);
+        header.setColorSchemeColors(colors);
+        header.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));
+        header.setPadding(0, (int) ViewUtil.dip2px(this, 15), 0, (int) ViewUtil.dip2px(this, 10));
+        header.setPtrFrameLayout(refreshView);
+        refreshView.setHeaderView(header);
+        refreshView.addPtrUIHandler(header);
+        refreshView.setPinContent(true);
+        refreshView.setPtrHandler(new PtrDefaultHandler() {
+            @Override
+            public void onRefreshBegin(final PtrFrameLayout frame) {
+                LiveData<Void> pullToRefresh = mViewModel.onPullToRefresh();
+                pullToRefresh.observe(BaseActivity.this, new UiCallBack<Void>() {
+                    @Override
+                    public void onComplete(Void aVoid) {
+                        frame.refreshComplete();
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+                        frame.refreshComplete();
+                    }
+                });
+            }
+        });
+    }
+
+    public PtrFrameLayout getPullToRefreshView() {
+        return mPullToRefreshView;
+    }
+
+    public LoadStateFrameLayout getLoadStateFrameLayout() {
+        return mLoadStateFrameLayout;
+    }
+
+    public Toolbar getToolbar() {
+        return mToolbar;
     }
 }

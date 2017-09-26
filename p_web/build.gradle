@@ -35,6 +35,11 @@ android {
             }
         }
     }
+
+    dataBinding {
+        enabled = true
+    }
+
     resourcePrefix "web_"
 }
 

@@ -1,6 +1,10 @@
 package com.architecture.extend.baselib.util;
 
 import android.content.Context;
+import android.content.Intent;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -12,9 +16,12 @@ import android.view.ViewParent;
 import android.widget.AbsListView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.widget.LoadStateFrameLayout;
 
@@ -122,7 +129,7 @@ public class ViewUtil {
      * @param
      * @return 给一个View添加下拉刷新
      */
-    public PtrFrameLayout addPullToRefreshView(View targetView) {
+    public static PtrFrameLayout addPullToRefreshView(View targetView) {
         ViewGroup parent = (ViewGroup) targetView.getParent();
         ViewGroup.LayoutParams targetParams = targetView.getLayoutParams();
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(
@@ -157,7 +164,7 @@ public class ViewUtil {
      * @param targetView 用户要添加加载状态的view
      * @return 添加加载状态
      */
-    public LoadStateFrameLayout addLoadingStateView(View targetView) {
+    public static LoadStateFrameLayout addLoadingStateView(View targetView) {
         LoadStateFrameLayout loadStateView = new LoadStateFrameLayout(targetView.getContext());
         ViewGroup parent = (ViewGroup) targetView.getParent();
         ViewGroup.LayoutParams targetParams = targetView.getLayoutParams();
@@ -182,6 +189,27 @@ public class ViewUtil {
     }
 
     /**
+     * @param
+     * @return 给一个View添加下拉刷新
+     */
+    public static LinearLayout addToolBarView(Context context, @LayoutRes int toolBarLayoutId,
+                                              View contentView) {
+        LinearLayout parent = new LinearLayout(context);
+        parent.setOrientation(LinearLayout.VERTICAL);
+        LayoutInflater.from(context).inflate(toolBarLayoutId, parent, true);
+
+        ViewGroup.LayoutParams contentViewLayoutParams = contentView.getLayoutParams();
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT);
+        contentView.setLayoutParams(params);
+        if (contentViewLayoutParams != null) {
+            parent.setLayoutParams(contentViewLayoutParams);
+        }
+        parent.addView(contentView);
+        return parent;
+    }
+
+    /**
      * 获得这个View的宽度
      * 测量这个view，最后通过getMeasuredWidth()获取宽度.
      *
@@ -203,6 +231,16 @@ public class ViewUtil {
     public static int getViewHeight(View view) {
         measureView(view);
         return view.getMeasuredHeight();
+    }
+
+    public static int getActionbarHeight(Context context) {
+        int actionBarHeight = 0;
+        TypedValue tv = new TypedValue();
+        if (context.getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true)) {
+            actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,
+                    context.getResources().getDisplayMetrics());
+        }
+        return actionBarHeight;
     }
 
     /**
@@ -291,5 +329,37 @@ public class ViewUtil {
                 return value * metrics.xdpi * (1.0f / 25.4f);
         }
         return 0;
+    }
+
+    public static void showToast(@StringRes int resId) {
+        Toast.makeText(BaseApplication.getInstance(), resId, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showLongToast(@StringRes int resId) {
+        Toast.makeText(BaseApplication.getInstance(), resId, Toast.LENGTH_LONG).show();
+    }
+
+    public static void showToast(CharSequence text) {
+        Toast.makeText(BaseApplication.getInstance(), text, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void showLongToast(CharSequence text) {
+        Toast.makeText(BaseApplication.getInstance(), text, Toast.LENGTH_LONG).show();
+    }
+
+    public static View inflate(Context context, @LayoutRes int id) {
+        return inflate(context, id, null);
+    }
+
+    public static View inflate(Context context, @LayoutRes int id, @Nullable ViewGroup root) {
+        return LayoutInflater.from(context).inflate(id, root, false);
+    }
+
+    public static Intent newIntent(Context context, Class<?> cls) {
+        return new Intent(context, cls);
+    }
+
+    public static void startActivity(Context context, Class<?> cls) {
+        context.startActivity(newIntent(context, cls));
     }
 }

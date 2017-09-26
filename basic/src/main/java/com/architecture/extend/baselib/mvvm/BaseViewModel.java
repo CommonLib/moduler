@@ -1,6 +1,10 @@
 package com.architecture.extend.baselib.mvvm;
 
 import android.databinding.BaseObservable;
+import android.support.annotation.LayoutRes;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.architecture.extend.baselib.base.ShareDataViewModel;
 import com.architecture.extend.baselib.util.GenericUtil;
@@ -83,5 +87,14 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
     @Override
     public void onViewBackground() {
 
+    }
+
+    public LiveData<View> asyncInflate(LayoutInflater layoutInflater, ViewGroup viewGroup,
+                                       @LayoutRes int layoutId) {
+        return getModel().asyncInflate(layoutInflater, viewGroup, layoutId);
+    }
+
+    public LiveData<Void> onPullToRefresh() {
+        return getModel().onPullToRefresh();
     }
 }

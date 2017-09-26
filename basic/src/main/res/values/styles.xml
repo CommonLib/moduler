@@ -1,0 +1,27 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="BaseAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowAnimationStyle">@style/activity_animation</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <!--activity过度动画-->
+    <style name="activity_animation">
+        <item name="android:activityOpenExitAnimation">@anim/activity_left_out</item>
+        <item name="android:activityCloseEnterAnimation">@anim/activity_left_in</item>
+        <item name="android:activityCloseExitAnimation">@anim/activity_right_out</item>
+        <item name="android:activityOpenEnterAnimation">@anim/activity_right_in</item>
+    </style>
+
+    <style name="ToolBar" parent="BaseAppTheme">
+        <item name="actionMenuTextColor">@color/black</item>
+        <!--this is back button color-->
+        <item name="android:textColorSecondary">@color/white</item>
+        <item name="android:textSize">@dimen/font_18</item>
+    </style>
+</resources>
