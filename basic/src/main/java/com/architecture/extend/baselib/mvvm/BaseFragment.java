@@ -27,6 +27,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
 
     private VM mViewModel;
     private boolean mIsForeground;
+    private boolean mIsDestroyed;
     private BaseActivity mActivity;
     private ViewForegroundSwitchListener mSwitchListener;
     private ArrayList<PermissionUtil.PermissionRequestObject> mPermissionRequests;
@@ -67,6 +68,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     public void onStart() {
         super.onStart();
         mIsForeground = true;
+        mIsDestroyed = false;
         mViewModel.onViewStart();
         mSwitchListener.onViewForeground();
     }
@@ -94,6 +96,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mIsDestroyed = true;
         mViewModel.onViewDestroy();
     }
 
@@ -158,10 +161,17 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         return mIsForeground;
     }
 
+    @Override
+    public boolean isDestroyed() {
+        return mIsDestroyed;
+    }
+
     public boolean onBackPressed() {
+        //TODO let fragment handle back press
         return false;
     }
 
+    @Override
     public VM getViewModel() {
         return mViewModel;
     }

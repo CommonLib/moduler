@@ -104,6 +104,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         mViewModel.onViewDestroy();
     }
 
+    @Override
     public VM getViewModel() {
         return mViewModel;
     }
@@ -162,7 +163,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         if (isAsyncInflate) {
             LiveData<View> inflate = getViewModel()
                     .asyncInflate(getLayoutInflater(), parent, layoutId);
-            inflate.observe(this, new UiCallBack<View>() {
+            inflate.subscribe(this, new UiCallBack<View>() {
                 @Override
                 public void onComplete(View view) {
                     init(view);
@@ -206,7 +207,6 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
         if (mConfigureInfo.isEnableToolbar()) {
             mLoadStateFrameLayout = ViewUtil.addLoadingStateView(contentView);
-            mLoadStateFrameLayout.updateState(LoadStateFrameLayout.STATE_USER);
             contentView = mLoadStateFrameLayout;
         }
 
@@ -267,7 +267,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
             @Override
             public void onRefreshBegin(final PtrFrameLayout frame) {
                 LiveData<Void> pullToRefresh = mViewModel.onPullToRefresh();
-                pullToRefresh.observe(BaseActivity.this, new UiCallBack<Void>() {
+                pullToRefresh.subscribe(BaseActivity.this, new UiCallBack<Void>() {
                     @Override
                     public void onComplete(Void aVoid) {
                         frame.refreshComplete();

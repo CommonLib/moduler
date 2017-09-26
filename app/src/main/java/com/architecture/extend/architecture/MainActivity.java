@@ -32,7 +32,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
             public void onClick(View v) {
                 //                IPic service = (IPic) Router.getInstance().service(IPic.class);
                 //                service.playPic(MainActivity.this);
-                getViewModel().getUserString().observe(MainActivity.this, new UiCallBack<String>() {
+                getViewModel().getUserString().subscribe(MainActivity.this, new UiCallBack<String>() {
 
                     @Override
                     public void onStart() {
@@ -86,7 +86,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
 
     @Override
     public ConfigureInfo getConfigureInfo() {
-        return new ConfigureInfo.Builder().asyncInflate(false).loadingState(true).pullToRefresh
+        return new ConfigureInfo.Builder().asyncInflate(true).loadingState(true).pullToRefresh
                 (true).toolbar(true).build();
     }
 }

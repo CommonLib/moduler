@@ -7,4 +7,6 @@ package com.architecture.extend.baselib.mvvm;
 public interface ViewAble {
     boolean isForeground();
     void setForegroundSwitchCallBack(ViewForegroundSwitchListener listener);
+    boolean isDestroyed();
+    BaseViewModel getViewModel();
 }

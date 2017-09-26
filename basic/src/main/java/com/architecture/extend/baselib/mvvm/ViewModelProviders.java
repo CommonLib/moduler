@@ -33,4 +33,8 @@ public class ViewModelProviders {
         }
         return viewModel;
     }
+
+    public void remove(Class<?> clazz) {
+        mViewModels.remove(clazz.getName());
+    }
 }

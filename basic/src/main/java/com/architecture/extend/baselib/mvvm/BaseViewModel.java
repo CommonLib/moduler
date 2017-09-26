@@ -71,6 +71,8 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
     }
 
     protected void onDestroy() {
+        ViewModelProviders.getInstance().remove(this.getClass());
+        getModel().onDestroy();
     }
 
     @Override

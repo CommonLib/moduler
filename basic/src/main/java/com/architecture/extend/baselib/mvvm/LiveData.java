@@ -36,6 +36,9 @@ public class LiveData<T> {
     private static ExecutorService mViewModelThreadService = Executors.newFixedThreadPool(1);
     private boolean mBackPressure;
     private Disposable mSubscribe;
+    private static final int RESULT_VIEW_DESTROY = 0;
+    private static final int RESULT_VIEW_BACKGROUND = 1;
+    private static final int RESULT_SUCCESS = 2;
 
     public LiveData(Producer<T> producer) {
         this(producer, true);
@@ -72,35 +75,17 @@ public class LiveData<T> {
         }
     }
 
-    private boolean notifyViewChange(final LiveResponse<T> response) {
-        if (mView == null) {
-            return false;
-        }
-        ViewAble view = mView.get();
-        if (view == null || !view.isForeground()) {
-            return false;
-        }
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mViewCallBack != null) {
-                    mViewCallBack.onResponse(response);
-                }
-            }
-        });
-        return true;
-    }
-
     /**
      * @param viewAble
      * @param callBack
      */
     @MainThread
-    public void observe(ViewAble viewAble, UiCallBack<T> callBack) {
+    public void subscribe(ViewAble viewAble, UiCallBack<T> callBack) {
         mView = new WeakReference<>(viewAble);
         mViewCallBack = callBack;
 
         callBack.onStart();
+        viewAble.getViewModel().getModel().putLiveData(this);
         mSubscribe = mModelObservable.observeOn(Schedulers.from(mViewModelThreadService))
                 .map(new Function<LiveResponse<T>, LiveResponse<T>>() {
                     @Override
@@ -114,7 +99,7 @@ public class LiveData<T> {
                 }).observeOn(Schedulers.io()).subscribe(new Consumer<LiveResponse<T>>() {
                     @Override
                     public void accept(LiveResponse<T> liveResponse) throws Exception {
-                        while (!notifyViewChange(liveResponse) && mBackPressure) {
+                        while (shouldContinueNotifyView(liveResponse)) {
                             synchronized (LiveData.class) {
                                 try {
                                     hasBlock = true;
@@ -128,11 +113,58 @@ public class LiveData<T> {
                 });
     }
 
+    private boolean shouldContinueNotifyView(LiveResponse<T> liveResponse) {
+        boolean shouldContinueNotifyView = false;
+        int result = notifyViewChange(liveResponse);
+        switch (result) {
+            case RESULT_VIEW_BACKGROUND:
+                shouldContinueNotifyView = true;
+                break;
+            case RESULT_VIEW_DESTROY:
+                shouldContinueNotifyView = false;
+                dispose();
+                break;
+            case RESULT_SUCCESS:
+                shouldContinueNotifyView = false;
+                break;
+        }
+        return shouldContinueNotifyView && mBackPressure;
+    }
+
+    private int notifyViewChange(final LiveResponse<T> response) {
+        if (mView == null) {
+            return RESULT_VIEW_DESTROY;
+        }
+
+        ViewAble view = mView.get();
+        if (view == null || view.isDestroyed()) {
+            return RESULT_VIEW_DESTROY;
+        }
+
+        if (!view.isForeground()) {
+            return RESULT_VIEW_BACKGROUND;
+        }
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mViewCallBack != null) {
+                    mViewCallBack.onResponse(response);
+                }
+            }
+        });
+        return RESULT_SUCCESS;
+    }
+
     @MainThread
-    public void cancelSubcription() {
+    public void dispose() {
         if (mSubscribe != null && !mSubscribe.isDisposed()) {
             mSubscribe.dispose();
         }
+    }
+
+    @MainThread
+    public boolean isSubscribe() {
+        return mSubscribe != null && !mSubscribe.isDisposed();
     }
 
     public void intercept(ViewModelCallBack<T> callBack) {
