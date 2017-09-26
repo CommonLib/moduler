@@ -68,8 +68,9 @@ public final class FragmentStackUtil {
             return;
         }
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        if(getLinkedList().size() >= 1){
-            transaction.setCustomAnimations(R.anim.activity_right_in, R.anim.activity_left_out, 0, 0);
+        if (getLinkedList().size() >= 1) {
+            transaction
+                    .setCustomAnimations(R.anim.activity_right_in, R.anim.activity_left_out, 0, 0);
         }
         showFragment(transaction, fragment, tag);
         transaction.commit();
@@ -79,7 +80,7 @@ public final class FragmentStackUtil {
         if (mStack.size() > 1) {
             FragmentTransaction transaction = mFragmentManager.beginTransaction();
             transaction
-                    .setCustomAnimations(R.anim.activity_left_in,R.anim.activity_right_out, 0, 0);
+                    .setCustomAnimations(R.anim.activity_left_in, R.anim.activity_right_out, 0, 0);
             Fragment popFragment = mStack.pollLast();
             removeFragment(transaction, popFragment);
             BaseFragment f = mStack.peekLast();
@@ -88,6 +89,16 @@ public final class FragmentStackUtil {
             return popFragment;
         }
         return null;
+    }
+
+    public void onBackPress() {
+        BaseFragment fragment = mStack.peekLast();
+        if (fragment != null && fragment.onBackPressed()) {
+        } else {
+            if (hasBackStack()) {
+                pop();
+            }
+        }
     }
 
     public boolean hasBackStack() {
