@@ -7,7 +7,7 @@ import android.widget.Toast;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.mvvm.BaseActivity;
 import com.architecture.extend.baselib.mvvm.ConfigureInfo;
-import com.architecture.extend.baselib.mvvm.UiCallBack;
+import com.architecture.extend.baselib.mvvm.LiveCallBack;
 import com.architecture.extend.baselib.router.Router;
 import com.architecture.extend.baselib.util.FragmentStack;
 import com.architecture.extend.baselib.util.LogUtil;
@@ -33,7 +33,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
             public void onClick(View v) {
                 //                IPic service = (IPic) Router.getInstance().service(IPic.class);
                 //                service.playPic(MainActivity.this);
-                getViewModel().getUserString().subscribe(MainActivity.this, new UiCallBack<String>() {
+                getViewModel().getUserString().subscribe(MainActivity.this, new LiveCallBack<String>() {
 
                     @Override
                     public void onStart() {
@@ -56,7 +56,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
                     @Override
                     public void onError(Throwable t) {
                         super.onError(t);
-                        LogUtil.d("ui onError =>");
+                        LogUtil.d("ui onError => " + t);
                     }
 
                     @Override
@@ -92,6 +92,6 @@ public class MainActivity extends BaseActivity<MainViewModel> {
     @Override
     public ConfigureInfo getConfigureInfo() {
         return new ConfigureInfo.Builder().asyncInflate(true).loadingState(true).pullToRefresh
-                (false).build();
+                (false).toolbar(true).build();
     }
 }

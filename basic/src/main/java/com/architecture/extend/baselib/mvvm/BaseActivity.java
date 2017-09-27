@@ -165,7 +165,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         if (isAsyncInflate) {
             LiveData<View> inflate = getViewModel()
                     .asyncInflate(getLayoutInflater(), parent, layoutId);
-            inflate.subscribe(this, new UiCallBack<View>() {
+            inflate.subscribe(this, new LiveCallBack<View>() {
                 @Override
                 public void onComplete(View view) {
                     init(view);
@@ -269,7 +269,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
             @Override
             public void onRefreshBegin(final PtrFrameLayout frame) {
                 LiveData<Void> pullToRefresh = mViewModel.onPullToRefresh();
-                pullToRefresh.subscribe(BaseActivity.this, new UiCallBack<Void>() {
+                pullToRefresh.subscribe(BaseActivity.this, new LiveCallBack<Void>() {
                     @Override
                     public void onComplete(Void aVoid) {
                         frame.refreshComplete();

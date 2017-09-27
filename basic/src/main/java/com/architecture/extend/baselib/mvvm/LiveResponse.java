@@ -33,7 +33,7 @@ public class LiveResponse<T> {
 
     public T result;
     public int progress;
-    public Exception error;
+    public Throwable error;
     public int type;
 
     @Override

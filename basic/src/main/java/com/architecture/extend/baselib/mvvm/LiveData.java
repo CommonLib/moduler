@@ -29,8 +29,8 @@ public class LiveData<T> {
     private final Flowable<LiveResponse<T>> mModelObservable;
     private ProduceAble<T> mProducer;
     private WeakReference<ViewAble> mView;
-    private UiCallBack<T> mViewCallBack;
-    private ViewModelCallBack<T> mViewModelCallBack;
+    private LiveCallBack<T> mViewCallBack;
+    private LiveViewModelCallBack<T> mViewModelCallBack;
     private Handler mHandler = BaseApplication.getInstance().getHandler();
     private FlowableEmitter<LiveResponse<T>> mEmitter;
     private static ExecutorService mViewModelThreadService = Executors.newFixedThreadPool(1);
@@ -80,10 +80,13 @@ public class LiveData<T> {
      * @param callBack
      */
     @MainThread
-    public void subscribe(ViewAble viewAble, UiCallBack<T> callBack) {
+    public void subscribe(ViewAble viewAble, LiveCallBack<T> callBack) {
         mView = new WeakReference<>(viewAble);
         mViewCallBack = callBack;
 
+        if(mViewModelCallBack != null){
+            mViewModelCallBack.onStart();
+        }
         callBack.onStart();
         viewAble.getViewModel().getModel().putLiveData(this);
         mSubscribe = mModelObservable.observeOn(Schedulers.from(mViewModelThreadService))
@@ -91,8 +94,7 @@ public class LiveData<T> {
                     @Override
                     public LiveResponse<T> apply(LiveResponse<T> liveResponse) throws Exception {
                         if (mViewModelCallBack != null) {
-                            liveResponse.result = mViewModelCallBack
-                                    .onDealWithData(liveResponse.result);
+                            liveResponse = mViewModelCallBack.onResponse(liveResponse);
                         }
                         return liveResponse;
                     }
@@ -167,7 +169,7 @@ public class LiveData<T> {
         return mSubscribe != null && !mSubscribe.isDisposed();
     }
 
-    public void intercept(ViewModelCallBack<T> callBack) {
+    public void intercept(LiveViewModelCallBack<T> callBack) {
         mViewModelCallBack = callBack;
     }
 

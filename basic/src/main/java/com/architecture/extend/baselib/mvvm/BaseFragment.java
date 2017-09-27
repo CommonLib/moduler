@@ -214,7 +214,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     private void asyncInflateLayout(final ViewGroup parent, LayoutInflater inflater,
                                     @LayoutRes int layoutId) {
         LiveData<View> inflate = getViewModel().asyncInflate(inflater, parent, layoutId);
-        inflate.subscribe(this, new UiCallBack<View>() {
+        inflate.subscribe(this, new LiveCallBack<View>() {
             @Override
             public void onComplete(View view) {
                 View packageView = packageContentView(mConfigureInfo, view);
@@ -276,7 +276,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
             @Override
             public void onRefreshBegin(final PtrFrameLayout frame) {
                 LiveData<Void> pullToRefresh = mViewModel.onPullToRefresh();
-                pullToRefresh.subscribe(BaseFragment.this, new UiCallBack<Void>() {
+                pullToRefresh.subscribe(BaseFragment.this, new LiveCallBack<Void>() {
                     @Override
                     public void onComplete(Void aVoid) {
                         frame.refreshComplete();
