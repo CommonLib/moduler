@@ -9,6 +9,7 @@ import com.architecture.extend.baselib.mvvm.BaseActivity;
 import com.architecture.extend.baselib.mvvm.ConfigureInfo;
 import com.architecture.extend.baselib.mvvm.LiveCallBack;
 import com.architecture.extend.baselib.router.Router;
+import com.architecture.extend.baselib.util.AppUtil;
 import com.architecture.extend.baselib.util.FragmentStack;
 import com.architecture.extend.baselib.util.LogUtil;
 import com.module.contract.web.IWeb;
@@ -93,5 +94,10 @@ public class MainActivity extends BaseActivity<MainViewModel> {
     public ConfigureInfo getConfigureInfo() {
         return new ConfigureInfo.Builder().asyncInflate(true).loadingState(true).pullToRefresh
                 (false).toolbar(true).build();
+    }
+
+    @Override
+    public void onBackPressed() {
+        AppUtil.startLauncherHome(this);
     }
 }

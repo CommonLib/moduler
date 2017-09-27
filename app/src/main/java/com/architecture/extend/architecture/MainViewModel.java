@@ -18,7 +18,7 @@ public class MainViewModel extends BaseViewModel<MainModel> {
         data.intercept(new LiveViewModelCallBack<String>() {
             @Override
             public String onComplete(String value) {
-                LogUtil.d("viewModel onComplete");
+                LogUtil.d("viewModel onComplete " + value);
                 return value + " viewmodel";
             }
 

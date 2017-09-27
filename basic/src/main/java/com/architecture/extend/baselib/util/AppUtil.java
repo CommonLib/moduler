@@ -605,4 +605,10 @@ public class AppUtil {
         wm.getDefaultDisplay().getMetrics(outMetrics);
         return outMetrics.widthPixels;
     }
+
+    public static void startLauncherHome(Context context) {
+        Intent home = new Intent(Intent.ACTION_MAIN);
+        home.addCategory(Intent.CATEGORY_HOME);
+        context.startActivity(home);
+    }
 }
