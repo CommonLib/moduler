@@ -3,6 +3,7 @@ package com.architecture.extend.baselib.mvvm;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -164,22 +165,21 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         ViewGroup parent = (ViewGroup) findViewById(android.R.id.content);
         if (isAsyncInflate) {
             LiveData<View> inflate = getViewModel()
-                    .asyncInflate(getLayoutInflater(), parent, layoutId);
+                    .asyncInflate(layoutId, getLayoutInflater(), parent);
             inflate.subscribe(this, new LiveCallBack<View>() {
                 @Override
                 public void onComplete(View view) {
-                    init(view);
+                    init(DataBindingUtil.bind(view));
                 }
             });
         } else {
-            View root = ViewUtil.inflate(this, layoutId, parent);
-            init(root);
+            init(DataBindingUtil.inflate(getLayoutInflater(), layoutId, parent, false));
         }
     }
 
-    public void init(View root) {
-        setContentView(root);
-        initView();
+    public void init(ViewDataBinding binding) {
+        setContentView(packageContentView(binding.getRoot()));
+        initView(binding);
         initData();
     }
 
@@ -193,10 +193,8 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         }
     }
 
-    @Override
-    public void setContentView(View view) {
+    public View packageContentView(View view) {
         View contentView = view;
-
         if (mConfigureInfo.isLoadingState()) {
             mLoadStateView = ViewUtil.addLoadingStateView(contentView);
             initLoadingStateView(mLoadStateView);
@@ -215,7 +213,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
             mToolbar = (Toolbar) contentView.findViewById(R.id.common_tl_toolbar);
             initToolBar(mToolbar);
         }
-        super.setContentView(contentView);
+        return contentView;
     }
 
     @Override
@@ -238,7 +236,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     protected abstract void initData();
 
-    protected abstract void initView();
+    protected abstract void initView(ViewDataBinding binding);
 
     protected abstract
     @LayoutRes
@@ -285,7 +283,8 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     }
 
     protected void initLoadingStateView(LoadStateView loadStateView) {
-        DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.view_loading_state, loadStateView,
+        DataBindingUtil
+                .inflate(LayoutInflater.from(this), R.layout.view_loading_state, loadStateView,
                         true);
     }
 

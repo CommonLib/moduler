@@ -3,6 +3,7 @@ package com.architecture.extend.baselib.mvvm;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -80,11 +81,10 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
                             ViewGroup.LayoutParams.MATCH_PARENT));
             asyncInflateLayout(frameLayout, inflater, layoutId);
             content = frameLayout;
-            //TODO TEST
         } else {
-            content = inflater.inflate(layoutId, container, false);
-            content = packageContentView(mConfigureInfo, content);
-            init();
+            ViewDataBinding binding = DataBindingUtil.inflate(inflater, layoutId, container, false);
+            content = packageContentView(mConfigureInfo, binding.getRoot());
+            init(binding);
         }
         return content;
     }
@@ -136,7 +136,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
 
     protected abstract void initData();
 
-    protected abstract void initView();
+    protected abstract void initView(ViewDataBinding binding);
 
     protected abstract
     @LayoutRes
@@ -213,27 +213,27 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
 
     private void asyncInflateLayout(final ViewGroup parent, LayoutInflater inflater,
                                     @LayoutRes int layoutId) {
-        LiveData<View> inflate = getViewModel().asyncInflate(inflater, parent, layoutId);
+        LiveData<View> inflate = getViewModel().asyncInflate(layoutId, inflater, parent);
         inflate.subscribe(this, new LiveCallBack<View>() {
             @Override
             public void onComplete(View view) {
                 View packageView = packageContentView(mConfigureInfo, view);
                 parent.addView(packageView);
-                init();
+                init(DataBindingUtil.bind(view));
             }
         });
     }
 
-    public void init() {
-        initView();
+    private void init(ViewDataBinding binding) {
+        initView(binding);
         initData();
     }
 
-    public ConfigureInfo getConfigureInfo() {
+    protected ConfigureInfo getConfigureInfo() {
         return ConfigureInfo.defaultConfigure();
     }
 
-    public View packageContentView(ConfigureInfo configureInfo, View view) {
+    private View packageContentView(ConfigureInfo configureInfo, View view) {
         View contentView = view;
 
         if (configureInfo.isLoadingState()) {
@@ -253,9 +253,9 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         if (enableToolbar != null && enableToolbar && actEnableToolbar != null
                 && actEnableToolbar) {
             ViewUtil.showSupportActionBar(mActivity);
-        } else if (enableToolbar == null){
+        } else if (enableToolbar == null) {
             //sub fragment not specific show or not, follow act
-        }else{
+        } else {
             ViewUtil.hideSupportActionBar(mActivity);
         }
         return contentView;
@@ -297,11 +297,11 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
                         true);
     }
 
-    public PtrFrameLayout getPullToRefreshView() {
+    protected PtrFrameLayout getPullToRefreshView() {
         return mPullToRefreshView;
     }
 
-    public LoadStateView getLoadStateView() {
+    protected LoadStateView getLoadStateView() {
         return mLoadStateView;
     }
 }

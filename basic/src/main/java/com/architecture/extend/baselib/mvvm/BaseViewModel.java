@@ -91,9 +91,9 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
 
     }
 
-    public LiveData<View> asyncInflate(LayoutInflater layoutInflater, ViewGroup viewGroup,
-                                       @LayoutRes int layoutId) {
-        return getModel().asyncInflate(layoutInflater, viewGroup, layoutId);
+    public LiveData<View> asyncInflate(@LayoutRes int layoutId, LayoutInflater layoutInflater,
+                                       ViewGroup viewGroup) {
+        return getModel().asyncInflate(layoutId, layoutInflater, viewGroup);
     }
 
     public LiveData<Void> onPullToRefresh() {

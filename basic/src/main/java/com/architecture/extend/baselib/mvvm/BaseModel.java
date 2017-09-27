@@ -14,21 +14,10 @@ import java.util.ArrayList;
  */
 
 public abstract class BaseModel {
-    private ArrayList<LiveData> mLiveDatas;
+    private ArrayList<LiveData> mLives;
 
     public BaseModel() {
         onCreate();
-    }
-
-    public LiveData<View> asyncInflate(final LayoutInflater layoutInflater,
-                                       final ViewGroup viewGroup, @LayoutRes final int layoutId) {
-        return new LiveData<>(new AsyncProducer<View>() {
-            @Override
-            public void produce(LiveData<View> liveData) {
-                View inflate = layoutInflater.inflate(layoutId, viewGroup, false);
-                liveData.postValue(inflate);
-            }
-        });
     }
 
     public LiveData<Void> onPullToRefresh() {
@@ -44,18 +33,30 @@ public abstract class BaseModel {
     }
 
     public void putLiveData(LiveData data) {
-        if (mLiveDatas == null) {
-            mLiveDatas = new ArrayList<>();
+        if (mLives == null) {
+            mLives = new ArrayList<>();
         }
-        mLiveDatas.add(data);
+        mLives.add(data);
     }
 
     private void disposeLiveData() {
-        if (mLiveDatas != null) {
-            LogUtil.d("destroyed all live data, sum = " + mLiveDatas.size());
-            for (LiveData liveData : mLiveDatas) {
+        if (mLives != null) {
+            LogUtil.d("destroyed all live data, sum = " + mLives.size());
+            for (LiveData liveData : mLives) {
                 liveData.dispose();
             }
         }
+    }
+
+    public LiveData<View> asyncInflate(@LayoutRes final int layoutId,
+                                       final LayoutInflater layoutInflater,
+                                       final ViewGroup viewGroup) {
+        return new LiveData<>(new AsyncProducer<View>() {
+            @Override
+            public void produce(LiveData<View> liveData) {
+                View view = layoutInflater.inflate(layoutId, viewGroup, false);
+                liveData.postValue(view);
+            }
+        });
     }
 }

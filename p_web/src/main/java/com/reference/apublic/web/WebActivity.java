@@ -1,5 +1,6 @@
 package com.reference.apublic.web;
 
+import android.databinding.ViewDataBinding;
 import android.widget.Toast;
 
 import com.architecture.extend.baselib.mvvm.BaseActivity;
@@ -18,7 +19,7 @@ public class WebActivity extends BaseActivity<WebViewModel> {
     }
 
     @Override
-    protected void initView() {
+    protected void initView(ViewDataBinding binding) {
 
     }
 

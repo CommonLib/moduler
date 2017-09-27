@@ -1,5 +1,7 @@
 package com.architecture.extend.architecture;
 
+import android.databinding.ViewDataBinding;
+
 import com.architecture.extend.baselib.mvvm.BaseFragment;
 import com.architecture.extend.baselib.mvvm.ConfigureInfo;
 
@@ -15,7 +17,8 @@ public class MainFragment extends BaseFragment<MainViewModel> {
     }
 
     @Override
-    protected void initView() {
+    protected void initView(ViewDataBinding binding) {
+
     }
 
     @Override

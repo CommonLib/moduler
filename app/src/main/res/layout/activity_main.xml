@@ -1,36 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+
+<layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.architecture.extend.architecture.MainActivity"
-    android:orientation="vertical">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-    <Button
-        android:id="@+id/act_btn_web"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="web"/>
-    <Button
-        android:id="@+id/act_btn_pic"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="pic"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.architecture.extend.architecture.MainActivity">
 
-    <FrameLayout
-        android:id="@+id/act_fl_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hello World!"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-</LinearLayout>
+        <Button
+            android:id="@+id/act_btn_web"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="web"/>
+
+        <Button
+            android:id="@+id/act_btn_pic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="pic"/>
+
+        <FrameLayout
+            android:id="@+id/act_fl_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </LinearLayout>
+</layout>

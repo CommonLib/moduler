@@ -2,11 +2,15 @@ package com.architecture.extend.baselib.util;
 
 import android.content.Context;
 import android.content.Intent;
+import android.databinding.ViewDataBinding;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -25,10 +29,11 @@ import android.widget.Toast;
 
 import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.R;
+import com.architecture.extend.baselib.base.BaseRecycleAdapter;
+import com.architecture.extend.baselib.base.LoadMoreCallBack;
 import com.architecture.extend.baselib.widget.LoadStateView;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
-
 
 public class ViewUtil {
 
@@ -377,5 +382,64 @@ public class ViewUtil {
         if (supportActionBar != null && supportActionBar.isShowing()) {
             supportActionBar.hide();
         }
+    }
+
+    /**
+     * add load more to recycleView
+     * @param recycleView
+     * @param adapter
+     * @param layoutManager
+     * @param loadMoreBinding
+     * @param callBack
+     */
+    public static void setUpRecycleViewLoadMore(RecyclerView recycleView,
+                                                final BaseRecycleAdapter adapter,
+                                                final LinearLayoutManager layoutManager,
+                                                ViewDataBinding loadMoreBinding,
+                                                final LoadMoreCallBack callBack) {
+        if (layoutManager.getOrientation() == LinearLayoutManager.VERTICAL) {
+            //current wo only consider vertical orientation
+            return;
+        }
+
+        final View loadMoreView = loadMoreBinding.getRoot();
+        int type = loadMoreView.getId();
+        if (type == View.NO_ID) {
+            return;
+        }
+
+        adapter.addFooter(type, loadMoreBinding);
+        loadMoreView.setVisibility(View.GONE);
+        if (layoutManager instanceof GridLayoutManager) {
+            final GridLayoutManager manager = (GridLayoutManager) layoutManager;
+            manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+                @Override
+                public int getSpanSize(int position) {
+                    return (adapter.isHeaderType(position) || adapter.isFooterType(position))
+                            || adapter.isUserItemType(position) ? manager.getSpanCount() : 1;
+                }
+            });
+        }
+
+        recycleView.setLayoutManager(layoutManager);
+        recycleView.setAdapter(adapter);
+        recycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            private int lastBottomPosition = 0;
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                if (loadMoreView.getVisibility() == View.VISIBLE) {
+                    int bottomPosition = layoutManager.findLastVisibleItemPosition();
+                    if (bottomPosition == adapter.getItemCount() - 1
+                            && bottomPosition != lastBottomPosition) {
+                        callBack.onLoadMore();
+                    }
+                    //记录用户上次滑动的位置
+                    if (lastBottomPosition != bottomPosition) {
+                        lastBottomPosition = bottomPosition;
+                    }
+                }
+            }
+        });
     }
 }

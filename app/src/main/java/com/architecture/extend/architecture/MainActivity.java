@@ -1,6 +1,7 @@
 package com.architecture.extend.architecture;
 
 import android.Manifest;
+import android.databinding.ViewDataBinding;
 import android.view.View;
 import android.widget.Toast;
 
@@ -21,7 +22,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
     }
 
     @Override
-    protected void initView() {
+    protected void initView(ViewDataBinding binding) {
         findViewById(R.id.act_btn_web).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -34,38 +35,39 @@ public class MainActivity extends BaseActivity<MainViewModel> {
             public void onClick(View v) {
                 //                IPic service = (IPic) Router.getInstance().service(IPic.class);
                 //                service.playPic(MainActivity.this);
-                getViewModel().getUserString().subscribe(MainActivity.this, new LiveCallBack<String>() {
+                getViewModel().getUserString()
+                        .subscribe(MainActivity.this, new LiveCallBack<String>() {
 
-                    @Override
-                    public void onStart() {
-                        super.onStart();
-                        LogUtil.d("ui onStart =>");
-                    }
+                            @Override
+                            public void onStart() {
+                                super.onStart();
+                                LogUtil.d("ui onStart =>");
+                            }
 
-                    @Override
-                    public void onProgressUpdate(int progress) {
-                        super.onProgressUpdate(progress);
-                        LogUtil.d("ui onProgressUpdate =>" + progress);
-                    }
+                            @Override
+                            public void onProgressUpdate(int progress) {
+                                super.onProgressUpdate(progress);
+                                LogUtil.d("ui onProgressUpdate =>" + progress);
+                            }
 
-                    @Override
-                    public void onCacheReturn(String s) {
-                        super.onCacheReturn(s);
-                        LogUtil.d("ui onCacheReturn =>" + s);
-                    }
+                            @Override
+                            public void onCacheReturn(String s) {
+                                super.onCacheReturn(s);
+                                LogUtil.d("ui onCacheReturn =>" + s);
+                            }
 
-                    @Override
-                    public void onError(Throwable t) {
-                        super.onError(t);
-                        LogUtil.d("ui onError => " + t);
-                    }
+                            @Override
+                            public void onError(Throwable t) {
+                                super.onError(t);
+                                LogUtil.d("ui onError => " + t);
+                            }
 
-                    @Override
-                    public void onComplete(String s) {
-                        LogUtil.d("ui onComplete =>" + s);
-                        Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
-                    }
-                });
+                            @Override
+                            public void onComplete(String s) {
+                                LogUtil.d("ui onComplete =>" + s);
+                                Toast.makeText(MainActivity.this, s, Toast.LENGTH_LONG).show();
+                            }
+                        });
                 usePermission(Manifest.permission.READ_CONTACTS, new PermissionCallBack() {
                     @Override
                     public void onGranted(String permission) {
@@ -92,8 +94,8 @@ public class MainActivity extends BaseActivity<MainViewModel> {
 
     @Override
     public ConfigureInfo getConfigureInfo() {
-        return new ConfigureInfo.Builder().asyncInflate(true).loadingState(true).pullToRefresh
-                (false).toolbar(true).build();
+        return new ConfigureInfo.Builder().asyncInflate(true).loadingState(true)
+                .pullToRefresh(false).toolbar(true).build();
     }
 
     @Override
