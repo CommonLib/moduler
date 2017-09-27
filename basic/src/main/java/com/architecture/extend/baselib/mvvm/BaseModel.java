@@ -15,7 +15,6 @@ import java.util.ArrayList;
 
 public abstract class BaseModel {
     private ArrayList<LiveData> mLiveDatas;
-    private LiveData<View> mInflateLiveData;
 
     public BaseModel() {
         onCreate();
@@ -23,16 +22,13 @@ public abstract class BaseModel {
 
     public LiveData<View> asyncInflate(final LayoutInflater layoutInflater,
                                        final ViewGroup viewGroup, @LayoutRes final int layoutId) {
-        if(mInflateLiveData == null){
-            mInflateLiveData = new LiveData<>(new AsyncProducer<View>() {
-                @Override
-                public void produce(LiveData<View> liveData) {
-                    View inflate = layoutInflater.inflate(layoutId, viewGroup, false);
-                    liveData.postValue(inflate);
-                }
-            });
-        }
-        return mInflateLiveData;
+        return new LiveData<>(new AsyncProducer<View>() {
+            @Override
+            public void produce(LiveData<View> liveData) {
+                View inflate = layoutInflater.inflate(layoutId, viewGroup, false);
+                liveData.postValue(inflate);
+            }
+        });
     }
 
     public LiveData<Void> onPullToRefresh() {
@@ -47,15 +43,15 @@ public abstract class BaseModel {
         disposeLiveData();
     }
 
-    public void putLiveData(LiveData data){
-        if(mLiveDatas == null){
+    public void putLiveData(LiveData data) {
+        if (mLiveDatas == null) {
             mLiveDatas = new ArrayList<>();
         }
         mLiveDatas.add(data);
     }
 
-    private void disposeLiveData(){
-        if(mLiveDatas != null){
+    private void disposeLiveData() {
+        if (mLiveDatas != null) {
             LogUtil.d("destroyed all live data, sum = " + mLiveDatas.size());
             for (LiveData liveData : mLiveDatas) {
                 liveData.dispose();

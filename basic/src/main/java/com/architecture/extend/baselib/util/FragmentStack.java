@@ -12,13 +12,13 @@ import java.util.LinkedList;
 /**
  *
  */
-public final class FragmentStackUtil {
+public final class FragmentStack {
     private LinkedList<BaseFragment> mStack = new LinkedList<>();
     private FragmentManager mFragmentManager;
     private int mContainerId;
     private TopFragmentChangeListener mTopFragmentChangeListener;
 
-    private FragmentStackUtil(FragmentManager fragmentManager, int containerId) {
+    private FragmentStack(FragmentManager fragmentManager, int containerId) {
         mFragmentManager = fragmentManager;
         this.mContainerId = containerId;
     }
@@ -26,8 +26,8 @@ public final class FragmentStackUtil {
     /**
      * Create an instance for a specific container.
      */
-    public static FragmentStackUtil create(FragmentManager fragmentManager, int containerId) {
-        return new FragmentStackUtil(fragmentManager, containerId);
+    public static FragmentStack create(FragmentManager fragmentManager, int containerId) {
+        return new FragmentStack(fragmentManager, containerId);
     }
 
     public int size() {

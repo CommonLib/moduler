@@ -6,7 +6,7 @@ package com.architecture.extend.baselib.mvvm;
 
 public class ConfigureInfo {
     private boolean asyncInflate;
-    private boolean toolbar;
+    private Boolean toolbar;
     private boolean pullToRefresh;
     private boolean loadingState;
 
@@ -21,7 +21,7 @@ public class ConfigureInfo {
         return asyncInflate;
     }
 
-    public boolean isEnableToolbar() {
+    public Boolean isEnableToolbar() {
         return toolbar;
     }
 
@@ -39,7 +39,7 @@ public class ConfigureInfo {
 
     public static class Builder {
         private boolean asyncInflate;
-        private boolean toolbar;
+        private Boolean toolbar;
         private boolean pullToRefresh;
         private boolean loadingState;
 

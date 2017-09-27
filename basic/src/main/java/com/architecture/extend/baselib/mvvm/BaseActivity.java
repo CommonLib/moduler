@@ -2,6 +2,7 @@ package com.architecture.extend.baselib.mvvm;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -10,6 +11,7 @@ import android.support.annotation.RequiresPermission;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +22,7 @@ import com.architecture.extend.baselib.base.ShareDataViewModel;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.PermissionAccessUtil;
 import com.architecture.extend.baselib.util.ViewUtil;
-import com.architecture.extend.baselib.widget.LoadStateFrameLayout;
+import com.architecture.extend.baselib.widget.LoadStateView;
 import com.github.kayvannj.permission_utils.PermissionUtil;
 
 import java.util.ArrayList;
@@ -43,7 +45,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     private ArrayList<PermissionUtil.PermissionRequestObject> mPermissionRequests;
     private ConfigureInfo mConfigureInfo;
     private PtrFrameLayout mPullToRefreshView;
-    private LoadStateFrameLayout mLoadStateFrameLayout;
+    private LoadStateView mLoadStateView;
     private Toolbar mToolbar;
 
     @Override
@@ -53,8 +55,6 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         mViewModel = ViewModelProviders.getInstance().get(viewModelClazz);
         mViewModel.onViewCreate();
         setForegroundSwitchCallBack(mViewModel);
-        mConfigureInfo = getConfigureInfo();
-        inflateLayout(mConfigureInfo.isAsyncInflate());
         Intent intent = getIntent();
         if (intent != null) {
             handleIntent(intent);
@@ -62,6 +62,8 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         if (savedInstanceState != null) {
             onRestoreInitData(savedInstanceState);
         }
+        mConfigureInfo = getConfigureInfo();
+        inflateLayout(mConfigureInfo.isAsyncInflate());
     }
 
     @Override
@@ -194,23 +196,21 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     @Override
     public void setContentView(View view) {
         View contentView = view;
+
+        if (mConfigureInfo.isLoadingState()) {
+            mLoadStateView = ViewUtil.addLoadingStateView(contentView);
+            initLoadingStateView(mLoadStateView);
+            contentView = mLoadStateView;
+        }
+
         if (mConfigureInfo.isPullToRefresh()) {
-            mPullToRefreshView = ViewUtil.addPullToRefreshView(view);
+            mPullToRefreshView = ViewUtil.addPullToRefreshView(contentView);
             initPullRefreshView(mPullToRefreshView);
             contentView = mPullToRefreshView;
         }
 
-        if (mConfigureInfo.isLoadingState()) {
-            mLoadStateFrameLayout = ViewUtil.addLoadingStateView(contentView);
-            contentView = mLoadStateFrameLayout;
-        }
-
-        if (mConfigureInfo.isEnableToolbar()) {
-            mLoadStateFrameLayout = ViewUtil.addLoadingStateView(contentView);
-            contentView = mLoadStateFrameLayout;
-        }
-
-        if (mConfigureInfo.isEnableToolbar()) {
+        Boolean enableToolbar = mConfigureInfo.isEnableToolbar();
+        if (enableToolbar != null && enableToolbar) {
             contentView = ViewUtil.addToolBarView(this, R.layout.view_tool_bar, contentView);
             mToolbar = (Toolbar) contentView.findViewById(R.id.common_tl_toolbar);
             initToolBar(mToolbar);
@@ -240,7 +240,9 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     protected abstract void initView();
 
-    protected abstract @LayoutRes int getLayoutId();
+    protected abstract
+    @LayoutRes
+    int getLayoutId();
 
     protected void handleIntent(@NonNull Intent intent) {
     }
@@ -253,7 +255,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         return ConfigureInfo.defaultConfigure();
     }
 
-    private void initPullRefreshView(PtrFrameLayout refreshView) {
+    protected void initPullRefreshView(PtrFrameLayout refreshView) {
         final MaterialHeader header = new MaterialHeader(this);
         int[] colors = getResources().getIntArray(R.array.google_colors);
         header.setColorSchemeColors(colors);
@@ -282,12 +284,17 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         });
     }
 
+    protected void initLoadingStateView(LoadStateView loadStateView) {
+        DataBindingUtil.inflate(LayoutInflater.from(this), R.layout.view_loading_state, loadStateView,
+                        true);
+    }
+
     public PtrFrameLayout getPullToRefreshView() {
         return mPullToRefreshView;
     }
 
-    public LoadStateFrameLayout getLoadStateFrameLayout() {
-        return mLoadStateFrameLayout;
+    public LoadStateView getLoadStateView() {
+        return mLoadStateView;
     }
 
     public Toolbar getToolbar() {

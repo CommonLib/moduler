@@ -9,6 +9,7 @@ import com.architecture.extend.baselib.mvvm.BaseActivity;
 import com.architecture.extend.baselib.mvvm.ConfigureInfo;
 import com.architecture.extend.baselib.mvvm.UiCallBack;
 import com.architecture.extend.baselib.router.Router;
+import com.architecture.extend.baselib.util.FragmentStack;
 import com.architecture.extend.baselib.util.LogUtil;
 import com.module.contract.web.IWeb;
 
@@ -77,6 +78,10 @@ public class MainActivity extends BaseActivity<MainViewModel> {
                 });
             }
         });
+
+        FragmentStack fragmentStack = FragmentStack
+                .create(getSupportFragmentManager(), R.id.act_fl_container);
+        fragmentStack.push(new MainFragment(), null);
     }
 
     @Override
@@ -87,6 +92,6 @@ public class MainActivity extends BaseActivity<MainViewModel> {
     @Override
     public ConfigureInfo getConfigureInfo() {
         return new ConfigureInfo.Builder().asyncInflate(true).loadingState(true).pullToRefresh
-                (true).toolbar(true).build();
+                (false).build();
     }
 }

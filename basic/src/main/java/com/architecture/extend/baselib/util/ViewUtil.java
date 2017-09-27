@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -23,7 +25,7 @@ import android.widget.Toast;
 
 import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.R;
-import com.architecture.extend.baselib.widget.LoadStateFrameLayout;
+import com.architecture.extend.baselib.widget.LoadStateView;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 
@@ -164,8 +166,8 @@ public class ViewUtil {
      * @param targetView 用户要添加加载状态的view
      * @return 添加加载状态
      */
-    public static LoadStateFrameLayout addLoadingStateView(View targetView) {
-        LoadStateFrameLayout loadStateView = new LoadStateFrameLayout(targetView.getContext());
+    public static LoadStateView addLoadingStateView(View targetView) {
+        LoadStateView loadStateView = new LoadStateView(targetView.getContext());
         ViewGroup parent = (ViewGroup) targetView.getParent();
         ViewGroup.LayoutParams targetParams = targetView.getLayoutParams();
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
@@ -179,11 +181,11 @@ public class ViewUtil {
         if (parent != null) {
             int index = parent.indexOfChild(targetView);
             parent.removeView(targetView);
-            loadStateView.addSuccessView(targetView);
+            loadStateView.setSuccessView(targetView);
             parent.addView(loadStateView, index, targetParams);
         } else {
             loadStateView.setLayoutParams(targetParams);
-            loadStateView.addSuccessView(targetView);
+            loadStateView.setSuccessView(targetView);
         }
         return loadStateView;
     }
@@ -361,5 +363,19 @@ public class ViewUtil {
 
     public static void startActivity(Context context, Class<?> cls) {
         context.startActivity(newIntent(context, cls));
+    }
+
+    public static void showSupportActionBar(AppCompatActivity activity) {
+        ActionBar supportActionBar = activity.getSupportActionBar();
+        if (supportActionBar != null && !supportActionBar.isShowing()) {
+            supportActionBar.show();
+        }
+    }
+
+    public static void hideSupportActionBar(AppCompatActivity activity) {
+        ActionBar supportActionBar = activity.getSupportActionBar();
+        if (supportActionBar != null && supportActionBar.isShowing()) {
+            supportActionBar.hide();
+        }
     }
 }
