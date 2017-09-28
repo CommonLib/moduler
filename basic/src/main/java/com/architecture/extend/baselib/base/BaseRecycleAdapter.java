@@ -1,7 +1,7 @@
 package com.architecture.extend.baselib.base;
 
 import android.databinding.ViewDataBinding;
-import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.ViewGroup;
@@ -11,7 +11,6 @@ import java.util.List;
 
 /**
  * @author:dongpo: 6/21/2016
- *
  */
 public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
     private SparseArray<List<? extends Object>> mDataLayouts;
@@ -52,9 +51,9 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<ViewHol
         notifyDataSetChanged();
     }
 
-    public void addData(List data, int layoutId) {
-        List<? extends Object> datas = mDataLayouts.get(layoutId);
-        datas.addAll(data);
+    public void addData(List newData, int layoutId) {
+        List<? extends Object> originData = mDataLayouts.get(layoutId);
+        originData.addAll(newData);
         mUserItemCount = reCountUserItem();
         notifyDataSetChanged();
     }
@@ -80,28 +79,24 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<ViewHol
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position) {
         int viewType = getItemViewType(position);
-        if (mHeaders != null) {
-            if (mHeaders.contains(viewType)) {
-                onBindHeaderData(holder, position, viewType);
-                return;
-            }
+        if (isHeaderType(position)) {
+            onBindHeaderData(holder, position, viewType);
+            return;
         }
 
-        if (mFooters != null) {
-            if (mFooters.contains(viewType)) {
-                onBindBottomData(holder, position, viewType);
-                return;
-            }
+        if (isFooterType(position)) {
+            onBindBottomData(holder, position, viewType);
+            return;
         }
 
-        final int userPosition = convertUserPosition(position);
+        int userPosition = convertUserPosition(position);
         holder.updatePosition(userPosition);
-        onBindItemData(holder, userPosition, viewType);
+        onBindViewData(holder, userPosition, viewType);
     }
 
-    protected abstract void onBindItemData(ViewHolder holder, int userPosition, int viewType);
+    protected abstract void onBindViewData(ViewHolder holder, int userPosition, int viewType);
 
     protected void onBindHeaderData(ViewHolder holder, int position, int viewType) {
     }
@@ -112,8 +107,7 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<ViewHol
 
     @Override
     public int getItemCount() {
-        int totalCount = mHeaderCount + mFooterCount + mUserItemCount;
-        return totalCount;
+        return mHeaderCount + mFooterCount + mUserItemCount;
     }
 
     private List<? extends Object> getDataFromViewType(int viewType) {
@@ -137,7 +131,7 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<ViewHol
         }
     }
 
-    public int convertUserPosition(int position) {
+    private int convertUserPosition(int position) {
         return position - mHeaderCount;
     }
 
@@ -161,7 +155,6 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<ViewHol
     }
 
     public boolean isFooterType(int position) {
-
         int beforeFooterCount = mHeaderCount + mUserItemCount;
         int totalItemCount = getItemCount();
         if (position >= beforeFooterCount && position < totalItemCount) {
@@ -193,7 +186,6 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<ViewHol
 
     private final int reCountUserItem() {
         int userItemCount = 0;
-
         for (int i = 0; i < mDataLayouts.size(); i++) {
             int layoutId = mDataLayouts.keyAt(i);
             List<?> data = mDataLayouts.get(layoutId);
@@ -206,42 +198,17 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<ViewHol
         return mUserItemCount;
     }
 
-    public void addHeader(@LayoutRes int resId) {
-        if (resId > 0) {
-            if (mHeaders == null) {
-                mHeaders = new ArrayList<>();
-            }
-            if (headerFooters == null) {
-                headerFooters = new SparseArray<>();
-            }
-            mHeaders.add(resId);
-            mHeaderCount = getHeaderCount();
+    public void addHeader(int viewType, @NonNull ViewDataBinding header) {
+        if (headerFooters == null) {
+            headerFooters = new SparseArray<>();
         }
-    }
 
-    public void addHeader(int viewType, ViewDataBinding header) {
-        if (header != null && header.getRoot().getParent() == null) {
-            if (headerFooters == null) {
-                headerFooters = new SparseArray<>();
-            }
-
-            int layoutId = viewType;
-            if (mHeaders == null) {
-                mHeaders = new ArrayList<>();
-            }
-            mHeaders.add(layoutId);
-            headerFooters.put(layoutId, header);
-            mHeaderCount = getHeaderCount();
-        } else {
-            throw new IllegalArgumentException("header view should not have a parent");
+        if (mHeaders == null) {
+            mHeaders = new ArrayList<>();
         }
-    }
-
-    public ViewDataBinding getHeader() {
-        if (mHeaders != null && mHeaders.size() > 0) {
-            return headerFooters.get(mHeaders.get(mHeaders.size() - 1));
-        }
-        return null;
+        mHeaders.add(viewType);
+        headerFooters.put(viewType, header);
+        mHeaderCount = getHeaderCount();
     }
 
     public ViewDataBinding getHeader(int index) {
@@ -249,29 +216,13 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<ViewHol
             int size = mHeaders.size();
             if (index < size) {
                 return headerFooters.get(mHeaders.get(index));
-            } else {
-                throw new IllegalArgumentException("position should not over size of collection");
             }
-
         }
         return null;
     }
 
-    public void addFooter(@LayoutRes int resId) {
-        if (resId > 0) {
-            if (mFooters == null) {
-                mFooters = new ArrayList<>();
-            }
-            if (headerFooters == null) {
-                headerFooters = new SparseArray<>();
-            }
-            mFooters.add(resId);
-            mFooterCount = getFooterCount();
-        }
-    }
-
-    public void addFooter(int type, ViewDataBinding footer) {
-        if (footer != null && footer.getRoot().getParent() == null) {
+    public void addFooter(int viewType, ViewDataBinding footer) {
+        if (footer != null) {
             if (headerFooters == null) {
                 headerFooters = new SparseArray<>();
             }
@@ -279,19 +230,10 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<ViewHol
             if (mFooters == null) {
                 mFooters = new ArrayList<>();
             }
-            mFooters.add(type);
-            headerFooters.put(type, footer);
+            mFooters.add(viewType);
+            headerFooters.put(viewType, footer);
             mFooterCount = getFooterCount();
-        } else {
-            throw new IllegalArgumentException("footer view should not have a parent");
         }
-    }
-
-    public ViewDataBinding getFooter() {
-        if (mFooters != null && mFooters.size() > 0) {
-            return headerFooters.get(mFooters.get(mFooters.size() - 1));
-        }
-        return null;
     }
 
     public ViewDataBinding getFooter(int index) {
@@ -299,14 +241,12 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<ViewHol
             int size = mFooters.size();
             if (index < size) {
                 return headerFooters.get(mFooters.get(index));
-            } else {
-                throw new IllegalArgumentException("position should not over size of collection");
             }
         }
         return null;
     }
 
-    public boolean containsKey(int key, SparseArray sa) {
+    private boolean containsKey(int key, SparseArray sa) {
         int size = sa.size();
         for (int i = 0; i < size; i++) {
             int i1 = sa.keyAt(i);

@@ -21,6 +21,7 @@ import com.architecture.extend.baselib.base.ShareDataViewModel;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.PermissionAccessUtil;
 import com.architecture.extend.baselib.util.ViewUtil;
+import com.architecture.extend.baselib.widget.ChildScrollFrameLayout;
 import com.architecture.extend.baselib.widget.LoadStateView;
 import com.github.kayvannj.permission_utils.PermissionUtil;
 
@@ -44,6 +45,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     private ConfigureInfo mConfigureInfo;
     private PtrFrameLayout mPullToRefreshView;
     private LoadStateView mLoadStateView;
+    private LayoutInflater mInflater;
 
     @Override
     public void onAttach(Activity activity) {
@@ -71,11 +73,12 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
+        mInflater = inflater;
         mConfigureInfo = getConfigureInfo();
         View content = null;
         int layoutId = getLayoutId();
         if (mConfigureInfo.isAsyncInflate() && layoutId > 0) {
-            FrameLayout frameLayout = new FrameLayout(mActivity);
+            FrameLayout frameLayout = new ChildScrollFrameLayout(mActivity);
             frameLayout.setLayoutParams(
                     new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                             ViewGroup.LayoutParams.MATCH_PARENT));
@@ -288,6 +291,12 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
                     }
                 });
             }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                content = content.findViewById(R.id.view_scroll_content);
+                return super.checkCanDoRefresh(frame, content, header);
+            }
         });
     }
 
@@ -303,5 +312,13 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
 
     protected LoadStateView getLoadStateView() {
         return mLoadStateView;
+    }
+
+    protected BaseActivity getBindActivity(){
+        return mActivity;
+    }
+
+    protected LayoutInflater getLayoutInflater(){
+        return mInflater;
     }
 }

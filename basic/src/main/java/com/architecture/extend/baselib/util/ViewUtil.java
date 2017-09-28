@@ -152,17 +152,16 @@ public class ViewUtil {
             int index = parent.indexOfChild(targetView);
             parent.removeView(targetView);
             ptr = (PtrFrameLayout) LayoutInflater.from(targetView.getContext())
-                    .inflate(R.layout.fragment_base, parent, false);
+                    .inflate(R.layout.view_pull_refresh, parent, false);
             FrameLayout content = (FrameLayout) ptr.getContentView();
             content.addView(targetView);
             parent.addView(ptr, index, targetParams);
         } else {
             ptr = (PtrFrameLayout) LayoutInflater.from(targetView.getContext())
-                    .inflate(R.layout.fragment_base, null, false);
+                    .inflate(R.layout.view_pull_refresh, null, false);
             FrameLayout content = (FrameLayout) ptr.getContentView();
             ptr.setLayoutParams(targetParams);
             content.addView(targetView);
-
         }
         return ptr;
     }
@@ -395,21 +394,11 @@ public class ViewUtil {
     public static void setUpRecycleViewLoadMore(RecyclerView recycleView,
                                                 final BaseRecycleAdapter adapter,
                                                 final LinearLayoutManager layoutManager,
-                                                ViewDataBinding loadMoreBinding,
+                                                ViewDataBinding loadMoreBinding,int type,
                                                 final LoadMoreCallBack callBack) {
-        if (layoutManager.getOrientation() == LinearLayoutManager.VERTICAL) {
-            //current wo only consider vertical orientation
-            return;
-        }
 
         final View loadMoreView = loadMoreBinding.getRoot();
-        int type = loadMoreView.getId();
-        if (type == View.NO_ID) {
-            return;
-        }
-
         adapter.addFooter(type, loadMoreBinding);
-        loadMoreView.setVisibility(View.GONE);
         if (layoutManager instanceof GridLayoutManager) {
             final GridLayoutManager manager = (GridLayoutManager) layoutManager;
             manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
@@ -434,10 +423,7 @@ public class ViewUtil {
                             && bottomPosition != lastBottomPosition) {
                         callBack.onLoadMore();
                     }
-                    //记录用户上次滑动的位置
-                    if (lastBottomPosition != bottomPosition) {
-                        lastBottomPosition = bottomPosition;
-                    }
+                    lastBottomPosition = bottomPosition;
                 }
             }
         });
