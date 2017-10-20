@@ -13,8 +13,8 @@ import com.reference.apublic.web.gen.SpeedDao;
  * Created by byang059 on 9/15/17.
  */
 
-public class WebPluginService extends PluginService implements IWeb {
-    private static WebPluginService instance;
+public class WebPluginServiceImpl extends PluginService implements IWeb {
+    private static WebPluginServiceImpl instance;
 
     @Override
     protected void onCreate() {

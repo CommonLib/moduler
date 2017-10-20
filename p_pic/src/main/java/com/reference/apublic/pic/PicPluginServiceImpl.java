@@ -11,7 +11,7 @@ import com.module.contract.pic.IPic;
  * Created by byang059 on 9/15/17.
  */
 
-public class PicPluginService extends PluginService implements IPic {
+public class PicPluginServiceImpl extends PluginService implements IPic {
 
     @Override
     public boolean playPic(Context context) {
