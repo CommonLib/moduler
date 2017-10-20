@@ -162,7 +162,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         if (layoutId <= 0) {
             return;
         }
-        ViewGroup parent = (ViewGroup) findViewById(android.R.id.content);
+        ViewGroup parent = findViewById(android.R.id.content);
         if (isAsyncInflate) {
             LiveData<View> inflate = getViewModel()
                     .asyncInflate(layoutId, getLayoutInflater(), parent);
@@ -210,7 +210,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         Boolean enableToolbar = mConfigureInfo.isEnableToolbar();
         if (enableToolbar != null && enableToolbar) {
             contentView = ViewUtil.addToolBarView(this, R.layout.view_tool_bar, contentView);
-            mToolbar = (Toolbar) contentView.findViewById(R.id.common_tl_toolbar);
+            mToolbar = contentView.findViewById(R.id.common_tl_toolbar);
             initToolBar(mToolbar);
         }
         return contentView;
