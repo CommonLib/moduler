@@ -177,7 +177,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         }
     }
 
-    public void init(ViewDataBinding binding) {
+    private void init(ViewDataBinding binding) {
         setContentView(packageContentView(binding.getRoot()));
         initView(binding);
         initData();

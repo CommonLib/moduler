@@ -32,7 +32,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.header.MaterialHeader;
 
 /**
- * Created by appledev116 on 3/10/16.
+ * Created by burtYang on 10/09/17.
  */
 public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment implements ViewAble {
 
@@ -45,7 +45,6 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     private ConfigureInfo mConfigureInfo;
     private PtrFrameLayout mPullToRefreshView;
     private LoadStateView mLoadStateView;
-    private LayoutInflater mInflater;
 
     @Override
     public void onAttach(Activity activity) {
@@ -73,7 +72,6 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mInflater = inflater;
         mConfigureInfo = getConfigureInfo();
         View content = null;
         int layoutId = getLayoutId();
@@ -316,9 +314,5 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
 
     protected BaseActivity getBindActivity(){
         return mActivity;
-    }
-
-    protected LayoutInflater getLayoutInflater(){
-        return mInflater;
     }
 }
