@@ -15,8 +15,9 @@ public class MainModel extends BaseModel {
     private LiveData<String> mData;
 
     public LiveData<String> readDatabase(final String a, final String b) {
-        if(mData == null){
-            mData = new LiveData<>(new AsyncProducer<String>() {
+        if (mData == null) {
+            mData = new LiveData<>();
+            mData.setProducer(new AsyncProducer<String>() {
                 @Override
                 public void produce(LiveData<String> liveData) {
                     SystemClock.sleep(1000);
@@ -38,12 +39,15 @@ public class MainModel extends BaseModel {
 
     @Override
     public LiveData<Void> onPullToRefresh() {
-        return new LiveData<Void>(new AsyncProducer<Void>() {
+        LiveData<Void> data = new LiveData<>();
+        data.setProducer(new AsyncProducer<Void>() {
             @Override
             public void produce(LiveData<Void> liveData) {
                 SystemClock.sleep(3000);
                 liveData.postValue(null);
             }
         });
+        return data;
+
     }
 }

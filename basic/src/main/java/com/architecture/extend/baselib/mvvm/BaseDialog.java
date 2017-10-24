@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.architecture.extend.baselib.base.ShareDataViewModel;
+import com.architecture.extend.baselib.base.SharedViewModel;
 
 
 /**
@@ -82,8 +82,8 @@ public class BaseDialog extends DialogFragment {
     }
 
     protected Object getSharedData(String key) {
-        ShareDataViewModel shareDataViewModel = (ShareDataViewModel) ViewModelProviders
-                .getInstance().get(ShareDataViewModel.class);
-        return shareDataViewModel.take(key);
+        SharedViewModel sharedViewModel = (SharedViewModel) ViewModelProviders
+                .getInstance().get(SharedViewModel.class);
+        return sharedViewModel.get(key);
     }
 }

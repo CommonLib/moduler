@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 
 import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.base.PermissionCallBack;
-import com.architecture.extend.baselib.base.ShareDataViewModel;
+import com.architecture.extend.baselib.base.SharedViewModel;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.PermissionAccessUtil;
 import com.architecture.extend.baselib.util.ViewUtil;
@@ -203,9 +203,9 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     }
 
     protected Object getSharedData(String key) {
-        ShareDataViewModel shareDataViewModel = ViewModelProviders.getInstance()
-                .get(ShareDataViewModel.class);
-        return shareDataViewModel.take(key);
+        SharedViewModel sharedViewModel = ViewModelProviders.getInstance()
+                .get(SharedViewModel.class);
+        return sharedViewModel.get(key);
     }
 
     protected abstract void initData();

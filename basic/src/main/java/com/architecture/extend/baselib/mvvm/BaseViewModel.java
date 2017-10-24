@@ -9,9 +9,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.architecture.extend.baselib.base.ShareDataViewModel;
+import com.architecture.extend.baselib.base.SharedViewModel;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.LogUtil;
+
+import java.util.ArrayList;
 
 /**
  * Created by byang059 on 5/24/17.
@@ -20,6 +22,7 @@ import com.architecture.extend.baselib.util.LogUtil;
 public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
         implements ViewForegroundSwitchListener, LifecycleObserver {
     private M mModel;
+    private ArrayList<LiveData> mLives;
 
     public BaseViewModel() {
         super();
@@ -33,32 +36,26 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     public void onViewCreate() {
-        LogUtil.d(this.getClass().getName() + " onViewCreate");
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void onViewStart() {
-        LogUtil.d(this.getClass().getName() + " onViewStart");
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     public void onViewResume() {
-        LogUtil.d(this.getClass().getName() + " onViewResume");
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     public void onViewPause() {
-        LogUtil.d(this.getClass().getName() + " onViewPause");
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void onViewStop() {
-        LogUtil.d(this.getClass().getName() + " onViewStop");
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void onViewDestroy() {
-        LogUtil.d(this.getClass().getName() + " onViewDestroy");
         onDestroy();
     }
 
@@ -67,15 +64,15 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
     }
 
     protected void shareData(String key, Object data) {
-        ShareDataViewModel shareDataViewModel = ViewModelProviders.getInstance()
-                .get(ShareDataViewModel.class);
-        shareDataViewModel.put(key, data);
+        SharedViewModel sharedViewModel = ViewModelProviders.getInstance()
+                .get(SharedViewModel.class);
+        sharedViewModel.put(key, data);
     }
 
     protected Object getSharedData(String key) {
-        ShareDataViewModel shareDataViewModel = ViewModelProviders.getInstance()
-                .get(ShareDataViewModel.class);
-        return shareDataViewModel.take(key);
+        SharedViewModel sharedViewModel = ViewModelProviders.getInstance()
+                .get(SharedViewModel.class);
+        return sharedViewModel.get(key);
     }
 
     protected void onCreate() {
@@ -83,6 +80,7 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
 
     protected void onDestroy() {
         ViewModelProviders.getInstance().remove(this.getClass());
+        disposeLiveData();
         getModel().onDestroy();
     }
 
@@ -100,6 +98,22 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
     @Override
     public void onViewBackground() {
 
+    }
+
+    public void putLiveData(LiveData data) {
+        if (mLives == null) {
+            mLives = new ArrayList<>();
+        }
+        mLives.add(data);
+    }
+
+    private void disposeLiveData() {
+        if (mLives != null) {
+            LogUtil.d("destroyed all live data, sum = " + mLives.size());
+            for (LiveData liveData : mLives) {
+                liveData.dispose();
+            }
+        }
     }
 
     public LiveData<View> asyncInflate(@LayoutRes int layoutId, LayoutInflater layoutInflater,

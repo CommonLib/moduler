@@ -26,7 +26,7 @@ import io.reactivex.schedulers.Schedulers;
 public class LiveData<T> {
     public static boolean hasBlock = false;
 
-    private final Flowable<LiveResponse<T>> mModelObservable;
+    private Flowable<LiveResponse<T>> mModelObservable;
     private ProduceAble<T> mProducer;
     private WeakReference<ViewAble> mView;
     private LiveCallBack<T> mViewCallBack;
@@ -40,20 +40,20 @@ public class LiveData<T> {
     private static final int RESULT_VIEW_BACKGROUND = 1;
     private static final int RESULT_SUCCESS = 2;
 
-    public LiveData(Producer<T> producer) {
-        this(producer, true);
+    public void setProducer(Producer<T> producer){
+        setProducer(producer, true);
     }
 
-    public LiveData(Producer<T> producer, boolean backPressure) {
+    public void setProducer(AsyncProducer<T> producer){
+        setProducer(producer, true);
+    }
+
+    public void setProducer(Producer<T> producer, boolean backPressure){
         mBackPressure = backPressure;
         mModelObservable = initFlowAble(producer, backPressure);
     }
 
-    public LiveData(AsyncProducer<T> producer) {
-        this(producer, true);
-    }
-
-    public LiveData(AsyncProducer<T> producer, boolean backPressure) {
+    public void setProducer(AsyncProducer<T> producer, boolean backPressure){
         mBackPressure = backPressure;
         Flowable<LiveResponse<T>> flowAble = initFlowAble(producer, backPressure);
         mModelObservable = flowAble.subscribeOn(Schedulers.io());
@@ -86,9 +86,10 @@ public class LiveData<T> {
 
         if(mViewModelCallBack != null){
             mViewModelCallBack.onStart();
+            //TODO impl mulit subscribe and return last data when new subscribe
         }
         callBack.onStart();
-        viewAble.getViewModel().getModel().putLiveData(this);
+        viewAble.getViewModel().putLiveData(this);
         mSubscribe = mModelObservable.observeOn(Schedulers.from(mViewModelThreadService))
                 .map(new Function<LiveResponse<T>, LiveResponse<T>>() {
                     @Override

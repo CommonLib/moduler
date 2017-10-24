@@ -9,7 +9,7 @@ import java.util.HashMap;
  */
 
 public class ViewModelProviders {
-    private static ViewModelProviders sInstance = new ViewModelProviders();
+    private static ViewModelProviders mInstance = new ViewModelProviders();
     private HashMap<String, BaseViewModel> mViewModels = null;
 
     private ViewModelProviders() {
@@ -17,7 +17,7 @@ public class ViewModelProviders {
     }
 
     public static ViewModelProviders getInstance() {
-        return sInstance;
+        return mInstance;
     }
 
     public <T extends BaseViewModel> T get(Class<T> clazz) {
