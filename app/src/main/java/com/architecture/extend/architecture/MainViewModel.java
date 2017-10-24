@@ -14,8 +14,12 @@ public class MainViewModel extends BaseViewModel<MainModel> {
     private LiveData<String> mStringLiveData;
 
     public LiveData<String> getUserString() {
-        LiveData<String> data = getModel().readDatabase("a", "b");
-        data.intercept(new LiveViewModelCallBack<String>() {
+        if (mStringLiveData != null) {
+            return mStringLiveData;
+        }
+        mStringLiveData = new LiveData<>();
+        getModel().readDatabase("a", "b", mStringLiveData);
+        mStringLiveData.intercept(new LiveViewModelCallBack<String>() {
             @Override
             public String onComplete(String value) {
                 LogUtil.d("viewModel onComplete " + value);
@@ -46,12 +50,12 @@ public class MainViewModel extends BaseViewModel<MainModel> {
                 return new Exception("viewmodel", error);
             }
         });
-        return data;
+        shareData("share", mStringLiveData);
+        return mStringLiveData;
     }
 
     @Override
     public void onViewCreate() {
         super.onViewCreate();
-        shareData("abc", "sharted abc");
     }
 }

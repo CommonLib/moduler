@@ -82,6 +82,12 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        getLifecycle().removeObserver(mViewModel);
+    }
+
+    @Override
     public VM getViewModel() {
         return mViewModel;
     }

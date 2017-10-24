@@ -30,12 +30,14 @@ public abstract class BaseModel {
     public LiveData<View> asyncInflate(@LayoutRes final int layoutId,
                                        final LayoutInflater layoutInflater,
                                        final ViewGroup viewGroup) {
-        return new LiveData<>(new AsyncProducer<View>() {
+        LiveData<View> liveData = new LiveData<>();
+        liveData.setProducer(new AsyncProducer<View>() {
             @Override
             public void produce(LiveData<View> liveData) {
                 View view = layoutInflater.inflate(layoutId, viewGroup, false);
                 liveData.postValue(view);
             }
         });
+        return liveData;
     }
 }

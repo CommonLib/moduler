@@ -1,12 +1,10 @@
 package com.architecture.extend.baselib.mvvm;
 
-import android.os.Handler;
 import android.support.annotation.MainThread;
 
-import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.util.LogUtil;
 
-import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -26,71 +24,75 @@ import io.reactivex.schedulers.Schedulers;
 public class LiveData<T> {
     public static boolean hasBlock = false;
 
-    private Flowable<LiveResponse<T>> mModelObservable;
     private ProduceAble<T> mProducer;
-    private WeakReference<ViewAble> mView;
-    private LiveCallBack<T> mViewCallBack;
+    private ArrayList<LiveCallBack<T>> mViewCallBacks;
     private LiveViewModelCallBack<T> mViewModelCallBack;
-    private Handler mHandler = BaseApplication.getInstance().getHandler();
     private FlowableEmitter<LiveResponse<T>> mEmitter;
     private static ExecutorService mViewModelThreadService = Executors.newFixedThreadPool(1);
-    private boolean mBackPressure;
     private Disposable mSubscribe;
-    private static final int RESULT_VIEW_DESTROY = 0;
-    private static final int RESULT_VIEW_BACKGROUND = 1;
-    private static final int RESULT_SUCCESS = 2;
 
-    public void setProducer(Producer<T> producer){
-        setProducer(producer, true);
-    }
-
-    public void setProducer(AsyncProducer<T> producer){
-        setProducer(producer, true);
-    }
-
-    public void setProducer(Producer<T> producer, boolean backPressure){
-        mBackPressure = backPressure;
-        mModelObservable = initFlowAble(producer, backPressure);
-    }
-
-    public void setProducer(AsyncProducer<T> producer, boolean backPressure){
-        mBackPressure = backPressure;
-        Flowable<LiveResponse<T>> flowAble = initFlowAble(producer, backPressure);
-        mModelObservable = flowAble.subscribeOn(Schedulers.io());
-    }
-
-    private Flowable<LiveResponse<T>> initFlowAble(ProduceAble<T> producer, boolean backPressure) {
+    public void setProducer(Producer<T> producer) {
         mProducer = producer;
+    }
+
+    public void setProducer(AsyncProducer<T> producer) {
+        mProducer = producer;
+    }
+
+    private Flowable<LiveResponse<T>> initFlowAble(final ProduceAble<T> producer,
+                                                   BackpressureStrategy mode) {
         FlowableOnSubscribe<LiveResponse<T>> source = new FlowableOnSubscribe<LiveResponse<T>>() {
             @Override
             public void subscribe(FlowableEmitter<LiveResponse<T>> emitter) throws Exception {
                 mEmitter = emitter;
-                mProducer.produce(LiveData.this);
+                producer.produce(LiveData.this);
             }
         };
-        if (backPressure) {
-            return Flowable.create(source, BackpressureStrategy.BUFFER);
-        } else {
-            return Flowable.create(source, BackpressureStrategy.LATEST);
-        }
+        return Flowable.create(source, mode);
     }
 
     /**
-     * @param viewAble
+     * @param view
      * @param callBack
      */
     @MainThread
-    public void subscribe(ViewAble viewAble, LiveCallBack<T> callBack) {
-        mView = new WeakReference<>(viewAble);
-        mViewCallBack = callBack;
+    public void subscribe(ViewAble view, LiveCallBack<T> callBack) {
+        subscribe(view, callBack, BackpressureStrategy.LATEST);
+    }
 
-        if(mViewModelCallBack != null){
+    /**
+     * @param view
+     * @param callBack
+     */
+    @MainThread
+    public void subscribe(ViewAble view, LiveCallBack<T> callBack, BackpressureStrategy mode) {
+        if (mViewCallBacks == null) {
+            mViewCallBacks = new ArrayList<>();
+        }
+
+        Flowable<LiveResponse<T>> flowAble = Flowable.create(callBack, mode);
+        Disposable subscribe = flowAble.subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe
+                (callBack);
+        callBack.setViewable(view);
+        callBack.setDisposable(subscribe);
+        callBack.setLiveData(this);
+        mViewCallBacks.add(callBack);
+
+        if (isSubscribe()) {
+            return;
+        }
+
+        Flowable<LiveResponse<T>> modelObservable = initFlowAble(mProducer, mode);
+        if (mProducer instanceof AsyncProducer) {
+            modelObservable = modelObservable.subscribeOn(Schedulers.io());
+        }
+
+        if (mViewModelCallBack != null) {
             mViewModelCallBack.onStart();
-            //TODO impl mulit subscribe and return last data when new subscribe
         }
         callBack.onStart();
-        viewAble.getViewModel().putLiveData(this);
-        mSubscribe = mModelObservable.observeOn(Schedulers.from(mViewModelThreadService))
+        view.getViewModel().putLiveData(this);
+        mSubscribe = modelObservable.observeOn(Schedulers.from(mViewModelThreadService))
                 .map(new Function<LiveResponse<T>, LiveResponse<T>>() {
                     @Override
                     public LiveResponse<T> apply(LiveResponse<T> liveResponse) throws Exception {
@@ -101,61 +103,12 @@ public class LiveData<T> {
                     }
                 }).observeOn(Schedulers.io()).subscribe(new Consumer<LiveResponse<T>>() {
                     @Override
-                    public void accept(LiveResponse<T> liveResponse) throws Exception {
-                        while (shouldContinueNotifyView(liveResponse)) {
-                            synchronized (LiveData.class) {
-                                try {
-                                    hasBlock = true;
-                                    LiveData.class.wait();
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
+                    public void accept(LiveResponse<T> tLiveResponse) throws Exception {
+                        for (LiveCallBack<T> callBack : mViewCallBacks) {
+                            callBack.onNext(tLiveResponse);
                         }
                     }
                 });
-    }
-
-    private boolean shouldContinueNotifyView(LiveResponse<T> liveResponse) {
-        boolean shouldContinueNotifyView = false;
-        int result = notifyViewChange(liveResponse);
-        switch (result) {
-            case RESULT_VIEW_BACKGROUND:
-                shouldContinueNotifyView = true;
-                break;
-            case RESULT_VIEW_DESTROY:
-                shouldContinueNotifyView = false;
-                dispose();
-                break;
-            case RESULT_SUCCESS:
-                shouldContinueNotifyView = false;
-                break;
-        }
-        return shouldContinueNotifyView && mBackPressure;
-    }
-
-    private int notifyViewChange(final LiveResponse<T> response) {
-        if (mView == null) {
-            return RESULT_VIEW_DESTROY;
-        }
-
-        ViewAble view = mView.get();
-        if (view == null || view.isDestroyed()) {
-            return RESULT_VIEW_DESTROY;
-        }
-
-        if (!view.isForeground()) {
-            return RESULT_VIEW_BACKGROUND;
-        }
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mViewCallBack != null) {
-                    mViewCallBack.onResponse(response);
-                }
-            }
-        });
-        return RESULT_SUCCESS;
     }
 
     @MainThread
@@ -197,5 +150,9 @@ public class LiveData<T> {
             LogUtil.e("not found emitter in liveData, post value failed: value = " + response
                     .toString());
         }
+    }
+
+    public ArrayList<LiveCallBack<T>> getViewCallBacks() {
+        return mViewCallBacks;
     }
 }

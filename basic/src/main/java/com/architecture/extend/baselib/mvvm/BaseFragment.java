@@ -109,6 +109,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     public void onDestroy() {
         super.onDestroy();
         mIsDestroyed = true;
+        getLifecycle().removeObserver(mViewModel);
     }
 
     @Override
