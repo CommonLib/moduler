@@ -1,5 +1,8 @@
 package com.architecture.extend.baselib.mvvm;
 
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.OnLifecycleEvent;
 import android.databinding.BaseObservable;
 import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
@@ -15,7 +18,7 @@ import com.architecture.extend.baselib.util.LogUtil;
  */
 
 public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
-        implements ViewForegroundSwitchListener {
+        implements ViewForegroundSwitchListener, LifecycleObserver {
     private M mModel;
 
     public BaseViewModel() {
@@ -28,26 +31,34 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
         onCreate();
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     public void onViewCreate() {
+        LogUtil.d(this.getClass().getName() + " onViewCreate");
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
     public void onViewStart() {
+        LogUtil.d(this.getClass().getName() + " onViewStart");
     }
 
-    public void onViewRestart() {
-    }
-
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     public void onViewResume() {
-
+        LogUtil.d(this.getClass().getName() + " onViewResume");
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     public void onViewPause() {
+        LogUtil.d(this.getClass().getName() + " onViewPause");
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     public void onViewStop() {
+        LogUtil.d(this.getClass().getName() + " onViewStop");
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void onViewDestroy() {
+        LogUtil.d(this.getClass().getName() + " onViewDestroy");
         onDestroy();
     }
 

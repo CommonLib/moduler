@@ -54,7 +54,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         super.onCreate(savedInstanceState);
         Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
         mViewModel = ViewModelProviders.getInstance().get(viewModelClazz);
-        mViewModel.onViewCreate();
+        getLifecycle().addObserver(mViewModel);
         setForegroundSwitchCallBack(mViewModel);
         Intent intent = getIntent();
         if (intent != null) {
@@ -71,40 +71,14 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     protected void onStart() {
         super.onStart();
         mIsForeground = true;
-        mViewModel.onViewStart();
         mSwitchListener.onViewForeground();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        mViewModel.onViewResume();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        mViewModel.onViewPause();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        mViewModel.onViewRestart();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         mIsForeground = false;
-        mViewModel.onViewStop();
         mSwitchListener.onViewBackground();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mViewModel.onViewDestroy();
     }
 
     @Override

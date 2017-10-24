@@ -57,7 +57,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         super.onCreate(savedInstanceState);
         Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
         mViewModel = ViewModelProviders.getInstance().get(viewModelClazz);
-        mViewModel.onViewCreate();
+        getLifecycle().addObserver(mViewModel);
         setForegroundSwitchCallBack(mViewModel);
         Bundle arguments = getArguments();
         if (arguments != null) {
@@ -95,27 +95,13 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         super.onStart();
         mIsForeground = true;
         mIsDestroyed = false;
-        mViewModel.onViewStart();
         mSwitchListener.onViewForeground();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mViewModel.onViewResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        mViewModel.onViewPause();
     }
 
     @Override
     public void onStop() {
         super.onStop();
         mIsForeground = false;
-        mViewModel.onViewStop();
         mSwitchListener.onViewBackground();
     }
 
@@ -123,7 +109,6 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     public void onDestroy() {
         super.onDestroy();
         mIsDestroyed = true;
-        mViewModel.onViewDestroy();
     }
 
     @Override

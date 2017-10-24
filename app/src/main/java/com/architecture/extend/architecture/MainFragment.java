@@ -22,7 +22,7 @@ import java.util.List;
  * Created by byang059 on 9/27/17.
  */
 
-public class MainFragment extends BaseFragment<MainViewModel> {
+public class MainFragment extends BaseFragment<FragmentViewModel> {
 
     private BaseRecycleAdapter mAdapter;
     private List<String> mStrs;
