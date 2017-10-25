@@ -55,6 +55,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mIsForeground = true;
         Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
         mViewModel = ViewModelProviders.getInstance().get(viewModelClazz);
         getLifecycle().addObserver(mViewModel);

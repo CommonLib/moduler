@@ -30,6 +30,7 @@ public class LiveData<T> {
     private FlowableEmitter<LiveResponse<T>> mEmitter;
     private static ExecutorService mViewModelThreadService = Executors.newFixedThreadPool(1);
     private Disposable mSubscribe;
+    private LiveResponse<T> mCacheLastResponse;
 
     public void setProducer(Producer<T> producer) {
         mProducer = producer;
@@ -69,20 +70,16 @@ public class LiveData<T> {
         if (mViewCallBacks == null) {
             mViewCallBacks = new ArrayList<>();
         }
-
-        Flowable<LiveResponse<T>> flowAble = Flowable.create(callBack, mode);
-        Disposable subscribe = flowAble.subscribeOn(Schedulers.io()).observeOn(Schedulers.io()).subscribe
-                (callBack);
-        callBack.setViewable(view);
-        callBack.setDisposable(subscribe);
-        callBack.setLiveData(this);
+        callBack.initResponseSubscribe(view, mode, this);
         mViewCallBacks.add(callBack);
 
         if (isSubscribe()) {
+            callBack.onResponse(mCacheLastResponse);
             return;
         }
 
-        Flowable<LiveResponse<T>> modelObservable = initFlowAble(mProducer, mode);
+        Flowable<LiveResponse<T>> modelObservable = initFlowAble(mProducer,
+                BackpressureStrategy.LATEST);
         if (mProducer instanceof AsyncProducer) {
             modelObservable = modelObservable.subscribeOn(Schedulers.io());
         }
@@ -102,10 +99,14 @@ public class LiveData<T> {
                         return liveResponse;
                     }
                 }).observeOn(Schedulers.io()).subscribe(new Consumer<LiveResponse<T>>() {
+
                     @Override
                     public void accept(LiveResponse<T> tLiveResponse) throws Exception {
+                        if (tLiveResponse.type == LiveResponse.TYPE_RESULT) {
+                            mCacheLastResponse = tLiveResponse;
+                        }
                         for (LiveCallBack<T> callBack : mViewCallBacks) {
-                            callBack.onNext(tLiveResponse);
+                            callBack.onResponse(tLiveResponse);
                         }
                     }
                 });

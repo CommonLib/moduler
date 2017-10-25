@@ -52,6 +52,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mIsForeground = true;
         Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
         mViewModel = ViewModelProviders.getInstance().get(viewModelClazz);
         getLifecycle().addObserver(mViewModel);

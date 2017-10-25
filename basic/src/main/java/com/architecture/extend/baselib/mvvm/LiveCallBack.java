@@ -5,15 +5,19 @@ import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.os.Handler;
 import android.support.annotation.MainThread;
+import android.support.annotation.WorkerThread;
 
 import com.architecture.extend.baselib.BaseApplication;
 
 import java.lang.ref.WeakReference;
 
+import io.reactivex.BackpressureStrategy;
+import io.reactivex.Flowable;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by byang059 on 9/20/17.
@@ -24,7 +28,7 @@ public abstract class LiveCallBack<T>
                    LifecycleObserver {
     private FlowableEmitter<LiveResponse<T>> mEmitter;
     private WeakReference<ViewAble> mViewable;
-    private Disposable disposable;
+    private Disposable mDisposable;
     private static final int RESULT_VIEW_DESTROY = 0;
     private static final int RESULT_VIEW_BACKGROUND = 1;
     private static final int RESULT_SUCCESS = 2;
@@ -60,7 +64,7 @@ public abstract class LiveCallBack<T>
     /**
      * @param response
      */
-    public final void onResponse(LiveResponse<T> response) {
+    private void dispatchResponse(LiveResponse<T> response) {
         switch (response.type) {
             case LiveResponse.TYPE_CACHE:
                 onCacheReturn(response.result);
@@ -78,36 +82,25 @@ public abstract class LiveCallBack<T>
         }
     }
 
-    public void setLiveData(LiveData<T> liveData) {
-        mLiveData = liveData;
-    }
-
     @Override
     public void subscribe(FlowableEmitter<LiveResponse<T>> emitter) throws Exception {
         mEmitter = emitter;
     }
 
-    public void onNext(LiveResponse<T> response) {
+    public void onResponse(LiveResponse<T> response) {
         if (mEmitter != null && isSubscribe()) {
             mEmitter.onNext(response);
         }
     }
 
     @MainThread
-    public boolean isSubscribe() {
-        return disposable != null && !disposable.isDisposed();
+    private boolean isSubscribe() {
+        return mDisposable != null && !mDisposable.isDisposed();
     }
 
-    public void setViewable(ViewAble viewable) {
-        mViewable = new WeakReference<>(viewable);
-        viewable.getLifecycle().addObserver(this);
-    }
-
-    public void setDisposable(Disposable disposable) {
-        this.disposable = disposable;
-    }
-
-    private void notifySpecificView(LiveResponse<T> tLiveResponse) {
+    @Override
+    @WorkerThread
+    public void accept(LiveResponse<T> tLiveResponse) throws Exception {
         while (shouldContinueNotifyView(tLiveResponse)) {
             synchronized (LiveData.class) {
                 try {
@@ -118,11 +111,6 @@ public abstract class LiveCallBack<T>
                 }
             }
         }
-    }
-
-    @Override
-    public void accept(LiveResponse<T> tLiveResponse) throws Exception {
-        notifySpecificView(tLiveResponse);
     }
 
     private boolean shouldContinueNotifyView(LiveResponse<T> liveResponse) {
@@ -144,9 +132,9 @@ public abstract class LiveCallBack<T>
     }
 
     @MainThread
-    public void dispose() {
-        if (disposable != null && !disposable.isDisposed()) {
-            disposable.dispose();
+    private void dispose() {
+        if (mDisposable != null && !mDisposable.isDisposed()) {
+            mDisposable.dispose();
             mEmitter = null;
         }
     }
@@ -167,9 +155,18 @@ public abstract class LiveCallBack<T>
         mHandler.post(new Runnable() {
             @Override
             public void run() {
-                onResponse(response);
+                dispatchResponse(response);
             }
         });
         return RESULT_SUCCESS;
+    }
+
+    public void initResponseSubscribe(ViewAble view, BackpressureStrategy mode,
+                                      LiveData<T> liveData) {
+        view.getLifecycle().addObserver(this);
+        mViewable = new WeakReference<>(view);
+        mLiveData = liveData;
+        Flowable<LiveResponse<T>> flowAble = Flowable.create(this, mode);
+        mDisposable = flowAble.observeOn(Schedulers.io()).subscribe(this);
     }
 }
