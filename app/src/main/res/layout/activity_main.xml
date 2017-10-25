@@ -32,6 +32,12 @@
             android:layout_height="wrap_content"
             android:text="pic"/>
 
+        <Button
+            android:id="@+id/act_btn_dialog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="dialog"/>
+
         <FrameLayout
             android:id="@+id/act_fl_container"
             android:layout_width="match_parent"

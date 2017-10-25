@@ -124,7 +124,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
 
     protected abstract void initData();
 
-    protected abstract void initView(ViewDataBinding binding);
+    protected abstract void initView(ViewDataBinding dataBinding);
 
     protected abstract
     @LayoutRes
@@ -212,8 +212,8 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         });
     }
 
-    private void init(ViewDataBinding binding) {
-        initView(binding);
+    private void init(ViewDataBinding dataBinding) {
+        initView(dataBinding);
         initData();
     }
 

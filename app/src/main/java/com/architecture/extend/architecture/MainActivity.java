@@ -6,10 +6,13 @@ import android.databinding.ViewDataBinding;
 import android.view.View;
 import android.widget.Toast;
 
+import com.architecture.extend.architecture.databinding.ShareLayoutBinding;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.mvvm.BaseActivity;
+import com.architecture.extend.baselib.mvvm.BaseDialog;
 import com.architecture.extend.baselib.mvvm.ConfigureInfo;
 import com.architecture.extend.baselib.mvvm.LiveCallBack;
+import com.architecture.extend.baselib.mvvm.ViewCreateCallBack;
 import com.architecture.extend.baselib.util.AppUtil;
 import com.architecture.extend.baselib.util.FragmentStack;
 import com.architecture.extend.baselib.util.LogUtil;
@@ -29,6 +32,25 @@ public class MainActivity extends BaseActivity<MainViewModel> {
                 service.openWeb(MainActivity.this);*/
                 startActivity(new Intent(MainActivity.this, Activity1.class));
 
+            }
+        });
+        findViewById(R.id.act_btn_dialog).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                BaseDialog.newInstance()
+                        .setLayoutId(R.layout.share_layout, new ViewCreateCallBack() {
+                            @Override
+                            public void initView(ViewDataBinding dataBinding, BaseDialog dialog) {
+                                ShareLayoutBinding binding = (ShareLayoutBinding) dataBinding;
+                                binding.wechat.setOnClickListener(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Toast.makeText(MainActivity.this, "wechat onclick",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            }
+                        }).setDimAmount(0.3f).setShowBottom(true).show(getSupportFragmentManager());
             }
         });
         findViewById(R.id.act_btn_pic).setOnClickListener(new View.OnClickListener() {

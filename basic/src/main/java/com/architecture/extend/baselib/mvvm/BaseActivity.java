@@ -217,7 +217,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     protected abstract void initData();
 
-    protected abstract void initView(ViewDataBinding binding);
+    protected abstract void initView(ViewDataBinding dataBinding);
 
     protected abstract
     @LayoutRes
