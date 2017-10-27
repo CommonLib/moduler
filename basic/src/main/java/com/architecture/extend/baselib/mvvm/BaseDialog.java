@@ -53,6 +53,12 @@ public class BaseDialog extends DialogFragment {
         return new BaseDialog();
     }
 
+    public static BaseDialog newInstance(Bundle bundle) {
+        BaseDialog dialog = new BaseDialog();
+        dialog.setArguments(bundle);
+        return dialog;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -181,7 +187,7 @@ public class BaseDialog extends DialogFragment {
 
     private void initView(ViewDataBinding dataBinding, BaseDialog dialog) {
         if (mViewCreateCallBack != null) {
-            mViewCreateCallBack.initView(dataBinding, dialog);
+            mViewCreateCallBack.initView(dataBinding, dialog, getArguments());
         }
     }
 

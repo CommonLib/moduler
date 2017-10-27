@@ -3,6 +3,7 @@ package com.architecture.extend.architecture;
 import android.Manifest;
 import android.content.Intent;
 import android.databinding.ViewDataBinding;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
@@ -40,7 +41,8 @@ public class MainActivity extends BaseActivity<MainViewModel> {
                 BaseDialog.newInstance()
                         .setLayoutId(R.layout.share_layout, new ViewCreateCallBack() {
                             @Override
-                            public void initView(ViewDataBinding dataBinding, BaseDialog dialog) {
+                            public void initView(ViewDataBinding dataBinding, BaseDialog dialog,
+                                                 Bundle bundle) {
                                 ShareLayoutBinding binding = (ShareLayoutBinding) dataBinding;
                                 binding.wechat.setOnClickListener(new View.OnClickListener() {
                                     @Override

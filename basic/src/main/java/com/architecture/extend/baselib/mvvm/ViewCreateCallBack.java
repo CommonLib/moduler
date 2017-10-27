@@ -1,6 +1,7 @@
 package com.architecture.extend.baselib.mvvm;
 
 import android.databinding.ViewDataBinding;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -25,14 +26,15 @@ public abstract class ViewCreateCallBack implements Parcelable {
     protected ViewCreateCallBack(Parcel in) {
     }
 
-    public abstract void initView(ViewDataBinding dataBinding, BaseDialog dialog);
+    public abstract void initView(ViewDataBinding dataBinding, BaseDialog dialog, Bundle bundle);
 
     public static final Creator<ViewCreateCallBack> CREATOR = new Creator<ViewCreateCallBack>() {
         @Override
         public ViewCreateCallBack createFromParcel(Parcel source) {
             return new ViewCreateCallBack(source) {
                 @Override
-                public void initView(ViewDataBinding dataBinding, BaseDialog dialog) {
+                public void initView(ViewDataBinding dataBinding, BaseDialog dialog,
+                                     Bundle bundle) {
 
                 }
             };
