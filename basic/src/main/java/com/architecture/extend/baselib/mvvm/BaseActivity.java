@@ -262,7 +262,10 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                content = content.findViewById(R.id.view_scroll_content);
+                View scrollView = content.findViewById(R.id.view_scroll_content);
+                if (scrollView != null) {
+                    content = scrollView;
+                }
                 return super.checkCanDoRefresh(frame, content, header);
             }
         });
