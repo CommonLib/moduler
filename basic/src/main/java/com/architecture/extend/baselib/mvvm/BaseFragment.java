@@ -126,8 +126,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
 
     protected abstract void initView(ViewDataBinding dataBinding);
 
-    protected abstract
-    @LayoutRes
+    protected abstract @LayoutRes
     int getLayoutId();
 
     protected void handleArguments(@NonNull Bundle arguments) {
@@ -299,7 +298,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         return mLoadStateView;
     }
 
-    protected BaseActivity getBindActivity(){
+    protected BaseActivity getBindActivity() {
         return mActivity;
     }
 }

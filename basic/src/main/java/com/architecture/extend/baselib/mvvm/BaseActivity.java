@@ -219,8 +219,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     protected abstract void initView(ViewDataBinding dataBinding);
 
-    protected abstract
-    @LayoutRes
+    protected abstract @LayoutRes
     int getLayoutId();
 
     protected void handleIntent(@NonNull Intent intent) {
@@ -259,6 +258,12 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
                         frame.refreshComplete();
                     }
                 });
+            }
+
+            @Override
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                content = content.findViewById(R.id.view_scroll_content);
+                return super.checkCanDoRefresh(frame, content, header);
             }
         });
     }
