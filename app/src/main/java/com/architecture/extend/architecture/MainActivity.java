@@ -1,22 +1,20 @@
 package com.architecture.extend.architecture;
 
-import android.Manifest;
 import android.content.Intent;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.architecture.extend.architecture.databinding.ShareLayoutBinding;
-import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.mvvm.BaseActivity;
 import com.architecture.extend.baselib.mvvm.BaseDialog;
 import com.architecture.extend.baselib.mvvm.ConfigureInfo;
-import com.architecture.extend.baselib.mvvm.LiveCallBack;
 import com.architecture.extend.baselib.mvvm.ViewCreateCallBack;
 import com.architecture.extend.baselib.util.AppUtil;
 import com.architecture.extend.baselib.util.FragmentStack;
-import com.architecture.extend.baselib.util.LogUtil;
+import com.module.contract.router.RouterMaps;
 
 public class MainActivity extends BaseActivity<MainViewModel> {
 
@@ -29,9 +27,8 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         findViewById(R.id.act_btn_web).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*IWebService service = (IWebService) Router.getInstance().service(IWebService.class);
-                service.openWeb(MainActivity.this);*/
-                startActivity(new Intent(MainActivity.this, Activity1.class));
+                ARouter.getInstance().build(RouterMaps.Page.PIC).navigation();
+                //                startActivity(new Intent(MainActivity.this, Activity1.class));
 
             }
         });
@@ -58,9 +55,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         findViewById(R.id.act_btn_pic).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //                IPicService service = (IPicService) Router.getInstance().service(IPicService.class);
-                //                service.playPic(MainActivity.this);
-                getViewModel().getUserString()
+                /*getViewModel().getUserString()
                         .subscribe(MainActivity.this, new LiveCallBack<String>() {
 
                             @Override
@@ -103,7 +98,8 @@ public class MainActivity extends BaseActivity<MainViewModel> {
                     public void onDenied(String permission) {
                         LogUtil.d("onDenied");
                     }
-                });
+                });*/
+                startActivity(new Intent(MainActivity.this, Activity1.class));
             }
         });
 

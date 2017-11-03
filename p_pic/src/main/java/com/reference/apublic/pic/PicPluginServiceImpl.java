@@ -1,7 +1,6 @@
 package com.reference.apublic.pic;
 
 import android.content.Context;
-import android.content.Intent;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.architecture.extend.baselib.router.PluginService;
@@ -18,7 +17,6 @@ public class PicPluginServiceImpl extends PluginService implements IPicService {
 
     @Override
     public boolean playPic(Context context) {
-        context.startActivity(new Intent(context, PicActivity.class));
         return false;
     }
 

@@ -43,7 +43,6 @@ android {
     }
 
     resourcePrefix "pic_"
-    buildToolsVersion '26.0.2'
 }
 
 
