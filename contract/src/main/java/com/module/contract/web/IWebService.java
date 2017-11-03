@@ -8,6 +8,7 @@ import com.architecture.extend.baselib.router.Contract;
  * Created by byang059 on 9/15/17.
  */
 
-public interface IWeb extends Contract{
+public interface IWebService extends Contract{
     void openWeb(Context context);
+    String dealString(String a);
 }

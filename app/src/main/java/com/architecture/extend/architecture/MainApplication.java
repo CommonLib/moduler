@@ -2,8 +2,6 @@ package com.architecture.extend.architecture;
 
 
 import com.architecture.extend.baselib.BaseApplication;
-import com.module.contract.pic.IPic;
-import com.module.contract.web.IWeb;
 
 /**
  * Created by byang059 on 12/19/16.
@@ -11,19 +9,4 @@ import com.module.contract.web.IWeb;
 
 public class MainApplication extends BaseApplication {
 
-
-    @Override
-    protected void pluginComponent() {
-        try {
-            plugin(IWeb.class, "com.reference.apublic.web.WebPluginServiceImpl");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            plugin(IPic.class, "com.reference.apublic.pic.PicPluginServiceImpl");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

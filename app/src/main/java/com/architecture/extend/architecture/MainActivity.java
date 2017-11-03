@@ -29,7 +29,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         findViewById(R.id.act_btn_web).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /*IWeb service = (IWeb) Router.getInstance().service(IWeb.class);
+                /*IWebService service = (IWebService) Router.getInstance().service(IWebService.class);
                 service.openWeb(MainActivity.this);*/
                 startActivity(new Intent(MainActivity.this, Activity1.class));
 
@@ -58,7 +58,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         findViewById(R.id.act_btn_pic).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //                IPic service = (IPic) Router.getInstance().service(IPic.class);
+                //                IPicService service = (IPicService) Router.getInstance().service(IPicService.class);
                 //                service.playPic(MainActivity.this);
                 getViewModel().getUserString()
                         .subscribe(MainActivity.this, new LiveCallBack<String>() {

@@ -6,9 +6,7 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 
-import com.architecture.extend.baselib.router.Contract;
-import com.architecture.extend.baselib.router.PluginService;
-import com.architecture.extend.baselib.router.Router;
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.architecture.extend.baselib.util.AppUtil;
 import com.architecture.extend.baselib.util.LogUtil;
 
@@ -36,15 +34,19 @@ public abstract class BaseApplication extends MultiDexApplication {
         super.onCreate();
         String processName = AppUtil.getProcessName(this, android.os.Process.myPid());
         if (TextUtils.equals(processName, getPackageName())) {
-            init();
+            init(BuildConfig.DEBUG);
         }
     }
 
-    private void init() {
+    private void init(boolean debugMode) {
         instance = this;
-        LogUtil.init(getPackageName(), true);
         mHandler = new Handler();
-        pluginComponent();
+        LogUtil.init(getPackageName(), true);
+        if (debugMode) {
+            ARouter.openLog();
+            ARouter.openDebug();
+        }
+        ARouter.init(this);
     }
 
     public void exit() {
@@ -58,18 +60,5 @@ public abstract class BaseApplication extends MultiDexApplication {
 
     public Handler getHandler(){
         return mHandler;
-    }
-
-    protected abstract void pluginComponent();
-
-    protected void plugin(Class<? extends Contract> clazz, PluginService pluginService) {
-        Router.getInstance().registerProvider(clazz, pluginService);
-    }
-
-    protected void plugin(Class<? extends Contract> clazz, String providerPackageName)
-            throws Exception {
-        Class<?> providerClass = Class.forName(providerPackageName);
-        PluginService pluginService = (PluginService) providerClass.newInstance();
-        Router.getInstance().registerProvider(clazz, pluginService);
     }
 }

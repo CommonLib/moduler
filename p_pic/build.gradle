@@ -15,7 +15,11 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [ moduleName : project.getName() ]
+            }
+        }
     }
     buildTypes {
         release {
@@ -39,6 +43,7 @@ android {
     }
 
     resourcePrefix "pic_"
+    buildToolsVersion '26.0.2'
 }
 
 
@@ -47,6 +52,6 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile 'junit:junit:4.12'
+    annotationProcessor 'com.alibaba:arouter-compiler:1.1.4'
     compile project(':contract')
 }

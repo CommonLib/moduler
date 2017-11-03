@@ -1,15 +1,23 @@
 package com.architecture.extend.architecture;
 
+import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.architecture.extend.baselib.mvvm.BaseViewModel;
 import com.architecture.extend.baselib.mvvm.LiveData;
 import com.architecture.extend.baselib.mvvm.LiveViewModelCallBack;
 import com.architecture.extend.baselib.util.LogUtil;
+import com.module.contract.music.IMusic;
+import com.module.contract.web.IWebService;
 
 /**
  * Created by byang059 on 5/27/17.
  */
 
 public class MainViewModel extends BaseViewModel<MainModel> {
+
+    @Autowired
+    public IWebService webService;
+    @Autowired
+    public IMusic musicService;
 
     private LiveData<String> mStringLiveData;
 
@@ -55,7 +63,9 @@ public class MainViewModel extends BaseViewModel<MainModel> {
     }
 
     @Override
-    public void onViewCreate() {
-        super.onViewCreate();
+    protected void onCreate() {
+        super.onCreate();
+        String autowired = webService.dealString("autowired");
+        LogUtil.d(autowired);
     }
 }

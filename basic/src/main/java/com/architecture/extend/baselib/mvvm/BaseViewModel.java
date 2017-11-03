@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.architecture.extend.baselib.base.SharedViewModel;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.LogUtil;
@@ -76,6 +77,7 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
     }
 
     protected void onCreate() {
+        ARouter.getInstance().inject(this);
     }
 
     protected void onDestroy() {
