@@ -63,3 +63,7 @@ public static java.lang.String TABLENAME;
 # If you do not use RxJava:
 -dontwarn rx.**
 
+# alibaba ARouter
+-keep public class com.alibaba.android.arouter.routes.**{*;}
+-keep class * implements com.alibaba.android.arouter.facade.template.ISyringe{*;}
+
