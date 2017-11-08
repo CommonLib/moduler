@@ -14,7 +14,7 @@ import com.architecture.extend.baselib.util.LogUtil;
  * Created by byang059 on 12/19/16.
  */
 
-public abstract class BaseApplication extends MultiDexApplication {
+public class BaseApplication extends MultiDexApplication {
 
     private static BaseApplication instance;
     private Handler mHandler;

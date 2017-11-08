@@ -17,11 +17,9 @@ import com.reference.apublic.web.gen.SpeedDao;
 
 @Route(path = RouterMaps.Service.WEB)
 public class WebPluginServiceImpl extends PluginService implements IWebService {
-    private static WebPluginServiceImpl instance;
 
     @Override
     public void init(Context context) {
-        instance = this;
         DaoMaster master = new DaoMaster(
                 new DaoMaster.DevOpenHelper(BaseApplication.getInstance(), "user.db")
                         .getWritableDatabase());

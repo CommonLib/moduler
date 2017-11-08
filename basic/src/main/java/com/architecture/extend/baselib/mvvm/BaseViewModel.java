@@ -4,6 +4,7 @@ import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.databinding.BaseObservable;
+import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,12 +28,6 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
 
     public BaseViewModel() {
         super();
-        try {
-            mModel = GenericUtil.instanceT(this, 0);
-        } catch (Exception e) {
-            LogUtil.e("instance " + this.getClass().getName() + " model error");
-        }
-        onCreate();
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -76,10 +71,17 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
         return sharedViewModel.get(key);
     }
 
+    @CallSuper
     protected void onCreate() {
+        try {
+            mModel = GenericUtil.instanceT(this, 0);
+        } catch (Exception e) {
+            LogUtil.e("instance " + this.getClass().getName() + " model error");
+        }
         ARouter.getInstance().inject(this);
     }
 
+    @CallSuper
     protected void onDestroy() {
         ViewModelProviders.getInstance().remove(this.getClass());
         disposeLiveData();

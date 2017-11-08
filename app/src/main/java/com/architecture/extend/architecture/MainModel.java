@@ -1,6 +1,7 @@
 package com.architecture.extend.architecture;
 
 import android.os.SystemClock;
+import android.support.annotation.MainThread;
 
 import com.architecture.extend.baselib.mvvm.AsyncProducer;
 import com.architecture.extend.baselib.mvvm.BaseModel;
@@ -13,6 +14,7 @@ import com.architecture.extend.baselib.mvvm.LiveData;
 public class MainModel extends BaseModel {
 
 
+    @MainThread
     public void readDatabase(final String a, final String b, LiveData<String> data) {
         data.setProducer(new AsyncProducer<String>() {
             @Override

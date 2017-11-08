@@ -4,7 +4,8 @@
     <application android:allowBackup="true"
                  android:label="@string/pic_app_name"
                  android:supportsRtl="true"
-                 android:theme="@style/Base.Theme.AppCompat.Light">
+                 android:theme="@style/Base.Theme.AppCompat.Light"
+                 android:name="com.architecture.extend.baselib.BaseApplication">
         <activity android:name=".PicActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>

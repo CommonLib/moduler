@@ -1,7 +1,7 @@
-if (project.isBuildMudle.toBoolean()) {
-    apply plugin: 'com.android.application'
-} else {
+if (project.buildAll.toBoolean()) {
     apply plugin: 'com.android.library'
+} else {
+    apply plugin: 'com.android.application'
 }
 
 apply plugin: 'org.greenrobot.greendao'
@@ -33,7 +33,7 @@ android {
 
     sourceSets {
         main {
-            if (project.isBuildMudle.toBoolean()) {
+            if (!project.buildAll.toBoolean()) {
                 manifest.srcFile 'src/main/debug/AndroidManifest.xml'
             } else {
                 manifest.srcFile 'src/main/release/AndroidManifest.xml'

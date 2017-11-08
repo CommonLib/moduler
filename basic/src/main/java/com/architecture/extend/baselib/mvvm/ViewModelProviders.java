@@ -31,6 +31,9 @@ public class ViewModelProviders {
                 e.printStackTrace();
             }
         }
+        if (viewModel != null) {
+            viewModel.onCreate();
+        }
         return viewModel;
     }
 

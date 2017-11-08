@@ -4,6 +4,7 @@
     >
 
     <application
+        android:name="com.architecture.extend.baselib.BaseApplication"
         android:allowBackup="true"
         android:label="@string/web_app_name"
         android:supportsRtl="true"

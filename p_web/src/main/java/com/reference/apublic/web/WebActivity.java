@@ -14,6 +14,7 @@ import com.module.contract.router.RouterMaps;
 @Route(path = RouterMaps.Page.WEB)
 public class WebActivity extends BaseActivity<WebViewModel> {
 
+
     @Override
     protected void initData() {
     }

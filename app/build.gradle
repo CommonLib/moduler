@@ -36,11 +36,10 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     annotationProcessor 'com.alibaba:arouter-compiler:1.1.4'
-    if (!project.isBuildMudle.toBoolean()) {
+    if (project.buildAll.toBoolean()) {
         compile project(':p_web')
         compile project(':p_pic')
-    } else {
+    }else{
         compile project(':contract')
     }
-
 }
