@@ -50,7 +50,6 @@ public class MainViewModel extends BaseViewModel<MainModel> {
                 return new Exception("viewmodel", error);
             }
         });
-        shareData("share", mStringLiveData);
         return mStringLiveData;
     }
 

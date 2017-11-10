@@ -22,8 +22,6 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public class LiveData<T> {
-    public static boolean hasBlock = false;
-
     private ProduceAble<T> mProducer;
     private ArrayList<LiveCallBack<T>> mViewCallBacks;
     private LiveViewModelCallBack<T> mViewModelCallBack;
@@ -74,7 +72,9 @@ public class LiveData<T> {
         mViewCallBacks.add(callBack);
 
         if (isSubscribe()) {
-            callBack.onResponse(mCacheLastResponse);
+            if (mCacheLastResponse != null) {
+                callBack.onResponse(mCacheLastResponse);
+            }
             return;
         }
 
@@ -105,8 +105,12 @@ public class LiveData<T> {
                         if (tLiveResponse.type == LiveResponse.TYPE_RESULT) {
                             mCacheLastResponse = tLiveResponse;
                         }
-                        for (LiveCallBack<T> callBack : mViewCallBacks) {
-                            callBack.onResponse(tLiveResponse);
+                        if (mViewCallBacks.size() >= 1) {
+                            for (LiveCallBack<T> callBack : mViewCallBacks) {
+                                callBack.onResponse(tLiveResponse);
+                            }
+                        } else {
+                            dispose();
                         }
                     }
                 });

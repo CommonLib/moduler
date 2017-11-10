@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.architecture.extend.baselib.base.SharedViewModel;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.LogUtil;
 
@@ -59,18 +58,6 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
         return mModel;
     }
 
-    protected void shareData(String key, Object data) {
-        SharedViewModel sharedViewModel = ViewModelProviders.getInstance()
-                .get(SharedViewModel.class);
-        sharedViewModel.put(key, data);
-    }
-
-    protected Object getSharedData(String key) {
-        SharedViewModel sharedViewModel = ViewModelProviders.getInstance()
-                .get(SharedViewModel.class);
-        return sharedViewModel.get(key);
-    }
-
     @CallSuper
     protected void onCreate() {
         try {
@@ -91,13 +78,7 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
 
     @Override
     public void onViewForeground() {
-        synchronized (LiveData.class) {
-            if (LiveData.hasBlock) {
-                LogUtil.d("detect there is block tasks waiting for push view");
-                LiveData.hasBlock = false;
-                LiveData.class.notifyAll();
-            }
-        }
+
     }
 
     @Override

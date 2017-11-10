@@ -18,7 +18,6 @@ import android.view.WindowManager;
 
 import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.R;
-import com.architecture.extend.baselib.base.SharedViewModel;
 import com.architecture.extend.baselib.util.AppUtil;
 import com.architecture.extend.baselib.util.ViewUtil;
 
@@ -201,11 +200,5 @@ public class BaseDialog extends DialogFragment {
     public void onDestroyView() {
         super.onDestroyView();
         mViewCreateCallBack = null;
-    }
-
-    protected Object getSharedData(String key) {
-        SharedViewModel sharedViewModel = ViewModelProviders.getInstance()
-                .get(SharedViewModel.class);
-        return sharedViewModel.get(key);
     }
 }

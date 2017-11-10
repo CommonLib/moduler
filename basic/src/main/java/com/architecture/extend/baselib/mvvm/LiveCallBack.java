@@ -34,6 +34,7 @@ public abstract class LiveCallBack<T>
     private static final int RESULT_SUCCESS = 2;
     private Handler mHandler = BaseApplication.getInstance().getHandler();
     private LiveData<T> mLiveData;
+    private boolean hasBlock;
 
     public abstract void onComplete(T t);
 
@@ -50,14 +51,24 @@ public abstract class LiveCallBack<T>
     public void onError(Throwable t) {
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    public void onViewResume() {
+        if (hasBlock) {
+            synchronized (this) {
+                hasBlock = false;
+                notify();
+            }
+        }
+    }
+
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void onViewDestroy() {
+        dispose();
         if (mViewable != null && mViewable.get() != null) {
-            dispose();
             mViewable.get().getLifecycle().removeObserver(this);
-            if (mLiveData != null) {
-                mLiveData.getViewCallBacks().remove(this);
-            }
+        }
+        if (mLiveData != null) {
+            mLiveData.getViewCallBacks().remove(this);
         }
     }
 
@@ -102,10 +113,10 @@ public abstract class LiveCallBack<T>
     @WorkerThread
     public void accept(LiveResponse<T> tLiveResponse) throws Exception {
         while (shouldContinueNotifyView(tLiveResponse)) {
-            synchronized (LiveData.class) {
+            synchronized (this) {
                 try {
-                    LiveData.hasBlock = true;
-                    LiveData.class.wait();
+                    hasBlock = true;
+                    wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
