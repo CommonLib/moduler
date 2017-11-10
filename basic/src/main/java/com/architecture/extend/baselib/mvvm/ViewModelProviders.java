@@ -30,9 +30,10 @@ public class ViewModelProviders {
                 LogUtil.e("instance " + clazz.getName() + " viewmodel error");
                 e.printStackTrace();
             }
-        }
-        if (viewModel != null) {
-            viewModel.onCreate();
+
+            if (viewModel != null) {
+                viewModel.onCreate();
+            }
         }
         return viewModel;
     }

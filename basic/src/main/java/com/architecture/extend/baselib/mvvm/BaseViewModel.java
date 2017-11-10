@@ -79,6 +79,7 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
             LogUtil.e("instance " + this.getClass().getName() + " model error");
         }
         ARouter.getInstance().inject(this);
+
     }
 
     @CallSuper

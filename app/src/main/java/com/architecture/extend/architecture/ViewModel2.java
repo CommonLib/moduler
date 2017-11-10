@@ -7,5 +7,5 @@ import com.architecture.extend.baselib.mvvm.BaseViewModel;
  */
 
 public class ViewModel2 extends BaseViewModel<MainModel> {
-    
+
 }
