@@ -121,7 +121,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
     @Override
     public ConfigureInfo getConfigureInfo() {
         return new ConfigureInfo.Builder().asyncInflate(true).loadingState(true)
-                .pullToRefresh(false).toolbar(true).build();
+                .pullToRefresh(true).toolbar(true).build();
     }
 
     @Override

@@ -2,7 +2,7 @@
 <in.srain.cube.views.ptr.PtrFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
                                               android:background="#fff"
                                               xmlns:app="http://schemas.android.com/apk/res-auto"
-                                              android:id="@+id/view_scroll_content"
+                                              android:id="@+id/view_ptr_content"
                                               app:ptr_header="@+id/ptr_ll_header"
                                               app:ptr_content="@+id/ptr_view_content"
                                               android:layout_width="match_parent"
