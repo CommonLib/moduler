@@ -2,8 +2,10 @@ package com.architecture.extend.baselib.mvvm;
 
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.OnLifecycleEvent;
-import android.databinding.BaseObservable;
+import android.arch.lifecycle.ViewModel;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
@@ -14,19 +16,17 @@ import com.alibaba.android.arouter.launcher.ARouter;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.LogUtil;
 
-import java.util.ArrayList;
-
 /**
  * Created by byang059 on 5/24/17.
  */
 
-public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
+public abstract class BaseViewModel<M extends BaseModel> extends ViewModel
         implements ViewForegroundSwitchListener, LifecycleObserver {
     private M mModel;
-    private ArrayList<LiveData> mLives;
 
     public BaseViewModel() {
         super();
+        onCreate();
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -66,14 +66,10 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
             LogUtil.e("instance " + this.getClass().getName() + " model error");
         }
         ARouter.getInstance().inject(this);
-
     }
 
     @CallSuper
     protected void onDestroy() {
-        ViewModelProviders.getInstance().remove(this.getClass());
-        disposeLiveData();
-        getModel().onDestroy();
     }
 
     @Override
@@ -86,28 +82,16 @@ public abstract class BaseViewModel<M extends BaseModel> extends BaseObservable
 
     }
 
-    public void putLiveData(LiveData data) {
-        if (mLives == null) {
-            mLives = new ArrayList<>();
-        }
-        mLives.add(data);
-    }
-
-    private void disposeLiveData() {
-        if (mLives != null) {
-            LogUtil.d("destroyed all live data, sum = " + mLives.size());
-            for (LiveData liveData : mLives) {
-                liveData.dispose();
-            }
-        }
-    }
-
     public LiveData<View> asyncInflate(@LayoutRes int layoutId, LayoutInflater layoutInflater,
                                        ViewGroup viewGroup) {
-        return getModel().asyncInflate(layoutId, layoutInflater, viewGroup);
+        MutableLiveData<View> liveData = new MutableLiveData<>();
+        getModel().asyncInflate(liveData,layoutId, layoutInflater, viewGroup);
+        return liveData;
     }
 
     public LiveData<Void> onPullToRefresh() {
-        return getModel().onPullToRefresh();
+        MutableLiveData<Void> liveData = new MutableLiveData<>();
+        getModel().onPullToRefresh(liveData);
+        return liveData;
     }
 }

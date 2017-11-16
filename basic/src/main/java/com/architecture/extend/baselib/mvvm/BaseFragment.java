@@ -2,6 +2,9 @@ package com.architecture.extend.baselib.mvvm;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Build;
@@ -56,7 +59,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         super.onCreate(savedInstanceState);
         mIsForeground = true;
         Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
-        mViewModel = ViewModelProviders.getInstance().get(viewModelClazz);
+        mViewModel = ViewModelProviders.of(mActivity).get(viewModelClazz);
         getLifecycle().addObserver(mViewModel);
         setForegroundSwitchCallBack(mViewModel);
         Bundle arguments = getArguments();
@@ -135,19 +138,31 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     }
 
     /**
-     * for android verision above 23 to apply permission
+     * for android verision above 23 to apply permissions
      *
-     * @param permission
+     * @param permissions
      * @param callBack
      */
     @TargetApi(Build.VERSION_CODES.M)
-    protected void usePermission(String permission, PermissionCallBack callBack) {
-        if (PermissionAccessUtil.hasPermission(this, permission)) {
-            callBack.onGranted(permission);
+    protected void usePermission(String[] permissions, PermissionCallBack callBack) {
+
+        ArrayList<String> requestPermissions = new ArrayList<>();
+        for (String permission : permissions) {
+            boolean isGranted = PermissionAccessUtil.hasPermission(this, permission);
+            if (isGranted) {
+                callBack.onGranted(permission);
+            } else {
+                requestPermissions.add(permission);
+            }
+        }
+
+        int pendingSize = requestPermissions.size();
+        if (pendingSize == 0) {
             return;
         }
+
         PermissionUtil.PermissionRequestObject permissionRequest = PermissionAccessUtil
-                .requestPermission(this, permission, callBack);
+                .requestPermission(this, permissions, callBack);
         if (mPermissionRequests == null) {
             mPermissionRequests = new ArrayList<>();
         }
@@ -194,9 +209,9 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     private void asyncInflateLayout(final ViewGroup parent, LayoutInflater inflater,
                                     @LayoutRes int layoutId) {
         LiveData<View> inflate = getViewModel().asyncInflate(layoutId, inflater, parent);
-        inflate.subscribe(this, new LiveCallBack<View>() {
+        inflate.observe(this, new Observer<View>() {
             @Override
-            public void onComplete(View view) {
+            public void onChanged(@Nullable View view) {
                 View packageView = packageContentView(mConfigureInfo, view);
                 parent.addView(packageView);
                 init(DataBindingUtil.bind(view));
@@ -256,14 +271,9 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
             @Override
             public void onRefreshBegin(final PtrFrameLayout frame) {
                 LiveData<Void> pullToRefresh = mViewModel.onPullToRefresh();
-                pullToRefresh.subscribe(BaseFragment.this, new LiveCallBack<Void>() {
+                pullToRefresh.observe(BaseFragment.this, new Observer<Void>() {
                     @Override
-                    public void onComplete(Void aVoid) {
-                        frame.refreshComplete();
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
+                    public void onChanged(@Nullable Void aVoid) {
                         frame.refreshComplete();
                     }
                 });
@@ -272,7 +282,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
             @Override
             public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
                 View scrollView = content.findViewById(R.id.view_scroll_content);
-                if(scrollView != null){
+                if (scrollView != null) {
                     content = scrollView;
                 }
                 return super.checkCanDoRefresh(frame, content, header);

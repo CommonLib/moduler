@@ -1,6 +1,9 @@
 package com.architecture.extend.baselib.mvvm;
 
 import android.annotation.TargetApi;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
@@ -8,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -53,7 +57,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         super.onCreate(savedInstanceState);
         mIsForeground = true;
         Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
-        mViewModel = ViewModelProviders.getInstance().get(viewModelClazz);
+        mViewModel = ViewModelProviders.of(this).get(viewModelClazz);
         getLifecycle().addObserver(mViewModel);
         setForegroundSwitchCallBack(mViewModel);
         Intent intent = getIntent();
@@ -103,21 +107,36 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     }
 
     /**
-     * for android version above 23 to apply permission
-     * TODO need to impl apply for mulit permission once
+     * for android version above 23 to apply permissions
+     * TODO need to impl apply for mulit permissions once
      *
-     * @param permission
+     * @param permissions
      * @param callBack
      */
     @TargetApi(Build.VERSION_CODES.M)
-    protected void usePermission(@RequiresPermission String permission,
+    protected void usePermission(@RequiresPermission String[] permissions,
                                  PermissionCallBack callBack) {
-        if (PermissionAccessUtil.hasPermission(this, permission)) {
-            callBack.onGranted(permission);
+
+        ArrayList<String> requestPermissions = new ArrayList<>();
+        for (String permission : permissions) {
+            boolean isGranted = PermissionAccessUtil.hasPermission(this, permission);
+            if (isGranted) {
+                callBack.onGranted(permission);
+            } else {
+                requestPermissions.add(permission);
+            }
+        }
+
+        int pendingSize = requestPermissions.size();
+        if (pendingSize == 0) {
             return;
         }
+
+        String[] pendingPermissions = new String[pendingSize];
+        requestPermissions.toArray(pendingPermissions);
+
         PermissionUtil.PermissionRequestObject permissionRequest = PermissionAccessUtil
-                .requestPermission(this, permission, callBack);
+                .requestPermission(this, pendingPermissions, callBack);
         if (mPermissionRequests == null) {
             mPermissionRequests = new ArrayList<>();
         }
@@ -146,9 +165,9 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         if (isAsyncInflate) {
             LiveData<View> inflate = getViewModel()
                     .asyncInflate(layoutId, getLayoutInflater(), parent);
-            inflate.subscribe(this, new LiveCallBack<View>() {
+            inflate.observe(this, new Observer<View>() {
                 @Override
-                public void onComplete(View view) {
+                public void onChanged(@Nullable View view) {
                     init(DataBindingUtil.bind(view));
                 }
             });
@@ -240,14 +259,9 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
             @Override
             public void onRefreshBegin(final PtrFrameLayout frame) {
                 LiveData<Void> pullToRefresh = mViewModel.onPullToRefresh();
-                pullToRefresh.subscribe(BaseActivity.this, new LiveCallBack<Void>() {
+                pullToRefresh.observe(BaseActivity.this, new Observer<Void>() {
                     @Override
-                    public void onComplete(Void aVoid) {
-                        frame.refreshComplete();
-                    }
-
-                    @Override
-                    public void onError(Throwable t) {
+                    public void onChanged(@Nullable Void aVoid) {
                         frame.refreshComplete();
                     }
                 });

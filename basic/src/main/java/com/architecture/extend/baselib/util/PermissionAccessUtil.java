@@ -1,10 +1,11 @@
 package com.architecture.extend.baselib.util;
 
+import android.content.pm.PackageManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.architecture.extend.baselib.base.PermissionCallBack;
-import com.github.kayvannj.permission_utils.Func;
+import com.github.kayvannj.permission_utils.Func2;
 import com.github.kayvannj.permission_utils.PermissionUtil;
 
 
@@ -14,34 +15,38 @@ import com.github.kayvannj.permission_utils.PermissionUtil;
 public class PermissionAccessUtil {
 
     public static PermissionUtil.PermissionRequestObject requestPermission(
-            AppCompatActivity activity, final String permission, final PermissionCallBack callBack) {
-        return PermissionUtil.with(activity).request(permission).onAllGranted(new Func() {
+            AppCompatActivity activity, final String[] permissions,
+            final PermissionCallBack callBack) {
+
+        return PermissionUtil.with(activity).request(permissions).onResult(new Func2() {
             @Override
-            protected void call() {
-                callBack.onGranted(permission);
+            protected void call(int requestCode, String[] permissions, int[] grantResults) {
+                for (int i = 0; i < permissions.length; i++) {
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        callBack.onGranted(permissions[i]);
+                    } else {
+                        callBack.onDenied(permissions[i]);
+                    }
+                }
             }
-        }).onAnyDenied(new Func() {
-            @Override
-            protected void call() {
-                callBack.onDenied(permission);
-            }
-        }).ask((short)permission.hashCode());
+        }).ask((short) permissions[0].hashCode());
     }
 
     public static PermissionUtil.PermissionRequestObject requestPermission(Fragment fragment,
-                                                                           final String permission,
+                                                                           final String[] permissions,
                                                                            final PermissionCallBack callBack) {
-        return PermissionUtil.with(fragment).request(permission).onAllGranted(new Func() {
+        return PermissionUtil.with(fragment).request(permissions).onResult(new Func2() {
             @Override
-            protected void call() {
-                callBack.onGranted(permission);
+            protected void call(int requestCode, String[] permissions, int[] grantResults) {
+                for (int i = 0; i < permissions.length; i++) {
+                    if (grantResults[i] == PackageManager.PERMISSION_GRANTED) {
+                        callBack.onGranted(permissions[i]);
+                    } else {
+                        callBack.onDenied(permissions[i]);
+                    }
+                }
             }
-        }).onAnyDenied(new Func() {
-            @Override
-            protected void call() {
-                callBack.onDenied(permission);
-            }
-        }).ask((short)permission.hashCode());
+        }).ask((short) permissions[0].hashCode());
     }
 
     public static boolean hasPermission(AppCompatActivity activity, String permission) {

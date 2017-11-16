@@ -6,8 +6,6 @@ import android.view.View;
 
 import com.architecture.extend.architecture.databinding.Activity1Binding;
 import com.architecture.extend.baselib.mvvm.BaseActivity;
-import com.architecture.extend.baselib.mvvm.LiveCallBack;
-import com.architecture.extend.baselib.mvvm.ViewModelProviders;
 
 /**
  * Created by byang059 on 10/24/17.
@@ -30,13 +28,12 @@ public class Activity1 extends BaseActivity<ViewModel1> {
                 startActivity(new Intent(Activity1.this, Activity2.class));
             }
         });
-        MainViewModel mainViewModel = ViewModelProviders.getInstance().get(MainViewModel.class);
-        mainViewModel.getUserString().subscribe(this, new LiveCallBack<String>() {
+        /*mainViewModel.getUserString().subscribe(this, new LiveCallBack<String>() {
             @Override
             public void onComplete(String s) {
                 actBinding.tv1.setText(s);
             }
-        });
+        });*/
     }
 
     @Override

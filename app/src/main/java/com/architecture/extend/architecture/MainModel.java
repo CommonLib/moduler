@@ -1,24 +1,26 @@
 package com.architecture.extend.architecture;
 
+import android.arch.lifecycle.MutableLiveData;
 import android.os.SystemClock;
 import android.support.annotation.MainThread;
 
-import com.architecture.extend.baselib.mvvm.AsyncProducer;
 import com.architecture.extend.baselib.mvvm.BaseModel;
-import com.architecture.extend.baselib.mvvm.LiveData;
+
+import javax.inject.Singleton;
 
 /**
  * Created by byang059 on 5/27/17.
  */
 
+@Singleton
 public class MainModel extends BaseModel {
 
 
     @MainThread
-    public void readDatabase(final String a, final String b, LiveData<String> data) {
-        data.setProducer(new AsyncProducer<String>() {
+    public void readDatabase(final String a, final String b, MutableLiveData<String> data) {
+        /*data.setProducer(new AsyncProducer<String>() {
             @Override
-            public void produce(LiveData<String> liveData) {
+            public void produce(MutableLiveData<String> liveData) {
                 SystemClock.sleep(1000);
                 liveData.postCache("cache data");
                 SystemClock.sleep(1000);
@@ -31,20 +33,20 @@ public class MainModel extends BaseModel {
                 liveData.postValue("result value");
                 liveData.postError(new Exception());
             }
-        });
+        });*/
+
+        data.setValue("first value");
+        data.postValue("first value");
     }
 
     @Override
-    public LiveData<Void> onPullToRefresh() {
-        LiveData<Void> data = new LiveData<>();
-        data.setProducer(new AsyncProducer<Void>() {
+    public void onPullToRefresh(final MutableLiveData<Void> liveData) {
+        runOnWorkerThread(new Runnable() {
             @Override
-            public void produce(LiveData<Void> liveData) {
+            public void run() {
                 SystemClock.sleep(3000);
                 liveData.postValue(null);
             }
         });
-        return data;
-
     }
 }

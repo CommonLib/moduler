@@ -4,8 +4,6 @@ if (project.buildAll.toBoolean()) {
     apply plugin: 'com.android.application'
 }
 
-apply plugin: 'org.greenrobot.greendao'
-
 android {
     compileSdkVersion project.compileSdkVersion as int
     buildToolsVersion project.buildToolsVersion
@@ -46,12 +44,6 @@ android {
     }
 
     resourcePrefix "web_"
-}
-
-greendao {
-    schemaVersion 1
-    daoPackage 'com.reference.apublic.web.gen'
-    targetGenDir 'src/main/java'
 }
 
 dependencies {

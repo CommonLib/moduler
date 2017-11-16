@@ -1,9 +1,13 @@
 package com.architecture.extend.baselib.mvvm;
 
+import android.arch.lifecycle.MutableLiveData;
+import android.os.AsyncTask;
 import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.concurrent.Executor;
 
 /**
  * Created by byang059 on 5/25/17.
@@ -11,33 +15,29 @@ import android.view.ViewGroup;
 
 public abstract class BaseModel {
 
+    public static final Executor THREAD_POOL_EXECUTOR = AsyncTask.THREAD_POOL_EXECUTOR;
+
     public BaseModel() {
-        onCreate();
     }
 
-    public LiveData<Void> onPullToRefresh() {
-        return null;
+    public void onPullToRefresh(MutableLiveData<Void> liveData) {
     }
 
-    public void onCreate() {
-
-    }
-
-    public void onDestroy() {
-
-    }
-
-    public LiveData<View> asyncInflate(@LayoutRes final int layoutId,
-                                       final LayoutInflater layoutInflater,
-                                       final ViewGroup viewGroup) {
-        LiveData<View> liveData = new LiveData<>();
-        liveData.setProducer(new AsyncProducer<View>() {
+    public MutableLiveData<View> asyncInflate(final MutableLiveData<View> liveData,
+                                              @LayoutRes final int layoutId,
+                                              final LayoutInflater layoutInflater,
+                                              final ViewGroup viewGroup) {
+        runOnWorkerThread(new Runnable() {
             @Override
-            public void produce(LiveData<View> liveData) {
+            public void run() {
                 View view = layoutInflater.inflate(layoutId, viewGroup, false);
                 liveData.postValue(view);
             }
         });
         return liveData;
+    }
+
+    protected void runOnWorkerThread(Runnable runnable) {
+        THREAD_POOL_EXECUTOR.execute(runnable);
     }
 }
