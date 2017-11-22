@@ -1,6 +1,5 @@
 package com.architecture.extend.architecture;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.persistence.room.Room;
 import android.support.annotation.MainThread;
@@ -8,7 +7,7 @@ import android.support.annotation.NonNull;
 
 import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.mvvm.BaseModel;
-import com.architecture.extend.baselib.mvvm.NetworkBundleResource;
+import com.architecture.extend.baselib.mvvm.NetworkCacheResource;
 import com.architecture.extend.baselib.storage.remote.RetrofitHelper;
 import com.architecture.extend.baselib.util.LogUtil;
 
@@ -57,14 +56,8 @@ public class MainModel extends BaseModel {
         data.postValue("first value");
     }
 
-    public NetworkBundleResource<Weather, Weather> getPullToRefreshResource() {
-        return new NetworkBundleResource<Weather, Weather>() {
-            @NonNull
-            @Override
-            protected LiveData<Weather> loadFromCache() {
-                LogUtil.d("loadFromCache");
-                return weatherDao.load("北京");
-            }
+    public NetworkCacheResource<Weather> getPullToRefreshResource() {
+        return new NetworkCacheResource<Weather>() {
 
             @NonNull
             @Override
@@ -78,13 +71,6 @@ public class MainModel extends BaseModel {
             @Override
             protected void onFetchFailed(Response<Weather> response, Throwable throwable) {
                 LogUtil.d("onFetchFailed => " + response);
-            }
-
-            @Override
-            protected void saveCallResult(Weather body) {
-                LogUtil.d("saveCallResult => " + body);
-                body.setStatus(202);
-                weatherDao.save(body);
             }
         };
     }

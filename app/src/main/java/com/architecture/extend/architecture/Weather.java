@@ -3,6 +3,8 @@ package com.architecture.extend.architecture;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.architecture.extend.baselib.base.Bean;
+
 import java.util.List;
 
 /**
@@ -10,7 +12,7 @@ import java.util.List;
  */
 
 @Entity
-public class Weather {
+public class Weather extends Bean{
 
     /**
      * date : 20171121

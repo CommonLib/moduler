@@ -55,7 +55,11 @@ public abstract class NetworkBundleResource<ResultType, RequestType> {
         LiveData<ApiResponse<RequestType>> apiResponse = createCall();
         // we re-attach mCacheSource as a new source,
         // it will dispatch its latest value quickly
-        mResult.addSource(mCacheSource, newData -> mResult.setValue(Resource.cache(newData)));
+        mResult.addSource(mCacheSource, newData -> {
+            if (newData != null) {
+                mResult.setValue(Resource.cache(newData));
+            }
+        });
         mResult.addSource(apiResponse, response -> {
             mResult.removeSource(apiResponse);
             mResult.removeSource(mCacheSource);
@@ -105,8 +109,11 @@ public abstract class NetworkBundleResource<ResultType, RequestType> {
                 .doOnNext(this::saveCallResult).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(requestType -> {
                     mCacheSource = loadFromCache();
-                    mResult.addSource(mCacheSource,
-                            newData -> mResult.setValue(Resource.success(newData)));
+                    mResult.addSource(mCacheSource, newData -> {
+                        if (newData != null) {
+                            mResult.setValue(Resource.success(newData));
+                        }
+                    });
                 });
     }
 
