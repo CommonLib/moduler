@@ -1,12 +1,21 @@
 package com.architecture.extend.architecture;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.os.SystemClock;
+import android.arch.persistence.room.Room;
 import android.support.annotation.MainThread;
+import android.support.annotation.NonNull;
 
+import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.mvvm.BaseModel;
+import com.architecture.extend.baselib.mvvm.NetworkBundleResource;
+import com.architecture.extend.baselib.storage.remote.RetrofitHelper;
+import com.architecture.extend.baselib.util.LogUtil;
 
 import javax.inject.Singleton;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 /**
  * Created by byang059 on 5/27/17.
@@ -15,6 +24,15 @@ import javax.inject.Singleton;
 @Singleton
 public class MainModel extends BaseModel {
 
+    WeatherDao weatherDao;
+
+    @Override
+    public void init() {
+        WeatherDatabase db = Room
+                .databaseBuilder(BaseApplication.getInstance(), WeatherDatabase.class, "weather")
+                .build();
+        weatherDao = db.weatherDao();
+    }
 
     @MainThread
     public void readDatabase(final String a, final String b, MutableLiveData<String> data) {
@@ -39,14 +57,35 @@ public class MainModel extends BaseModel {
         data.postValue("first value");
     }
 
-    @Override
-    public void onPullToRefresh(final MutableLiveData<Void> liveData) {
-        runOnWorkerThread(new Runnable() {
+    public NetworkBundleResource<Weather, Weather> getPullToRefreshResource() {
+        return new NetworkBundleResource<Weather, Weather>() {
+            @NonNull
             @Override
-            public void run() {
-                SystemClock.sleep(3000);
-                liveData.postValue(null);
+            protected LiveData<Weather> loadFromCache() {
+                LogUtil.d("loadFromCache");
+                return weatherDao.load("北京");
             }
-        });
+
+            @NonNull
+            @Override
+            protected Call<Weather> getCall() {
+                LogUtil.d("getCall");
+                MainApiService service = RetrofitHelper.getInstance()
+                        .getService(MainApiService.class);
+                return service.getWeather("北京");
+            }
+
+            @Override
+            protected void onFetchFailed(Response<Weather> response, Throwable throwable) {
+                LogUtil.d("onFetchFailed => " + response);
+            }
+
+            @Override
+            protected void saveCallResult(Weather body) {
+                LogUtil.d("saveCallResult => " + body);
+                body.setStatus(202);
+                weatherDao.save(body);
+            }
+        };
     }
 }

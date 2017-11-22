@@ -257,14 +257,8 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         refreshView.setPinContent(true);
         refreshView.setPtrHandler(new PtrDefaultHandler() {
             @Override
-            public void onRefreshBegin(final PtrFrameLayout frame) {
-                LiveData<Void> pullToRefresh = mViewModel.onPullToRefresh();
-                pullToRefresh.observe(BaseActivity.this, new Observer<Void>() {
-                    @Override
-                    public void onChanged(@Nullable Void aVoid) {
-                        frame.refreshComplete();
-                    }
-                });
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                onPullRefreshBegin(frame);
             }
 
             @Override
@@ -283,6 +277,8 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
                 .inflate(LayoutInflater.from(this), R.layout.view_loading_state, loadStateView,
                         true);
     }
+
+    protected void onPullRefreshBegin(PtrFrameLayout frame){}
 
     public PtrFrameLayout getPullToRefreshView() {
         return mPullToRefreshView;

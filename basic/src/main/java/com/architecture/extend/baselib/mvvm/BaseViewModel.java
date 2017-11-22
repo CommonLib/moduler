@@ -62,7 +62,9 @@ public abstract class BaseViewModel<M extends BaseModel> extends ViewModel
     protected void onCreate() {
         try {
             mModel = GenericUtil.instanceT(this, 0);
+            mModel.init();
         } catch (Exception e) {
+            e.printStackTrace();
             LogUtil.e("instance " + this.getClass().getName() + " model error");
         }
         ARouter.getInstance().inject(this);
@@ -85,13 +87,7 @@ public abstract class BaseViewModel<M extends BaseModel> extends ViewModel
     public LiveData<View> asyncInflate(@LayoutRes int layoutId, LayoutInflater layoutInflater,
                                        ViewGroup viewGroup) {
         MutableLiveData<View> liveData = new MutableLiveData<>();
-        getModel().asyncInflate(liveData,layoutId, layoutInflater, viewGroup);
-        return liveData;
-    }
-
-    public LiveData<Void> onPullToRefresh() {
-        MutableLiveData<Void> liveData = new MutableLiveData<>();
-        getModel().onPullToRefresh(liveData);
+        getModel().asyncInflate(liveData, layoutId, layoutInflater, viewGroup);
         return liveData;
     }
 }

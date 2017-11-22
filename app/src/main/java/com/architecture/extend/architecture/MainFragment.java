@@ -83,7 +83,7 @@ public class MainFragment extends BaseFragment<FragmentViewModel> {
 
     @Override
     public ConfigureInfo getConfigureInfo() {
-        return new ConfigureInfo.Builder().asyncInflate(true).loadingState(true).pullToRefresh(true)
-                .toolbar(true).build();
+        return new ConfigureInfo.Builder().asyncInflate(true).loadingState(true)
+                .pullToRefresh(false).toolbar(true).build();
     }
 }

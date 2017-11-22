@@ -269,14 +269,8 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         refreshView.setPinContent(true);
         refreshView.setPtrHandler(new PtrDefaultHandler() {
             @Override
-            public void onRefreshBegin(final PtrFrameLayout frame) {
-                LiveData<Void> pullToRefresh = mViewModel.onPullToRefresh();
-                pullToRefresh.observe(BaseFragment.this, new Observer<Void>() {
-                    @Override
-                    public void onChanged(@Nullable Void aVoid) {
-                        frame.refreshComplete();
-                    }
-                });
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                onRefreshBegin(frame);
             }
 
             @Override
@@ -289,6 +283,8 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
             }
         });
     }
+
+    protected void onRefreshBegin(PtrFrameLayout frame){}
 
     protected void initLoadingStateView(LoadStateView loadStateView) {
         DataBindingUtil

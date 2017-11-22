@@ -28,6 +28,11 @@ android {
     dataBinding {
         enabled = true
     }
+
+    compileOptions {
+        targetCompatibility project.jdkVersion as float
+        sourceCompatibility project.jdkVersion as float
+    }
 }
 
 dependencies {
@@ -37,6 +42,7 @@ dependencies {
     })
     annotationProcessor 'com.alibaba:arouter-compiler:1.1.4'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
     if (project.buildAll.toBoolean()) {
         compile project(':p_web')
         compile project(':p_pic')

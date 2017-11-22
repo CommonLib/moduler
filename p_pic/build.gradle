@@ -42,6 +42,11 @@ android {
         enabled = true
     }
 
+    compileOptions {
+        targetCompatibility project.jdkVersion as float
+        sourceCompatibility project.jdkVersion as float
+    }
+
     resourcePrefix "pic_"
 }
 
@@ -53,5 +58,6 @@ dependencies {
     })
     annotationProcessor 'com.alibaba:arouter-compiler:1.1.4'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
+    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
     compile project(':contract')
 }

@@ -26,6 +26,7 @@ public class RetrofitHelper {
     private static RetrofitHelper mRetrofitHelper = new RetrofitHelper();
     private Retrofit mRetrofit;
     private HashMap<String, String> mHeaders;
+    private HashMap<String, Object> mApiServices;
 
     private RetrofitHelper() {
         mRetrofit = initRetrofit();
@@ -58,7 +59,6 @@ public class RetrofitHelper {
         OkHttpClient.Builder builder = new OkHttpClient.Builder().retryOnConnectionFailure(true)
                 .cache(new Cache(BaseApplication.getInstance().getCacheDir(),
                         AppConfig.HTTP_CACHE_MAX_SIZE)).addInterceptor(new HeaderInterceptor())
-                .addNetworkInterceptor(new CacheControlInterceptor())
                 .connectTimeout(AppConfig.API_CONNECT_TIMEOUT, TimeUnit.SECONDS)
                 .readTimeout(AppConfig.API_WRITE_READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(AppConfig.API_WRITE_READ_TIMEOUT, TimeUnit.SECONDS);
@@ -82,6 +82,20 @@ public class RetrofitHelper {
 
     public Retrofit getRetrofit() {
         return mRetrofit;
+    }
+
+    public <T> T getService(Class<T> apiServiceClazz) {
+        if (mApiServices == null) {
+            mApiServices = new HashMap<>();
+        }
+
+        String key = apiServiceClazz.getSimpleName();
+        Object apiService = mApiServices.get(key);
+        if (apiService == null) {
+            apiService = getRetrofit().create(apiServiceClazz);
+            mApiServices.put(key, apiService);
+        }
+        return (T) apiService;
     }
 
     public HashMap<String, String> getHeaders() {

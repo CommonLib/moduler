@@ -23,7 +23,11 @@ android {
     dataBinding {
         enabled = true
     }
-    buildToolsVersion '26.0.2'
+
+    compileOptions {
+        targetCompatibility project.jdkVersion as float
+        sourceCompatibility project.jdkVersion as float
+    }
 }
 
 dependencies {

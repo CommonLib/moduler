@@ -20,21 +20,16 @@ public abstract class BaseModel {
     public BaseModel() {
     }
 
-    public void onPullToRefresh(MutableLiveData<Void> liveData) {
+    public void init() {
+
     }
 
-    public MutableLiveData<View> asyncInflate(final MutableLiveData<View> liveData,
-                                              @LayoutRes final int layoutId,
-                                              final LayoutInflater layoutInflater,
-                                              final ViewGroup viewGroup) {
-        runOnWorkerThread(new Runnable() {
-            @Override
-            public void run() {
-                View view = layoutInflater.inflate(layoutId, viewGroup, false);
-                liveData.postValue(view);
-            }
+    public void asyncInflate(final MutableLiveData<View> liveData, @LayoutRes final int layoutId,
+                             final LayoutInflater layoutInflater, final ViewGroup viewGroup) {
+        runOnWorkerThread(() -> {
+            View view = layoutInflater.inflate(layoutId, viewGroup, false);
+            liveData.postValue(view);
         });
-        return liveData;
     }
 
     protected void runOnWorkerThread(Runnable runnable) {

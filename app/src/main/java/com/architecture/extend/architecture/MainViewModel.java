@@ -5,8 +5,10 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.os.SystemClock;
 
-import com.architecture.extend.baselib.mvvm.BaseViewModel;
 import com.architecture.extend.baselib.mvvm.AsyncTransforms;
+import com.architecture.extend.baselib.mvvm.BaseViewModel;
+import com.architecture.extend.baselib.mvvm.NetworkBundleResource;
+import com.architecture.extend.baselib.mvvm.Resource;
 import com.architecture.extend.baselib.util.LogUtil;
 
 /**
@@ -16,8 +18,10 @@ import com.architecture.extend.baselib.util.LogUtil;
 public class MainViewModel extends BaseViewModel<MainModel> {
 
     private MutableLiveData<String> mStringMutableLiveData;
+    private LiveData<Resource<Weather>> mPullToRefresh;
+    private NetworkBundleResource<Weather, Weather> mPullToRefreshResource;
 
-    public android.arch.lifecycle.LiveData getUserString() {
+    public LiveData getUserString() {
         if (mStringMutableLiveData != null) {
             return mStringMutableLiveData;
         }
@@ -35,8 +39,17 @@ public class MainViewModel extends BaseViewModel<MainModel> {
         return liveData;
     }
 
-    @Override
-    protected void onCreate() {
-        super.onCreate();
+    public LiveData<Resource<Weather>> getPullToRefresh() {
+        if(mPullToRefresh == null){
+            mPullToRefreshResource = getModel().getPullToRefreshResource();
+            mPullToRefresh = mPullToRefreshResource.getLiveData();
+        }
+        return mPullToRefresh;
+    }
+
+    public void onPullToRefresh() {
+        if(mPullToRefreshResource != null){
+            mPullToRefreshResource.start();
+        }
     }
 }
