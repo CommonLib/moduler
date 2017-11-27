@@ -94,24 +94,28 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         fragmentStack.push(new MainFragment(), null);
 
         LiveData<Resource<Weather>> resourceLiveData = getViewModel().getPullToRefresh();
-        resourceLiveData.observe(this, weatherResource -> {
-            if (weatherResource != null) {
-                if (weatherResource.status == Resource.STATE_SUCCESS) {
-                    getPullToRefreshView().refreshComplete();
-                    LogUtil.d("ui STATE_SUCCESS");
-                    if (weatherResource.data != null) {
-                        TextView tv = findViewById(R.id.tv_hello_world);
-                        tv.setText(weatherResource.data.toString());
+        resourceLiveData.observe(this, new Observer<Resource<Weather>>() {
+            @Override
+            public void onChanged(@Nullable Resource<Weather> weatherResource) {
+                if (weatherResource != null) {
+                    if (weatherResource.status == Resource.STATE_SUCCESS) {
+                        getPullToRefreshView().refreshComplete();
+                        LogUtil.d("ui STATE_SUCCESS");
+                        if (weatherResource.data != null) {
+                            TextView tv = findViewById(R.id.tv_hello_world);
+                            tv.setText(weatherResource.data.toString());
+                        }
+                    } else if (weatherResource.status == Resource.STATE_CACHE) {
+                        LogUtil.d("ui STATE_CACHE");
+                        if (weatherResource.data != null) {
+                            TextView tv = findViewById(R.id.tv_hello_world);
+                            tv.setText(weatherResource.data.toString());
+                        }
+                    } else if (weatherResource.status == Resource.STATE_ERROR) {
+                        getPullToRefreshView().refreshComplete();
+                        LogUtil.d("ui STATE_ERROR");
+                        Toast.makeText(MainActivity.this, "result error", Toast.LENGTH_LONG).show();
                     }
-                } else if (weatherResource.status == Resource.STATE_CACHE) {
-                    LogUtil.d("ui STATE_CACHE");
-                    if (weatherResource.data != null) {
-                        TextView tv = findViewById(R.id.tv_hello_world);
-                        tv.setText(weatherResource.data.toString());
-                    }
-                } else if (weatherResource.status == Resource.STATE_ERROR) {
-                    LogUtil.d("ui STATE_ERROR");
-                    Toast.makeText(MainActivity.this, "result error", Toast.LENGTH_LONG).show();
                 }
             }
         });

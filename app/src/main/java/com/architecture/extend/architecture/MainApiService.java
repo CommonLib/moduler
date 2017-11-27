@@ -1,5 +1,7 @@
 package com.architecture.extend.architecture;
 
+import com.architecture.extend.baselib.mvvm.ApiResponse;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;
@@ -10,5 +12,5 @@ import retrofit2.http.Query;
 
 public interface MainApiService{
     @GET("open/api/weather/json.shtml")
-    Call<Weather> getWeather(@Query("city")String city);
+    Call<ApiResponse<Weather>> getWeather(@Query("city")String city);
 }

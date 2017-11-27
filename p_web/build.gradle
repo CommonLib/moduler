@@ -43,11 +43,6 @@ android {
         enabled = true
     }
 
-    compileOptions {
-        targetCompatibility project.jdkVersion as float
-        sourceCompatibility project.jdkVersion as float
-    }
-
     resourcePrefix "web_"
 }
 

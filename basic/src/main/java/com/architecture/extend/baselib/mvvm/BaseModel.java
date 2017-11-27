@@ -26,9 +26,12 @@ public abstract class BaseModel {
 
     public void asyncInflate(final MutableLiveData<View> liveData, @LayoutRes final int layoutId,
                              final LayoutInflater layoutInflater, final ViewGroup viewGroup) {
-        runOnWorkerThread(() -> {
-            View view = layoutInflater.inflate(layoutId, viewGroup, false);
-            liveData.postValue(view);
+        runOnWorkerThread(new Runnable() {
+            @Override
+            public void run() {
+                View view = layoutInflater.inflate(layoutId, viewGroup, false);
+                liveData.postValue(view);
+            }
         });
     }
 

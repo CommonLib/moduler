@@ -6,6 +6,7 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 
 import com.architecture.extend.baselib.BaseApplication;
+import com.architecture.extend.baselib.mvvm.ApiResponse;
 import com.architecture.extend.baselib.mvvm.BaseModel;
 import com.architecture.extend.baselib.mvvm.NetworkCacheResource;
 import com.architecture.extend.baselib.storage.remote.RetrofitHelper;
@@ -61,7 +62,7 @@ public class MainModel extends BaseModel {
 
             @NonNull
             @Override
-            protected Call<Weather> getCall() {
+            protected Call<ApiResponse<Weather>> getCall() {
                 LogUtil.d("getCall");
                 MainApiService service = RetrofitHelper.getInstance()
                         .getService(MainApiService.class);
@@ -69,8 +70,9 @@ public class MainModel extends BaseModel {
             }
 
             @Override
-            protected void onFetchFailed(Response<Weather> response, Throwable throwable) {
-                LogUtil.d("onFetchFailed => " + response);
+            protected void onFetchFailed(Response<ApiResponse<Weather>> response, Throwable
+                    throwable) {
+                LogUtil.d("onFetchFailed => " + response + " errorMsg = " + throwable);
             }
         };
     }

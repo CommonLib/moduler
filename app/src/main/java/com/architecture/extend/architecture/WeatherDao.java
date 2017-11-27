@@ -15,6 +15,6 @@ import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 public interface WeatherDao {
     @Insert(onConflict = REPLACE)
     void save(Weather weather);
-    @Query("SELECT * FROM weather WHERE city = :city")
-    LiveData<Weather> load(String city);
+    @Query("SELECT * FROM weather WHERE quality = :quality")
+    LiveData<Weather> load(String quality);
 }

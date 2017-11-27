@@ -44,26 +44,23 @@
 -dontwarn okhttp3.**
 -dontwarn okio.**
 -dontwarn javax.annotation.**
+-keepclasseswithmembers class okhttp3.Request { *; }
 # A resource is loaded with a relative path so the package of this class must be preserved.
 -keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
 
 -dontwarn android.databinding.**
 -keep class android.databinding.** { *; }
 
-# GreenDao
-
-### greenDAO 3
--keepclassmembers class * extends org.greenrobot.greendao.AbstractDao {
-public static java.lang.String TABLENAME;
-}
--keep class **$Properties
-
-# If you do not use SQLCipher:
--dontwarn org.greenrobot.greendao.database.**
-# If you do not use RxJava:
--dontwarn rx.**
-
 # alibaba ARouter
+-dontwarn com.alibaba.**
 -keep public class com.alibaba.android.arouter.routes.**{*;}
 -keep class * implements com.alibaba.android.arouter.facade.template.ISyringe{*;}
 
+# 如果使用了 byType 的方式获取 Service，需添加下面规则，保护接口
+-keep interface * implements com.alibaba.android.arouter.facade.template.IProvider
+
+# 如果使用了 单类注入，即不定义接口实现 IProvider，需添加下面规则，保护实现
+-keep class * implements com.alibaba.android.arouter.facade.template.IProvider
+
+#Gson
+-keep class * extends com.architecture.extend.baselib.base.Bean { *; }

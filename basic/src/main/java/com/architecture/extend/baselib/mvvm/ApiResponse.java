@@ -1,26 +1,19 @@
 package com.architecture.extend.baselib.mvvm;
 
-import retrofit2.Response;
+import com.architecture.extend.baselib.base.Bean;
 
 /**
- * Created by byang059 on 11/17/17.
+ * Created by byang059 on 11/22/17.
  */
 
-public class ApiResponse<RequestType> {
+public class ApiResponse<T> extends Bean {
+    public int status;
+    public String message;
+    public T data;
 
-    public String errorMessage;
-    public Response<RequestType> response;
-    public Throwable throwable;
-
-    public ApiResponse(Response<RequestType> response) {
-        this.response = response;
-    }
-
-    public ApiResponse(Throwable throwable) {
-        this.throwable = throwable;
-    }
-
-    public boolean isSuccessful() {
-        return response != null && response.isSuccessful();
+    @Override
+    public String toString() {
+        return "ApiResponse{" + "status=" + status + ", message='" + message + '\'' + ", data="
+                + data + '}';
     }
 }

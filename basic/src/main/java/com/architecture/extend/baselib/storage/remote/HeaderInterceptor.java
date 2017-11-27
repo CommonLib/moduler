@@ -14,7 +14,9 @@ import okhttp3.CacheControl;
 import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 /**
  * @author:dongpo 创建时间: 9/1/2016
@@ -39,21 +41,35 @@ public class HeaderInterceptor implements Interceptor {
                 }
             }
         }
+
+        Object tag = request.tag();
+        RequestBody body = request.body();
+        if (tag instanceof ApiCallBack && body != null) {
+            String method = request.method();
+            builder.method(method, new ProgressRequestBody(body, (ApiCallBack) tag));
+        }
+
         Request newRequest = builder.build();
-        printRequestInfo(newRequest);
+//        printRequestInfo(newRequest);
         //获取请求头中的缓存时间
         String cacheControl = request.cacheControl().toString();
         Response response = chain.proceed(newRequest);
 
+        Response.Builder responseBuilder = response.newBuilder();
+
+        if (tag instanceof ApiCallBack) {
+            responseBuilder.body(new ProgressResponseBody(response.body(), (ApiCallBack) tag));
+        }
+
         if (networkAvailable) {
-            response.newBuilder().header("Cache-Control", cacheControl)
+            response = responseBuilder.header("Cache-Control", cacheControl)
                     .removeHeader("Pragma")// 清除头信息，因为服务器如果不支持，会返回一些干扰信息，不清除下面无法生效
                     .build();
         } else {
-            response.newBuilder().header("Cache-Control", cacheControl).removeHeader("Pragma")
+            response = responseBuilder.header("Cache-Control", cacheControl).removeHeader("Pragma")
                     .build();
         }
-        printResponseInfo(response);
+//        printResponseInfo(response);
         return response;
     }
 
@@ -97,11 +113,12 @@ public class HeaderInterceptor implements Interceptor {
                     String value = headers.get(name);
                     LogUtil.d("header: " + name + ", " + value);
                 }
-                if (response.body() != null) {
-                    if (response.body().contentLength() > 102400) {
+                ResponseBody body = response.body();
+                if (body != null) {
+                    if (body.contentLength() > 102400) {
                         LogUtil.d("body: body is too long to print, ignore..");
                     } else {
-                        LogUtil.d("body:" + response.toString());
+                        LogUtil.d("body:" + body.string());
                     }
                 }
             } catch (Exception e) {
