@@ -5,18 +5,15 @@ import android.support.annotation.NonNull;
 
 import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.util.AppUtil;
-import com.architecture.extend.baselib.util.LogUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
 
 import okhttp3.CacheControl;
-import okhttp3.Headers;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 /**
  * @author:dongpo 创建时间: 9/1/2016
@@ -50,11 +47,9 @@ public class HeaderInterceptor implements Interceptor {
         }
 
         Request newRequest = builder.build();
-//        printRequestInfo(newRequest);
         //获取请求头中的缓存时间
         String cacheControl = request.cacheControl().toString();
         Response response = chain.proceed(newRequest);
-
         Response.Builder responseBuilder = response.newBuilder();
 
         if (tag instanceof ApiCallBack) {
@@ -69,63 +64,6 @@ public class HeaderInterceptor implements Interceptor {
             response = responseBuilder.header("Cache-Control", cacheControl).removeHeader("Pragma")
                     .build();
         }
-//        printResponseInfo(response);
         return response;
-    }
-
-    private void printRequestInfo(Request request) {
-        if (LogUtil.DEBUG) {
-            try {
-                LogUtil.d("---------------------------Request Start---------------------------");
-                LogUtil.d("method = " + request.method());
-                LogUtil.d("url = " + request.url().toString());
-                Headers headers = request.headers();
-                for (int i = 0; i < headers.size(); i++) {
-                    String name = headers.name(i);
-                    String value = headers.get(name);
-                    LogUtil.d("header: " + name + ", " + value);
-                }
-                if (request.body() != null) {
-                    if (request.body().contentLength() > 102400) {
-                        LogUtil.d("body: body is too long to print, ignore..");
-                    } else {
-                        LogUtil.d("body:" + request.body().toString());
-                    }
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-                LogUtil.d("IOException:" + e.getMessage());
-            }
-            LogUtil.d("---------------------------Request End-----------------------------");
-        }
-    }
-
-    private void printResponseInfo(Response response) {
-
-        if (LogUtil.DEBUG) {
-            try {
-                LogUtil.d("---------------------------Response start---------------------------");
-                LogUtil.d("code = " + response.code());
-                LogUtil.d("url = " + response.request().url().toString());
-                Headers headers = response.headers();
-                for (int i = 0; i < headers.size(); i++) {
-                    String name = headers.name(i);
-                    String value = headers.get(name);
-                    LogUtil.d("header: " + name + ", " + value);
-                }
-                ResponseBody body = response.body();
-                if (body != null) {
-                    if (body.contentLength() > 102400) {
-                        LogUtil.d("body: body is too long to print, ignore..");
-                    } else {
-                        LogUtil.d("body:" + body.string());
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                LogUtil.d("IOException:" + e.getMessage());
-            }
-            LogUtil.d("---------------------------Response end-----------------------------");
-        }
     }
 }

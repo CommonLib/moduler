@@ -41,7 +41,7 @@ public class BaseApplication extends MultiDexApplication {
     private void init(boolean debugMode) {
         instance = this;
         mHandler = new Handler();
-        LogUtil.init(getPackageName(), true);
+        LogUtil.init(getClass().getSimpleName(), true);
         if (debugMode) {
             ARouter.openLog();
             ARouter.openDebug();

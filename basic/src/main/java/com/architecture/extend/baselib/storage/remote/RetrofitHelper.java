@@ -1,6 +1,7 @@
 package com.architecture.extend.baselib.storage.remote;
 
 import com.architecture.extend.baselib.BaseApplication;
+import com.architecture.extend.baselib.BuildConfig;
 import com.architecture.extend.baselib.config.AppConfig;
 import com.architecture.extend.baselib.config.Environment;
 import com.google.gson.ExclusionStrategy;
@@ -62,15 +63,13 @@ public class RetrofitHelper {
                 .readTimeout(AppConfig.API_WRITE_READ_TIMEOUT, TimeUnit.SECONDS)
                 .writeTimeout(AppConfig.API_WRITE_READ_TIMEOUT, TimeUnit.SECONDS);
 
-        if (true) {
+        if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
             okHttpClient = builder.addInterceptor(loggingInterceptor).build();
         } else {
             okHttpClient = builder.build();
         }
-
         return new Retrofit.Builder().baseUrl(Environment.API_BASE_URL).client(okHttpClient)
                 .addConverterFactory(gsonConverterFactory).build();
     }
