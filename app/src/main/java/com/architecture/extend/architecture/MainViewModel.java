@@ -5,17 +5,22 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.os.SystemClock;
 
+import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.architecture.extend.baselib.mvvm.AsyncTransforms;
 import com.architecture.extend.baselib.mvvm.BaseViewModel;
 import com.architecture.extend.baselib.mvvm.NetworkBundleResource;
 import com.architecture.extend.baselib.mvvm.Resource;
 import com.architecture.extend.baselib.util.LogUtil;
+import com.module.contract.pic.IPicService;
 
 /**
  * Created by byang059 on 5/27/17.
  */
 
 public class MainViewModel extends BaseViewModel<MainModel> {
+
+    @Autowired
+    IPicService mIPicService;
 
     private MutableLiveData<String> mStringMutableLiveData;
     private LiveData<Resource<Weather>> mPullToRefresh;
@@ -36,6 +41,7 @@ public class MainViewModel extends BaseViewModel<MainModel> {
         });
         mStringMutableLiveData.setValue("first value");
         mStringMutableLiveData.postValue("second value");
+        mIPicService.playPic(getApplicationContext());
         return liveData;
     }
 

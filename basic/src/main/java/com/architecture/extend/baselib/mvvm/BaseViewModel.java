@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.LogUtil;
 
@@ -89,5 +90,9 @@ public abstract class BaseViewModel<M extends BaseModel> extends ViewModel
         MutableLiveData<View> liveData = new MutableLiveData<>();
         getModel().asyncInflate(liveData, layoutId, layoutInflater, viewGroup);
         return liveData;
+    }
+
+    public BaseApplication getApplicationContext(){
+        return BaseApplication.getInstance();
     }
 }

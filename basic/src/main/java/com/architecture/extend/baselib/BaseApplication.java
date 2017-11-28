@@ -4,10 +4,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
-import android.text.TextUtils;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.architecture.extend.baselib.util.AppUtil;
 import com.architecture.extend.baselib.util.LogUtil;
 
 /**
@@ -18,6 +16,7 @@ public class BaseApplication extends MultiDexApplication {
 
     private static BaseApplication instance;
     private Handler mHandler;
+    private static boolean isInited = false;
 
     public static BaseApplication getInstance() {
         return instance;
@@ -32,9 +31,9 @@ public class BaseApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        String processName = AppUtil.getProcessName(this, android.os.Process.myPid());
-        if (TextUtils.equals(processName, getPackageName())) {
+        if (!isInited) {
             init(BuildConfig.DEBUG);
+            isInited = true;
         }
     }
 
@@ -58,7 +57,7 @@ public class BaseApplication extends MultiDexApplication {
         mHandler.postDelayed(runnable, millis);
     }
 
-    public Handler getHandler(){
+    public Handler getHandler() {
         return mHandler;
     }
 }

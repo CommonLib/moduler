@@ -21,7 +21,7 @@ import com.architecture.extend.baselib.mvvm.ViewCreateCallBack;
 import com.architecture.extend.baselib.util.AppUtil;
 import com.architecture.extend.baselib.util.FragmentStack;
 import com.architecture.extend.baselib.util.LogUtil;
-import com.module.contract.router.RouterMaps;
+import com.module.contract.router.RouterConstant;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 
@@ -37,7 +37,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         findViewById(R.id.act_btn_web).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARouter.getInstance().build(RouterMaps.Page.PIC).navigation();
+                ARouter.getInstance().build(RouterConstant.Pic.PAGE_PIC).navigation();
                 //                startActivity(new Intent(MainActivity.this, Activity1.class));
 
             }
@@ -114,7 +114,8 @@ public class MainActivity extends BaseActivity<MainViewModel> {
                     } else if (weatherResource.status == Resource.STATE_ERROR) {
                         getPullToRefreshView().refreshComplete();
                         LogUtil.d("ui STATE_ERROR");
-                        Toast.makeText(MainActivity.this, "result error", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.this, weatherResource.message, Toast.LENGTH_LONG)
+                                .show();
                     }
                 }
             }

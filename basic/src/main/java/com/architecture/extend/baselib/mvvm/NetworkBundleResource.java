@@ -79,7 +79,7 @@ public abstract class NetworkBundleResource<ResultType, RequestType> {
         });
         mResult.addSource(apiResponse, new Observer<ResponseWrapper<RequestType>>() {
             @Override
-            public void onChanged(@Nullable ResponseWrapper<RequestType> response) {
+            public void onChanged(@Nullable final ResponseWrapper<RequestType> response) {
                 mResult.removeSource(apiResponse);
                 mResult.removeSource(mCacheSource);
                 //noinspection ConstantConditions
@@ -94,7 +94,8 @@ public abstract class NetworkBundleResource<ResultType, RequestType> {
                     mResult.addSource(mCacheSource, new Observer<ResultType>() {
                         @Override
                         public void onChanged(@Nullable ResultType resultType) {
-                            mResult.setValue((Resource<ResultType>) Resource.error(null));
+                            mResult.setValue((Resource<ResultType>) Resource
+                                    .error(response.throwable.getMessage()));
                         }
                     });
                 }
