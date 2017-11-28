@@ -284,7 +284,16 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         });
     }
 
-    protected void onRefreshBegin(PtrFrameLayout frame){}
+    public void startPage(Bundle bundle, String path) {
+        mViewModel.startPage(bundle, path);
+    }
+
+    public void startPageForResult(Bundle bundle, String path, int requestCode) {
+        mViewModel.startPageForResult(bundle, path, mActivity, requestCode);
+    }
+
+    protected void onRefreshBegin(PtrFrameLayout frame) {
+    }
 
     protected void initLoadingStateView(LoadStateView loadStateView) {
         DataBindingUtil

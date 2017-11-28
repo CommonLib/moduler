@@ -5,14 +5,14 @@ import android.content.Intent;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
 import com.architecture.extend.baselib.router.PluginService;
-import com.module.contract.router.RouterConstant;
+import com.module.contract.router.RouterConstants;
 import com.module.contract.web.IWebService;
 
 /**
  * Created by byang059 on 9/15/17.
  */
 
-@Route(path = RouterConstant.Web.SERVICE_WEB)
+@Route(path = RouterConstants.Web.SERVICE_WEB)
 public class WebPluginServiceImpl extends PluginService implements IWebService {
 
     @Override

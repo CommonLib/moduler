@@ -20,6 +20,30 @@ allprojects {
     }
 }
 
+ext {
+    compileSdkVersion = 26
+    buildToolsVersion = '26.0.2'
+    minSdkVersion = 14
+    targetSdkVersion = 25
+    supportVersion = '26.1.0'
+
+    keyPath = getConfigProperty('keyPath')
+    keyAlias = getConfigProperty('keyAlias')
+    keyPassword = getConfigProperty('keyPassword')
+    storePassword = getConfigProperty('storePassword')
+    def hasBuildAll = getConfigProperty('buildAll')
+    buildAll = (hasBuildAll == null ? true : hasBuildAll)
+}
+
+def getConfigProperty(String name) {
+    Properties properties = new Properties()
+    InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
+    properties.load(inputStream)
+    def value = properties.getProperty(name)
+    println(value)
+    return value
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

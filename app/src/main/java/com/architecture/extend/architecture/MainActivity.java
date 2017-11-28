@@ -21,7 +21,7 @@ import com.architecture.extend.baselib.mvvm.ViewCreateCallBack;
 import com.architecture.extend.baselib.util.AppUtil;
 import com.architecture.extend.baselib.util.FragmentStack;
 import com.architecture.extend.baselib.util.LogUtil;
-import com.module.contract.router.RouterConstant;
+import com.module.contract.router.RouterConstants;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 
@@ -37,7 +37,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         findViewById(R.id.act_btn_web).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARouter.getInstance().build(RouterConstant.Pic.PAGE_PIC).navigation();
+                ARouter.getInstance().build(RouterConstants.Pic.PAGE_PIC).navigation();
                 //                startActivity(new Intent(MainActivity.this, Activity1.class));
 
             }

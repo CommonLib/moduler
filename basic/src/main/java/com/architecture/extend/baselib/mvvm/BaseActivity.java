@@ -278,7 +278,16 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
                         true);
     }
 
-    protected void onPullRefreshBegin(PtrFrameLayout frame){}
+    public void startPage(Bundle bundle, String path) {
+        mViewModel.startPage(bundle, path);
+    }
+
+    public void startPageForResult(Bundle bundle, String path, int requestCode) {
+        mViewModel.startPageForResult(bundle, path, this, requestCode);
+    }
+
+    protected void onPullRefreshBegin(PtrFrameLayout frame) {
+    }
 
     public PtrFrameLayout getPullToRefreshView() {
         return mPullToRefreshView;

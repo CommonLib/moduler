@@ -1,17 +1,20 @@
 package com.architecture.extend.baselib.mvvm;
 
+import android.app.Activity;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.arch.lifecycle.ViewModel;
+import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.alibaba.android.arouter.facade.Postcard;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.util.GenericUtil;
@@ -92,7 +95,23 @@ public abstract class BaseViewModel<M extends BaseModel> extends ViewModel
         return liveData;
     }
 
-    public BaseApplication getApplicationContext(){
+    public BaseApplication getApplicationContext() {
         return BaseApplication.getInstance();
+    }
+
+    public void startPage(Bundle bundle, String path) {
+        Postcard build = ARouter.getInstance().build(path);
+        if (bundle != null) {
+            build.with(bundle);
+        }
+        build.navigation();
+    }
+
+    public void startPageForResult(Bundle bundle, String path, Activity activity, int requestCode) {
+        Postcard build = ARouter.getInstance().build(path);
+        if (bundle != null) {
+            build.with(bundle);
+        }
+        build.navigation(activity, requestCode);
     }
 }

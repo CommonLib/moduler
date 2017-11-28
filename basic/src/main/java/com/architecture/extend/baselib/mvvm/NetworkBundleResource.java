@@ -33,12 +33,14 @@ public abstract class NetworkBundleResource<ResultType, RequestType> {
     @MainThread
     public NetworkBundleResource() {
         //refactor
-        mCacheSource = loadFromCache();
         mResult = new MediatorLiveData<>();
     }
 
     public void start() {
-        mResult.removeSource(mCacheSource);
+        if(mCacheSource != null){
+            mResult.removeSource(mCacheSource);
+        }
+        mCacheSource = loadFromCache();
         mResult.setValue((Resource<ResultType>) Resource.loading());
         mResult.addSource(mCacheSource, new Observer<ResultType>() {
             @Override

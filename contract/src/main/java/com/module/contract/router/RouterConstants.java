@@ -4,7 +4,7 @@ package com.module.contract.router;
  * Created by byang059 on 11/3/17.
  */
 
-public class RouterConstant {
+public class RouterConstants {
     //path at least tew levels，example: /moduleName/xx
     public static class Web{
         public static final String PAGE_WEB = "/web/webPage";

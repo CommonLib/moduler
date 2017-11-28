@@ -1,7 +1,9 @@
 package com.architecture.extend.baselib;
 
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Handler;
+import android.support.annotation.WorkerThread;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
@@ -16,7 +18,7 @@ public class BaseApplication extends MultiDexApplication {
 
     private static BaseApplication instance;
     private Handler mHandler;
-    private static boolean isInited = false;
+    private static boolean isInit = false;
 
     public static BaseApplication getInstance() {
         return instance;
@@ -31,21 +33,33 @@ public class BaseApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (!isInited) {
+        if (!isInit) {
             init(BuildConfig.DEBUG);
-            isInited = true;
+            AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
+                @Override
+                public void run() {
+                    asyncInit(BuildConfig.DEBUG);
+                }
+            });
+            isInit = true;
         }
     }
 
-    private void init(boolean debugMode) {
+    protected void init(final boolean debugMode) {
         instance = this;
         mHandler = new Handler();
-        LogUtil.init(getClass().getSimpleName(), true);
+        LogUtil.init(getClass().getSimpleName(), debugMode);
         if (debugMode) {
             ARouter.openLog();
             ARouter.openDebug();
+            ARouter.printStackTrace();
         }
         ARouter.init(this);
+    }
+
+    @WorkerThread
+    protected void asyncInit(boolean debugMode) {
+
     }
 
     public void exit() {
