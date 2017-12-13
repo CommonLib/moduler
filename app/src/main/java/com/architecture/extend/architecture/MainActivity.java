@@ -65,9 +65,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         findViewById(R.id.act_btn_pic).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                usePermission(new String[]{
-                        Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE
-                }, new PermissionCallBack() {
+                usePermission(new PermissionCallBack() {
                     @Override
                     public void onGranted(String permission) {
                         LogUtil.d(permission + " onGranted");
@@ -77,7 +75,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
                     public void onDenied(String permission) {
                         LogUtil.d(permission + " onDenied");
                     }
-                });
+                }, Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE);
                 //                startActivity(new Intent(MainActivity.this, Activity1.class));
                 getViewModel().getUserString().observe(MainActivity.this, new Observer<String>() {
                     @Override
@@ -114,8 +112,8 @@ public class MainActivity extends BaseActivity<MainViewModel> {
                     } else if (weatherResource.status == Resource.STATE_ERROR) {
                         getPullToRefreshView().refreshComplete();
                         LogUtil.d("ui STATE_ERROR");
-                        Toast.makeText(MainActivity.this, weatherResource.message, Toast.LENGTH_LONG)
-                                .show();
+                        Toast.makeText(MainActivity.this, weatherResource.message,
+                                Toast.LENGTH_LONG).show();
                     }
                 }
             }

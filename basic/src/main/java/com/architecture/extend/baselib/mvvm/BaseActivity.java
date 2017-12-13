@@ -24,16 +24,15 @@ import android.view.ViewGroup;
 import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.util.GenericUtil;
-import com.architecture.extend.baselib.util.PermissionAccessUtil;
 import com.architecture.extend.baselib.util.ViewUtil;
 import com.architecture.extend.baselib.widget.LoadStateView;
-import com.github.kayvannj.permission_utils.PermissionUtil;
-
-import java.util.ArrayList;
+import com.tbruyelle.rxpermissions2.Permission;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.header.MaterialHeader;
+import io.reactivex.functions.Consumer;
 
 
 /**
@@ -46,11 +45,11 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     private VM mViewModel;
     private boolean mIsForeground;
     private ViewForegroundSwitchListener mSwitchListener;
-    private ArrayList<PermissionUtil.PermissionRequestObject> mPermissionRequests;
     private ConfigureInfo mConfigureInfo;
     private PtrFrameLayout mPullToRefreshView;
     private LoadStateView mLoadStateView;
     private Toolbar mToolbar;
+    private RxPermissions mRxPermissions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,52 +107,28 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     /**
      * for android version above 23 to apply permissions
-     * TODO need to impl apply for mulit permissions once
      *
      * @param permissions
      * @param callBack
      */
     @TargetApi(Build.VERSION_CODES.M)
-    protected void usePermission(@RequiresPermission String[] permissions,
-                                 PermissionCallBack callBack) {
+    protected void usePermission(final PermissionCallBack callBack,
+                                 @RequiresPermission String... permissions) {
+        if (mRxPermissions == null) {
+            mRxPermissions = new RxPermissions(this);
+        }
 
-        ArrayList<String> requestPermissions = new ArrayList<>();
-        for (String permission : permissions) {
-            boolean isGranted = PermissionAccessUtil.hasPermission(this, permission);
-            if (isGranted) {
-                callBack.onGranted(permission);
-            } else {
-                requestPermissions.add(permission);
+        mRxPermissions.requestEach(permissions).subscribe(new Consumer<Permission>() {
+            @Override
+            public void accept(Permission permission) throws Exception {
+                if (permission.granted) {
+                    // `permission.name` is granted !
+                    callBack.onGranted(permission.name);
+                } else {
+                    callBack.onDenied(permission.name);
+                }
             }
-        }
-
-        int pendingSize = requestPermissions.size();
-        if (pendingSize == 0) {
-            return;
-        }
-
-        String[] pendingPermissions = new String[pendingSize];
-        requestPermissions.toArray(pendingPermissions);
-
-        PermissionUtil.PermissionRequestObject permissionRequest = PermissionAccessUtil
-                .requestPermission(this, pendingPermissions, callBack);
-        if (mPermissionRequests == null) {
-            mPermissionRequests = new ArrayList<>();
-        }
-        mPermissionRequests.add(permissionRequest);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (mPermissionRequests != null && mPermissionRequests.size() > 0) {
-            for (PermissionUtil.PermissionRequestObject permissionRequest : mPermissionRequests) {
-                permissionRequest
-                        .onRequestPermissionsResult(requestCode, permissions, grantResults);
-            }
-            mPermissionRequests.clear();
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        });
     }
 
     private void inflateLayout(boolean isAsyncInflate) {

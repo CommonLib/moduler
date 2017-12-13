@@ -21,13 +21,9 @@ import android.widget.FrameLayout;
 import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.util.GenericUtil;
-import com.architecture.extend.baselib.util.PermissionAccessUtil;
 import com.architecture.extend.baselib.util.ViewUtil;
 import com.architecture.extend.baselib.widget.ChildScrollFrameLayout;
 import com.architecture.extend.baselib.widget.LoadStateView;
-import com.github.kayvannj.permission_utils.PermissionUtil;
-
-import java.util.ArrayList;
 
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -43,7 +39,6 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     private boolean mIsDestroyed;
     private BaseActivity mActivity;
     private ViewForegroundSwitchListener mSwitchListener;
-    private ArrayList<PermissionUtil.PermissionRequestObject> mPermissionRequests;
     private ConfigureInfo mConfigureInfo;
     private PtrFrameLayout mPullToRefreshView;
     private LoadStateView mLoadStateView;
@@ -144,42 +139,8 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
      * @param callBack
      */
     @TargetApi(Build.VERSION_CODES.M)
-    protected void usePermission(String[] permissions, PermissionCallBack callBack) {
-
-        ArrayList<String> requestPermissions = new ArrayList<>();
-        for (String permission : permissions) {
-            boolean isGranted = PermissionAccessUtil.hasPermission(this, permission);
-            if (isGranted) {
-                callBack.onGranted(permission);
-            } else {
-                requestPermissions.add(permission);
-            }
-        }
-
-        int pendingSize = requestPermissions.size();
-        if (pendingSize == 0) {
-            return;
-        }
-
-        PermissionUtil.PermissionRequestObject permissionRequest = PermissionAccessUtil
-                .requestPermission(this, permissions, callBack);
-        if (mPermissionRequests == null) {
-            mPermissionRequests = new ArrayList<>();
-        }
-        mPermissionRequests.add(permissionRequest);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (mPermissionRequests != null && mPermissionRequests.size() > 0) {
-            for (PermissionUtil.PermissionRequestObject permissionRequest : mPermissionRequests) {
-                permissionRequest
-                        .onRequestPermissionsResult(requestCode, permissions, grantResults);
-            }
-            mPermissionRequests.clear();
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    protected void usePermission(PermissionCallBack callBack, String... permissions) {
+        mActivity.usePermission(callBack, permissions);
     }
 
     @Override
