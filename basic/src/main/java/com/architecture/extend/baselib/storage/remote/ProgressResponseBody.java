@@ -18,7 +18,7 @@ import okio.Source;
 public class ProgressResponseBody extends ResponseBody {
 
     private final ResponseBody mResponseBody;
-    private final ApiCallBack mListener;
+    private final RetrofitCallBack mListener;
     private BufferedSource mBufferedSource;
 
     /**
@@ -27,7 +27,7 @@ public class ProgressResponseBody extends ResponseBody {
      * @param responseBody 待包装的响应体
      * @param
      */
-    public ProgressResponseBody(ResponseBody responseBody, ApiCallBack listener) {
+    public ProgressResponseBody(ResponseBody responseBody, RetrofitCallBack listener) {
         this.mResponseBody = responseBody;
         mListener = listener;
     }

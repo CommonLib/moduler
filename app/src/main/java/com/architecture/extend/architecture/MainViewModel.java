@@ -8,10 +8,10 @@ import android.os.SystemClock;
 import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.architecture.extend.baselib.mvvm.AsyncTransforms;
 import com.architecture.extend.baselib.mvvm.BaseViewModel;
-import com.architecture.extend.baselib.mvvm.NetworkBundleResource;
 import com.architecture.extend.baselib.mvvm.Resource;
 import com.architecture.extend.baselib.util.LogUtil;
 import com.module.contract.pic.IPicService;
+import com.module.contract.remote.ApiBundleResource;
 
 /**
  * Created by byang059 on 5/27/17.
@@ -24,7 +24,7 @@ public class MainViewModel extends BaseViewModel<MainModel> {
 
     private MutableLiveData<String> mStringMutableLiveData;
     private LiveData<Resource<Weather>> mPullToRefresh;
-    private NetworkBundleResource<Weather, Weather> mPullToRefreshResource;
+    private ApiBundleResource<Weather, Weather> mPullToRefreshResource;
 
     public LiveData getUserString() {
         if (mStringMutableLiveData != null) {

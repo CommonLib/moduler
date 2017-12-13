@@ -19,17 +19,8 @@ import retrofit2.Response;
  * Created by byang059 on 11/23/17.
  */
 
-public abstract class ApiCallBack<T> implements Callback<ApiResponse<T>> {
+public abstract class RetrofitCallBack<T> implements Callback<ApiResponse<T>> {
 
-    //对应HTTP的状态码
-    private static final int UNAUTHORIZED = 401;
-    private static final int FORBIDDEN = 403;
-    private static final int NOT_FOUND = 404;
-    private static final int REQUEST_TIMEOUT = 408;
-    private static final int INTERNAL_SERVER_ERROR = 500;
-    private static final int BAD_GATEWAY = 502;
-    private static final int SERVICE_UNAVAILABLE = 503;
-    private static final int GATEWAY_TIMEOUT = 504;
     private static final int PARSE_ERROR = 1001;
     private static final int UN_KNOWN = 1002;
 
@@ -65,11 +56,11 @@ public abstract class ApiCallBack<T> implements Callback<ApiResponse<T>> {
         if (t instanceof HttpException) {
             HttpException error = (HttpException) t;
             int code = error.code();
-            dealWithHttpError(error, code);
+            handleHttpError(error, code);
             onFailure(code, error);
         } else if (t instanceof ApiException) {
             ApiException apiException = (ApiException) t;
-            dealWithApiError(apiException.code, apiException);
+            handleApiError(apiException.code, apiException);
             onFailure(apiException.code, apiException);
         } else if (t instanceof JsonParseException || t instanceof JSONException
                 || t instanceof ParseException) {
@@ -89,15 +80,13 @@ public abstract class ApiCallBack<T> implements Callback<ApiResponse<T>> {
 
     }
 
-    protected void dealWithHttpError(HttpException error, int httpCode) {
+    protected void handleHttpError(HttpException error, int httpCode) {
     }
 
-    protected void dealWithApiError(int errorBusinessCode, @NonNull ApiException t) {
+    protected void handleApiError(int errorBusinessCode, @NonNull ApiException t) {
     }
 
-    protected boolean isBusinessCodeSuccess(int businessCode) {
-        return businessCode == 200;
-    }
+    protected abstract boolean isBusinessCodeSuccess(int businessCode);
 
     protected abstract void onSuccess(T t, Response<ApiResponse<T>> response);
 

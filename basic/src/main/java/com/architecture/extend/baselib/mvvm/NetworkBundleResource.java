@@ -8,7 +8,6 @@ import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.architecture.extend.baselib.storage.remote.ApiCallBack;
 import com.architecture.extend.baselib.util.LogUtil;
 
 import java.lang.reflect.Field;
@@ -20,6 +19,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Request;
 import retrofit2.Call;
+import retrofit2.Callback;
 import retrofit2.Response;
 
 /**
@@ -37,7 +37,7 @@ public abstract class NetworkBundleResource<ResultType, RequestType> {
     }
 
     public void start() {
-        if(mCacheSource != null){
+        if (mCacheSource != null) {
             mResult.removeSource(mCacheSource);
         }
         mCacheSource = loadFromCache();
@@ -108,46 +108,23 @@ public abstract class NetworkBundleResource<ResultType, RequestType> {
     protected LiveData<ResponseWrapper<RequestType>> createCall() {
         final MutableLiveData<ResponseWrapper<RequestType>> liveData = new MutableLiveData<>();
         Call<ApiResponse<RequestType>> call = getCall();
-        ApiCallBack<RequestType> apiCallBack = new ApiCallBack<RequestType>() {
-            @Override
-            protected void onSuccess(RequestType requestType,
-                                     Response<ApiResponse<RequestType>> response) {
-                liveData.setValue(new ResponseWrapper<>(response));
-            }
-
-            @Override
-            protected void onFailure(int errorCode, Throwable t) {
-                liveData.setValue(
-                        (ResponseWrapper<RequestType>) new ResponseWrapper<>(errorCode, t));
-            }
-
-            @Override
-            public void onDownLoadProgressUpdate(boolean done, long current, long totalSize,
-                                                 long speed) {
-                LogUtil.d("onDownLoadProgressUpdate done = " + done + " current" + current + " "
-                        + "totalSize" + totalSize + " speed" + speed);
-                super.onDownLoadProgressUpdate(done, current, totalSize, speed);
-            }
-
-            @Override
-            public void onUploadProgressUpdate(boolean done, long current, long totalSize,
-                                               long speed) {
-                LogUtil.d("onUploadProgressUpdate done = " + done + " current" + current + " "
-                        + "totalSize" + totalSize + " speed" + speed);
-                super.onUploadProgressUpdate(done, current, totalSize, speed);
-            }
-        };
-        putCallBackInRequest(call.request(), apiCallBack);
-        call.enqueue(apiCallBack);
+        Callback<ApiResponse<RequestType>> retrofitCallBack = getCallBack(liveData);
+        putCallBackInRequest(call.request(), retrofitCallBack);
+        call.enqueue(retrofitCallBack);
         return liveData;
     }
 
-    private void putCallBackInRequest(Request request, ApiCallBack<RequestType> apiCallBack) {
+    @NonNull
+    protected abstract Callback<ApiResponse<RequestType>> getCallBack(
+            final MutableLiveData<ResponseWrapper<RequestType>> liveData);
+
+    private void putCallBackInRequest(Request request,
+                                      Callback<ApiResponse<RequestType>> retrofitCallBack) {
         Class<? extends Request> clazz = request.getClass();
         try {
             Field tagField = clazz.getDeclaredField("tag");
             tagField.setAccessible(true);
-            tagField.set(request, apiCallBack);
+            tagField.set(request, retrofitCallBack);
         } catch (NoSuchFieldException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {

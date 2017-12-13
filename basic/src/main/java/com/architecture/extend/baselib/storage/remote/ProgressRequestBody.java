@@ -16,12 +16,12 @@ import okio.Sink;
  * 修改:
  */
 public class ProgressRequestBody extends RequestBody {
-    private final ApiCallBack mListener;
+    private final RetrofitCallBack mListener;
     protected RequestBody delegate;  //实际的待包装请求体
     protected CountingSink countingSink; //包装完成的BufferedSink
 
 
-    public ProgressRequestBody(RequestBody body, ApiCallBack listener) {
+    public ProgressRequestBody(RequestBody body, RetrofitCallBack listener) {
         delegate = body;
         mListener = listener;
     }

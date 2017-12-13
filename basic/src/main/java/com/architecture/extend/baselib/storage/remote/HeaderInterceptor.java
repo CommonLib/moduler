@@ -41,9 +41,9 @@ public class HeaderInterceptor implements Interceptor {
 
         Object tag = request.tag();
         RequestBody body = request.body();
-        if (tag instanceof ApiCallBack && body != null) {
+        if (tag instanceof RetrofitCallBack && body != null) {
             String method = request.method();
-            builder.method(method, new ProgressRequestBody(body, (ApiCallBack) tag));
+            builder.method(method, new ProgressRequestBody(body, (RetrofitCallBack) tag));
         }
 
         Request newRequest = builder.build();
@@ -52,8 +52,8 @@ public class HeaderInterceptor implements Interceptor {
         Response response = chain.proceed(newRequest);
         Response.Builder responseBuilder = response.newBuilder();
 
-        if (tag instanceof ApiCallBack) {
-            responseBuilder.body(new ProgressResponseBody(response.body(), (ApiCallBack) tag));
+        if (tag instanceof RetrofitCallBack) {
+            responseBuilder.body(new ProgressResponseBody(response.body(), (RetrofitCallBack) tag));
         }
 
         if (networkAvailable) {

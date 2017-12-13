@@ -1,4 +1,4 @@
-package com.architecture.extend.baselib.mvvm;
+package com.module.contract.remote;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
@@ -20,8 +20,8 @@ import io.reactivex.schedulers.Schedulers;
  * Created by byang059 on 11/22/17.
  */
 
-public abstract class NetworkCacheResource<ResultType extends Bean>
-        extends NetworkBundleResource<ResultType, ResultType> {
+public abstract class ApiCacheResource<ResultType extends Bean>
+        extends ApiBundleResource<ResultType, ResultType> {
 
     @NonNull
     @Override
@@ -36,10 +36,10 @@ public abstract class NetworkCacheResource<ResultType extends Bean>
             @Override
             public void accept(MutableLiveData<ResultType> liveData) throws Exception {
                 Class<Object> resultType = GenericUtil
-                        .getGenericsSuperType(NetworkCacheResource.this, 0);
+                        .getGenericsSuperType(ApiCacheResource.this, 0);
                 ACache aCache = ACache.get(BaseApplication.getInstance());
                 Object asObject = aCache.getAsObject(resultType.getSimpleName());
-                LogUtil.d("NetworkCacheResource loadFromCache() get cache is =>" + asObject);
+                LogUtil.d("ApiCacheResource loadFromCache() get cache is =>" + asObject);
                 if (asObject == null) {
                     liveData.postValue(null);
                 } else {
@@ -63,7 +63,7 @@ public abstract class NetworkCacheResource<ResultType extends Bean>
             public void accept(ResultType value) throws Exception {
                 LogUtil.d("NetworkCacheResource_accept() save value to cache");
                 Class<Object> resultType = GenericUtil
-                        .getGenericsSuperType(NetworkCacheResource.this, 0);
+                        .getGenericsSuperType(ApiCacheResource.this, 0);
                 ACache aCache = ACache.get(BaseApplication.getInstance());
                 aCache.put(resultType.getSimpleName(), value);
             }

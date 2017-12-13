@@ -8,7 +8,7 @@ import android.support.annotation.NonNull;
 import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.mvvm.ApiResponse;
 import com.architecture.extend.baselib.mvvm.BaseModel;
-import com.architecture.extend.baselib.mvvm.NetworkCacheResource;
+import com.module.contract.remote.ApiCacheResource;
 import com.architecture.extend.baselib.storage.remote.RetrofitHelper;
 import com.architecture.extend.baselib.util.LogUtil;
 
@@ -57,8 +57,8 @@ public class MainModel extends BaseModel {
         data.postValue("first value");
     }
 
-    public NetworkCacheResource<Weather> getPullToRefreshResource() {
-        return new NetworkCacheResource<Weather>() {
+    public ApiCacheResource<Weather> getPullToRefreshResource() {
+        return new ApiCacheResource<Weather>() {
 
             @NonNull
             @Override
