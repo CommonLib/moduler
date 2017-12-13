@@ -1,4 +1,4 @@
-package net.businessos.sky.util;
+package com.architecture.extend.baselib.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;

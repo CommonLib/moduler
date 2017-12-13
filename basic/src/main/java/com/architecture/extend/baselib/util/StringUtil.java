@@ -172,7 +172,7 @@ public class StringUtil {
      */
     public static Boolean isEmail(String str) {
         Boolean isEmail = false;
-        String expr = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+        String expr = "^([a-z0-9A-Z]+[-|.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
         if (str.matches(expr)) {
             isEmail = true;
         }
