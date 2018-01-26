@@ -29,7 +29,11 @@ public class MainActivity extends BaseActivity<MainViewModel> {
 
     @Override
     protected void initData() {
+    }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -96,20 +100,20 @@ public class MainActivity extends BaseActivity<MainViewModel> {
             @Override
             public void onChanged(@Nullable Resource<Weather> weatherResource) {
                 if (weatherResource != null) {
-                    if (weatherResource.status == Resource.STATE_SUCCESS) {
+                    if (weatherResource.isSuccess()) {
                         getPullToRefreshView().refreshComplete();
                         LogUtil.d("ui STATE_SUCCESS");
                         if (weatherResource.data != null) {
                             TextView tv = findViewById(R.id.tv_hello_world);
                             tv.setText(weatherResource.data.toString());
                         }
-                    } else if (weatherResource.status == Resource.STATE_CACHE) {
+                    } else if (weatherResource.isCache()) {
                         LogUtil.d("ui STATE_CACHE");
                         if (weatherResource.data != null) {
                             TextView tv = findViewById(R.id.tv_hello_world);
                             tv.setText(weatherResource.data.toString());
                         }
-                    } else if (weatherResource.status == Resource.STATE_ERROR) {
+                    } else if (weatherResource.isError()) {
                         getPullToRefreshView().refreshComplete();
                         LogUtil.d("ui STATE_ERROR");
                         Toast.makeText(MainActivity.this, weatherResource.message,

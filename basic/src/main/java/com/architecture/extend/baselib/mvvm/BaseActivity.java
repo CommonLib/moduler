@@ -29,6 +29,8 @@ import com.architecture.extend.baselib.widget.LoadStateView;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import javax.inject.Inject;
+
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.header.MaterialHeader;
@@ -50,6 +52,11 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     private LoadStateView mLoadStateView;
     private Toolbar mToolbar;
     private RxPermissions mRxPermissions;
+
+    @Inject
+    public BaseActivity(){
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -122,7 +129,6 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
             @Override
             public void accept(Permission permission) throws Exception {
                 if (permission.granted) {
-                    // `permission.name` is granted !
                     callBack.onGranted(permission.name);
                 } else {
                     callBack.onDenied(permission.name);

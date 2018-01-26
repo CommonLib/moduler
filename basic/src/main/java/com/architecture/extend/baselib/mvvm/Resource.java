@@ -52,4 +52,24 @@ public class Resource<T> {
     public static <T> Resource<T> progress(@Nullable T data, int progress) {
         return new Resource<>(STATE_PROGRESS, data, null, progress);
     }
+
+    public boolean isSuccess(){
+        return status == STATE_SUCCESS;
+    }
+
+    public boolean isError(){
+        return status == STATE_ERROR;
+    }
+
+    public boolean isLoading(){
+        return status == STATE_LOADING;
+    }
+
+    public boolean isCache(){
+        return status == STATE_CACHE;
+    }
+
+    public boolean isProgress(){
+        return status == STATE_PROGRESS;
+    }
 }
