@@ -16,6 +16,11 @@ import com.module.contract.router.RouterConstants;
 public class PicPluginServiceImpl extends PluginService implements IPicService {
 
     @Override
+    public void init(Context context) {
+        super.init(context);
+    }
+
+    @Override
     public boolean playPic(Context context) {
         return false;
     }

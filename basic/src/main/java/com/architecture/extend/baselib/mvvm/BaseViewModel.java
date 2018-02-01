@@ -18,7 +18,8 @@ import android.view.ViewGroup;
 import com.alibaba.android.arouter.facade.Postcard;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.architecture.extend.baselib.BaseApplication;
-import com.architecture.extend.baselib.dagger.ViewModelInjection;
+import com.architecture.extend.baselib.dagger.ApplicationAble;
+import com.architecture.extend.baselib.dagger.ObjectInjection;
 
 import java.util.concurrent.Executor;
 
@@ -27,7 +28,7 @@ import java.util.concurrent.Executor;
  */
 
 public abstract class BaseViewModel extends ViewModel
-        implements ViewForegroundSwitchListener, LifecycleObserver {
+        implements ViewForegroundSwitchListener, LifecycleObserver, ApplicationAble{
 
     public static final Executor THREAD_POOL_EXECUTOR = AsyncTask.THREAD_POOL_EXECUTOR;
 
@@ -68,7 +69,7 @@ public abstract class BaseViewModel extends ViewModel
 
     @CallSuper
     protected void onCreate() {
-        ViewModelInjection.inject(this);
+        ObjectInjection.inject(this);
         ARouter.getInstance().inject(this);
     }
 

@@ -25,7 +25,7 @@ public class MainViewModel extends BaseViewModel {
     IPicService mIPicService;
 
     @Inject
-    MainRepository mMainRepository = new MainRepository();
+    MainRepository mMainRepository;
 
 
     private MutableLiveData<String> mStringMutableLiveData;
