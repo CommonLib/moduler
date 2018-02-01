@@ -7,6 +7,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.arch.lifecycle.ViewModel;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
@@ -17,20 +18,26 @@ import android.view.ViewGroup;
 import com.alibaba.android.arouter.facade.Postcard;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.architecture.extend.baselib.BaseApplication;
-import com.architecture.extend.baselib.util.GenericUtil;
-import com.architecture.extend.baselib.util.LogUtil;
+import com.architecture.extend.baselib.dagger.ViewModelInjection;
+
+import java.util.concurrent.Executor;
 
 /**
  * Created by byang059 on 5/24/17.
  */
 
-public abstract class BaseViewModel<M extends BaseModel> extends ViewModel
+public abstract class BaseViewModel extends ViewModel
         implements ViewForegroundSwitchListener, LifecycleObserver {
-    private M mModel;
+
+    public static final Executor THREAD_POOL_EXECUTOR = AsyncTask.THREAD_POOL_EXECUTOR;
 
     public BaseViewModel() {
         super();
         onCreate();
+    }
+
+    public BaseApplication getApplication(){
+        return BaseApplication.getInstance();
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
@@ -58,19 +65,10 @@ public abstract class BaseViewModel<M extends BaseModel> extends ViewModel
         onDestroy();
     }
 
-    public M getModel() {
-        return mModel;
-    }
 
     @CallSuper
     protected void onCreate() {
-        try {
-            mModel = GenericUtil.instanceT(this, 0);
-            mModel.init();
-        } catch (Exception e) {
-            e.printStackTrace();
-            LogUtil.e("instance " + this.getClass().getName() + " model error");
-        }
+        ViewModelInjection.inject(this);
         ARouter.getInstance().inject(this);
     }
 
@@ -88,10 +86,16 @@ public abstract class BaseViewModel<M extends BaseModel> extends ViewModel
 
     }
 
-    public LiveData<View> asyncInflate(@LayoutRes int layoutId, LayoutInflater layoutInflater,
-                                       ViewGroup viewGroup) {
-        MutableLiveData<View> liveData = new MutableLiveData<>();
-        getModel().asyncInflate(liveData, layoutId, layoutInflater, viewGroup);
+    public LiveData<View> asyncInflate(@LayoutRes final int layoutId, final LayoutInflater layoutInflater,
+                                       final ViewGroup viewGroup) {
+        final MutableLiveData<View> liveData = new MutableLiveData<>();
+        runOnWorkerThread(new Runnable() {
+            @Override
+            public void run() {
+                View view = layoutInflater.inflate(layoutId, viewGroup, false);
+                liveData.postValue(view);
+            }
+        });
         return liveData;
     }
 
@@ -113,5 +117,9 @@ public abstract class BaseViewModel<M extends BaseModel> extends ViewModel
             build.with(bundle);
         }
         build.navigation(activity, requestCode);
+    }
+
+    protected void runOnWorkerThread(Runnable runnable) {
+        THREAD_POOL_EXECUTOR.execute(runnable);
     }
 }

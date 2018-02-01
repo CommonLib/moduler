@@ -10,8 +10,7 @@ import com.architecture.extend.baselib.mvvm.BaseActivity;
 /**
  * Created by byang059 on 10/24/17.
  */
-
-public class Activity1 extends BaseActivity<ViewModel1> {
+public class SecondActivity extends BaseActivity<ViewModel1> {
 
     @Override
     protected void initData() {
@@ -25,7 +24,7 @@ public class Activity1 extends BaseActivity<ViewModel1> {
         actBinding.title1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(Activity1.this, Activity2.class));
+                startActivity(new Intent(SecondActivity.this, Activity2.class));
             }
         });
         /*mainViewModel.getUserString().subscribe(this, new LiveCallBack<String>() {

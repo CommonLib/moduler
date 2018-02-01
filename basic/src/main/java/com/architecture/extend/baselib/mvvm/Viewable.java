@@ -6,7 +6,7 @@ import android.arch.lifecycle.Lifecycle;
  * Created by byang059 on 9/20/17.
  */
 
-public interface ViewAble {
+public interface Viewable {
     boolean isForeground();
     void setForegroundSwitchCallBack(ViewForegroundSwitchListener listener);
     boolean isDestroyed();

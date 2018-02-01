@@ -7,12 +7,12 @@ import android.support.annotation.NonNull;
 
 import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.mvvm.ApiResponse;
-import com.architecture.extend.baselib.mvvm.BaseModel;
-import com.module.contract.remote.ApiCacheResource;
+import com.architecture.extend.baselib.mvvm.BaseRepository;
 import com.architecture.extend.baselib.storage.remote.RetrofitHelper;
 import com.architecture.extend.baselib.util.LogUtil;
+import com.module.contract.remote.ApiCacheResource;
 
-import javax.inject.Singleton;
+import javax.inject.Inject;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -21,13 +21,17 @@ import retrofit2.Response;
  * Created by byang059 on 5/27/17.
  */
 
-@Singleton
-public class MainModel extends BaseModel {
+public class MainRepository extends BaseRepository {
+
+    @Inject
+    public MainRepository() {
+        super();
+    }
 
     WeatherDao weatherDao;
 
     @Override
-    public void init() {
+    public void onCreate() {
         WeatherDatabase db = Room
                 .databaseBuilder(BaseApplication.getInstance(), WeatherDatabase.class, "weather")
                 .build();

@@ -13,14 +13,20 @@ import com.architecture.extend.baselib.util.LogUtil;
 import com.module.contract.pic.IPicService;
 import com.module.contract.remote.ApiBundleResource;
 
+import javax.inject.Inject;
+
 /**
  * Created by byang059 on 5/27/17.
  */
 
-public class MainViewModel extends BaseViewModel<MainModel> {
+public class MainViewModel extends BaseViewModel {
 
     @Autowired
     IPicService mIPicService;
+
+    @Inject
+    MainRepository mMainRepository = new MainRepository();
+
 
     private MutableLiveData<String> mStringMutableLiveData;
     private LiveData<Resource<Weather>> mPullToRefresh;
@@ -47,7 +53,7 @@ public class MainViewModel extends BaseViewModel<MainModel> {
 
     public LiveData<Resource<Weather>> getPullToRefresh() {
         if(mPullToRefresh == null){
-            mPullToRefreshResource = getModel().getPullToRefreshResource();
+            mPullToRefreshResource = mMainRepository.getPullToRefreshResource();
             mPullToRefresh = mPullToRefreshResource.getLiveData();
         }
         return mPullToRefresh;

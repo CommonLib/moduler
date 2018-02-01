@@ -29,8 +29,7 @@ import com.architecture.extend.baselib.widget.LoadStateView;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
-import javax.inject.Inject;
-
+import dagger.android.AndroidInjection;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.header.MaterialHeader;
@@ -42,7 +41,7 @@ import io.reactivex.functions.Consumer;
  */
 
 public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatActivity
-        implements ViewAble {
+        implements Viewable {
 
     private VM mViewModel;
     private boolean mIsForeground;
@@ -53,13 +52,9 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     private Toolbar mToolbar;
     private RxPermissions mRxPermissions;
 
-    @Inject
-    public BaseActivity(){
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
         mIsForeground = true;
         Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);

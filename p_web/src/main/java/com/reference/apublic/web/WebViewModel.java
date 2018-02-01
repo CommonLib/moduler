@@ -8,7 +8,7 @@ import com.module.contract.web.IWebService;
  * Created by byang059 on 9/18/17.
  */
 
-public class WebViewModel extends BaseViewModel<WebModel> {
+public class WebViewModel extends BaseViewModel {
 
     @Autowired
     IWebService mIWebService;

@@ -6,6 +6,6 @@ import com.architecture.extend.baselib.mvvm.BaseViewModel;
  * Created by byang059 on 10/24/17.
  */
 
-public class ViewModel2 extends BaseViewModel<MainModel> {
+public class ViewModel2 extends BaseViewModel {
 
 }

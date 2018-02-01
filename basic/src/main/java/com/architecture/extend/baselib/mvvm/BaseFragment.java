@@ -32,7 +32,7 @@ import in.srain.cube.views.ptr.header.MaterialHeader;
 /**
  * Created by burtYang on 10/09/17.
  */
-public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment implements ViewAble {
+public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment implements Viewable {
 
     private VM mViewModel;
     private boolean mIsForeground;

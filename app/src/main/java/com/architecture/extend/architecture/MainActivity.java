@@ -23,12 +23,18 @@ import com.architecture.extend.baselib.util.FragmentStack;
 import com.architecture.extend.baselib.util.LogUtil;
 import com.module.contract.router.RouterConstants;
 
+import javax.inject.Inject;
+
 import in.srain.cube.views.ptr.PtrFrameLayout;
 
 public class MainActivity extends BaseActivity<MainViewModel> {
 
+    @Inject
+    MainRepository mMainRepository;
+
     @Override
     protected void initData() {
+        mMainRepository.toString();
     }
 
     @Override
@@ -42,7 +48,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
             @Override
             public void onClick(View v) {
                 ARouter.getInstance().build(RouterConstants.Pic.PAGE_PIC).navigation();
-                //                startActivity(new Intent(MainActivity.this, Activity1.class));
+                //                startActivity(new Intent(MainActivity.this, SecondActivity.class));
 
             }
         });
@@ -74,13 +80,12 @@ public class MainActivity extends BaseActivity<MainViewModel> {
                     public void onGranted(String permission) {
                         LogUtil.d(permission + " onGranted");
                     }
-
                     @Override
                     public void onDenied(String permission) {
                         LogUtil.d(permission + " onDenied");
                     }
                 }, Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE);
-                //                startActivity(new Intent(MainActivity.this, Activity1.class));
+                //                startActivity(new Intent(MainActivity.this, SecondActivity.class));
                 getViewModel().getUserString().observe(MainActivity.this, new Observer<String>() {
                     @Override
                     public void onChanged(@Nullable String s) {
