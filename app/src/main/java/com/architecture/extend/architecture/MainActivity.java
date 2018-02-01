@@ -35,6 +35,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
     @Override
     protected void initData() {
         mMainRepository.toString();
+        injectConfigureInfo.toString();
     }
 
     @Override

@@ -1,6 +1,24 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
+    ext {
+        Properties properties = new Properties()
+        InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
+        properties.load(inputStream)
+
+        compileSdkVersion = 26
+        buildToolsVersion = '26.0.2'
+        minSdkVersion = 14
+        targetSdkVersion = 25
+        supportVersion = '26.1.0'
+
+        keyPath = properties.getProperty('keyPath')
+        keyAlias = properties.getProperty('keyAlias')
+        keyPassword = properties.getProperty('keyPassword')
+        storePassword = properties.getProperty('storePassword')
+        def hasBuildAll = properties.getProperty('buildAll')
+        buildAll = (hasBuildAll == null ? true : hasBuildAll)
+    }
+
     repositories {
         jcenter()
         mavenCentral()
@@ -19,28 +37,6 @@ allprojects {
         maven { url 'https://maven.google.com' }
         google()
     }
-}
-
-ext {
-    compileSdkVersion = 26
-    buildToolsVersion = '26.0.2'
-    minSdkVersion = 14
-    targetSdkVersion = 25
-    supportVersion = '26.1.0'
-
-    keyPath = getConfigProperty('keyPath')
-    keyAlias = getConfigProperty('keyAlias')
-    keyPassword = getConfigProperty('keyPassword')
-    storePassword = getConfigProperty('storePassword')
-    def hasBuildAll = getConfigProperty('buildAll')
-    buildAll = (hasBuildAll == null ? true : hasBuildAll)
-}
-
-def getConfigProperty(String name) {
-    Properties properties = new Properties()
-    InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
-    properties.load(inputStream)
-    return properties.getProperty(name)
 }
 
 task clean(type: Delete) {

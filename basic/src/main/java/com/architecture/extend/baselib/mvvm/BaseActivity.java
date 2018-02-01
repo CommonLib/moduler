@@ -29,6 +29,8 @@ import com.architecture.extend.baselib.widget.LoadStateView;
 import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
+import javax.inject.Inject;
+
 import dagger.android.AndroidInjection;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -51,6 +53,9 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     private LoadStateView mLoadStateView;
     private Toolbar mToolbar;
     private RxPermissions mRxPermissions;
+
+    @Inject
+    public ConfigureInfo injectConfigureInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

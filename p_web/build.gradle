@@ -1,4 +1,4 @@
-if (rootProject.ext.buildAll) {
+if (Boolean.parseBoolean(buildAll)) {
     apply plugin: 'com.android.library'
 } else {
     apply plugin: 'com.android.application'
@@ -31,7 +31,7 @@ android {
 
     sourceSets {
         main {
-            if (!rootProject.ext.buildAll) {
+            if (!Boolean.parseBoolean(buildAll)) {
                 manifest.srcFile 'src/main/debug/AndroidManifest.xml'
             } else {
                 manifest.srcFile 'src/main/release/AndroidManifest.xml'
