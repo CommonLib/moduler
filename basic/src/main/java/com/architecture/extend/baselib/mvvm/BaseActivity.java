@@ -9,6 +9,7 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import android.view.ViewGroup;
 import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.util.GenericUtil;
+import com.architecture.extend.baselib.util.LogUtil;
 import com.architecture.extend.baselib.util.ViewUtil;
 import com.architecture.extend.baselib.widget.LoadStateView;
 import com.tbruyelle.rxpermissions2.Permission;
@@ -55,6 +57,9 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     private RxPermissions mRxPermissions;
 
     @Inject
+    Handler mHandler;
+
+    @Inject
     public ConfigureInfo injectConfigureInfo;
 
     @Override
@@ -75,6 +80,10 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         }
         mConfigureInfo = getConfigureInfo();
         inflateLayout(mConfigureInfo.isAsyncInflate());
+
+        if (mHandler != null) {
+            LogUtil.d("baseActivity inject success");
+        }
     }
 
     @Override

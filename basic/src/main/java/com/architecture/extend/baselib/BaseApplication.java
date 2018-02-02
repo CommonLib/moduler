@@ -65,6 +65,10 @@ public class BaseApplication extends MultiDexApplication
             });
             isInit = true;
         }
+
+        if(mHandler != null){
+            LogUtil.d("BaseApplication inject success");
+        }
     }
 
     protected void init(final boolean debugMode) {

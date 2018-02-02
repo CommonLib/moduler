@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.TextView;
@@ -32,10 +33,14 @@ public class MainActivity extends BaseActivity<MainViewModel> {
     @Inject
     MainRepository mMainRepository;
 
+    @Inject
+    Handler mHandler;
+
     @Override
     protected void initData() {
-        mMainRepository.toString();
-        injectConfigureInfo.toString();
+        if(mHandler != null){
+            LogUtil.d("MainActivity inject success");
+        }
     }
 
     @Override
