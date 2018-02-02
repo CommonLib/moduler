@@ -18,6 +18,8 @@ import com.architecture.extend.baselib.util.ViewUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 /**
  * Created by byang059 on 9/27/17.
  */
@@ -27,9 +29,12 @@ public class MainFragment extends BaseFragment<FragmentViewModel> {
     private BaseRecycleAdapter mAdapter;
     private List<String> mStrs;
 
+    @Inject
+    ConfigureInfo mConfigureInfo;
+
     @Override
     protected void initData() {
-
+        mConfigureInfo.toString();
     }
 
     @Override

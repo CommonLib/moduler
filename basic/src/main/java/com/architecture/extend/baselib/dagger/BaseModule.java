@@ -1,5 +1,8 @@
 package com.architecture.extend.baselib.dagger;
 
+import android.os.Handler;
+
+import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.mvvm.ConfigureInfo;
 
 import dagger.Module;
@@ -15,5 +18,15 @@ public abstract class BaseModule {
     @Provides
     static ConfigureInfo provideConfigureInfo(){
         return ConfigureInfo.defaultConfigure();
+    }
+
+    @Provides
+    static Handler provideHandler(){
+        return new Handler();
+    }
+
+    @Provides
+    static BaseApplication provideApplication(){
+        return BaseApplication.getInstance();
     }
 }

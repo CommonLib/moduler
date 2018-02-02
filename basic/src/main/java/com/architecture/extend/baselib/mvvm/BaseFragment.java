@@ -25,6 +25,7 @@ import com.architecture.extend.baselib.util.ViewUtil;
 import com.architecture.extend.baselib.widget.ChildScrollFrameLayout;
 import com.architecture.extend.baselib.widget.LoadStateView;
 
+import dagger.android.support.AndroidSupportInjection;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.header.MaterialHeader;
@@ -45,6 +46,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
 
     @Override
     public void onAttach(Activity activity) {
+        AndroidSupportInjection.inject(this);
         super.onAttach(activity);
         mActivity = (BaseActivity) activity;
     }

@@ -2,9 +2,11 @@ package com.architecture.extend.architecture.dagger;
 
 import com.architecture.extend.architecture.FragmentViewModel;
 import com.architecture.extend.architecture.MainActivity;
+import com.architecture.extend.architecture.MainFragment;
 import com.architecture.extend.architecture.MainRepository;
 import com.architecture.extend.architecture.MainViewModel;
 import com.architecture.extend.architecture.SecondActivity;
+import com.architecture.extend.baselib.dagger.BaseModule;
 import com.architecture.extend.baselib.dagger.ObjectInjectionModule;
 import com.architecture.extend.baselib.dagger.ObjectKey;
 
@@ -21,7 +23,7 @@ import dagger.multibindings.IntoMap;
 
 @Module(subcomponents = {
         MainModule.MainViewModelSubComponent.class, MainModule.FragmentViewModelSubComponent.class, MainModule.MainRepositorySubComponent.class
-})
+},includes = BaseModule.class)
 public abstract class MainModule {
 
     @Binds
@@ -68,4 +70,7 @@ public abstract class MainModule {
 
     @ContributesAndroidInjector
     abstract MainActivity contributesMainActivity();
+
+    @ContributesAndroidInjector
+    abstract MainFragment contributesMainFragment();
 }
