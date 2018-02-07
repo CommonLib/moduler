@@ -9,6 +9,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import dagger.android.ObjectInjectionModule;
 
 /**
  * Created by byang059 on 2/1/18.

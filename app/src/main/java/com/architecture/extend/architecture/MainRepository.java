@@ -12,11 +12,8 @@ import com.architecture.extend.baselib.storage.remote.RetrofitHelper;
 import com.architecture.extend.baselib.util.LogUtil;
 import com.module.contract.remote.ApiCacheResource;
 
-import java.util.Map;
-
 import javax.inject.Inject;
 
-import dagger.android.AndroidInjector;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -33,15 +30,12 @@ public class MainRepository extends BaseRepository {
 
     WeatherDao weatherDao;
 
-    @Inject
-    Map<Class<? extends Object>, AndroidInjector.Factory<? extends Object>> mClassFactoryMap;
     @Override
     public void onCreate() {
         WeatherDatabase db = Room
                 .databaseBuilder(BaseApplication.getInstance(), WeatherDatabase.class, "weather")
                 .build();
         weatherDao = db.weatherDao();
-        mClassFactoryMap.toString();
     }
 
     @MainThread

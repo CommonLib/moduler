@@ -18,17 +18,19 @@ import android.view.ViewGroup;
 import com.alibaba.android.arouter.facade.Postcard;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.architecture.extend.baselib.BaseApplication;
-import com.architecture.extend.baselib.dagger.ApplicationAble;
-import com.architecture.extend.baselib.dagger.ObjectInjection;
 
 import java.util.concurrent.Executor;
+
+import dagger.android.InjectAble;
+import dagger.android.InjectObjectHolder;
+import dagger.android.ObjectInjection;
 
 /**
  * Created by byang059 on 5/24/17.
  */
 
 public abstract class BaseViewModel extends ViewModel
-        implements ViewForegroundSwitchListener, LifecycleObserver, ApplicationAble{
+        implements ViewForegroundSwitchListener, LifecycleObserver, InjectAble {
 
     public static final Executor THREAD_POOL_EXECUTOR = AsyncTask.THREAD_POOL_EXECUTOR;
 
@@ -118,6 +120,11 @@ public abstract class BaseViewModel extends ViewModel
             build.with(bundle);
         }
         build.navigation(activity, requestCode);
+    }
+
+    @Override
+    public InjectObjectHolder getInjectObjectHolder() {
+        return BaseApplication.getInstance();
     }
 
     protected void runOnWorkerThread(Runnable runnable) {

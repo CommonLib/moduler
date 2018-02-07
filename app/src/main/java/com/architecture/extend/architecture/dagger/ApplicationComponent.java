@@ -11,7 +11,9 @@ import dagger.Component;
  */
 
 @ApplicationScope
-@Component(modules = {MainModule.class},dependencies = BaseApplicationComponent.class)
+@Component(modules = {
+        MainModule.class
+}, dependencies = BaseApplicationComponent.class)
 public interface ApplicationComponent {
     void inject(MainApplication application);
 }

@@ -10,7 +10,6 @@ import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.architecture.extend.baselib.dagger.HasObjectInjector;
 import com.architecture.extend.baselib.util.LogUtil;
 
 import javax.inject.Inject;
@@ -18,6 +17,9 @@ import javax.inject.Inject;
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
+import dagger.android.HasObjectInjector;
+import dagger.android.InjectAble;
+import dagger.android.InjectObjectHolder;
 import dagger.android.support.HasSupportFragmentInjector;
 
 /**
@@ -25,7 +27,8 @@ import dagger.android.support.HasSupportFragmentInjector;
  */
 
 public class BaseApplication extends MultiDexApplication
-        implements HasActivityInjector, HasObjectInjector, HasSupportFragmentInjector {
+        implements HasActivityInjector, HasObjectInjector, HasSupportFragmentInjector,
+                   InjectObjectHolder {
 
     @Inject
     Handler mHandler;
@@ -37,7 +40,7 @@ public class BaseApplication extends MultiDexApplication
     DispatchingAndroidInjector<Fragment> dispatchingFragmentInjector;
 
     @Inject
-    DispatchingAndroidInjector<Object> dispatchingViewModelInjector;
+    DispatchingAndroidInjector<InjectAble> dispatchingViewModelInjector;
 
     private static BaseApplication instance;
     private static boolean isInit = false;
@@ -66,7 +69,7 @@ public class BaseApplication extends MultiDexApplication
             isInit = true;
         }
 
-        if(mHandler != null){
+        if (mHandler != null) {
             LogUtil.d("BaseApplication inject success");
         }
     }
@@ -111,7 +114,7 @@ public class BaseApplication extends MultiDexApplication
     }
 
     @Override
-    public AndroidInjector<Object> objectInjector() {
+    public AndroidInjector<InjectAble> objectInjector() {
         return dispatchingViewModelInjector;
     }
 }
