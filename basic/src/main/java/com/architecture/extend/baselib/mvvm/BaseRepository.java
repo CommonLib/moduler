@@ -7,7 +7,6 @@ import com.architecture.extend.baselib.BaseApplication;
 import java.util.concurrent.Executor;
 
 import dagger.android.InjectAble;
-import dagger.android.InjectObjectHolder;
 import dagger.android.ObjectInjection;
 
 /**
@@ -19,17 +18,12 @@ public abstract class BaseRepository implements InjectAble {
     public static final Executor THREAD_POOL_EXECUTOR = AsyncTask.THREAD_POOL_EXECUTOR;
 
     public BaseRepository() {
-        ObjectInjection.inject(this);
+        ObjectInjection.inject(this, BaseApplication.getInstance());
         onCreate();
     }
 
     public void onCreate() {
 
-    }
-
-    @Override
-    public InjectObjectHolder getInjectObjectHolder() {
-        return BaseApplication.getInstance();
     }
 
     protected void runOnWorkerThread(Runnable runnable) {

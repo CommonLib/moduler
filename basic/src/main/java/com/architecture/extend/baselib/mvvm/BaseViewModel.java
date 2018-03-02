@@ -22,7 +22,6 @@ import com.architecture.extend.baselib.BaseApplication;
 import java.util.concurrent.Executor;
 
 import dagger.android.InjectAble;
-import dagger.android.InjectObjectHolder;
 import dagger.android.ObjectInjection;
 
 /**
@@ -71,7 +70,7 @@ public abstract class BaseViewModel extends ViewModel
 
     @CallSuper
     protected void onCreate() {
-        ObjectInjection.inject(this);
+        ObjectInjection.inject(this,BaseApplication.getInstance());
         ARouter.getInstance().inject(this);
     }
 
@@ -120,11 +119,6 @@ public abstract class BaseViewModel extends ViewModel
             build.with(bundle);
         }
         build.navigation(activity, requestCode);
-    }
-
-    @Override
-    public InjectObjectHolder getInjectObjectHolder() {
-        return BaseApplication.getInstance();
     }
 
     protected void runOnWorkerThread(Runnable runnable) {
