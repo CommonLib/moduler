@@ -65,7 +65,7 @@ dependencies {
     })
     annotationProcessor 'com.alibaba:arouter-compiler:1.1.4'
     annotationProcessor 'dagger.object.inject:dagger-object-processor:2.13'
-    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
+    annotationProcessor "android.arch.persistence.room:compiler:1.1.0"
     annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
     if (Boolean.parseBoolean(buildAll)) {
         compile project(':p_web')
