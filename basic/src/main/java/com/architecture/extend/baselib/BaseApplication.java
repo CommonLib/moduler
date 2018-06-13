@@ -70,7 +70,7 @@ public class BaseApplication extends MultiDexApplication
         }
 
         if (mHandler != null) {
-            LogUtil.d("BaseApplication inject success");
+            LogUtil.d("BaseApplication inject success"+ mHandler);
         }
     }
 

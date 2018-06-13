@@ -6,6 +6,7 @@ import com.architecture.extend.architecture.MainFragment;
 import com.architecture.extend.architecture.MainRepository;
 import com.architecture.extend.architecture.MainViewModel;
 import com.architecture.extend.architecture.SecondActivity;
+import com.architecture.extend.baselib.dagger.BaseApplicationModule;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -14,7 +15,7 @@ import dagger.android.ContributesAndroidInjector;
  * Created by byang059 on 1/31/18.
  */
 
-@Module
+@Module(includes = BaseApplicationModule.class)
 public abstract class MainModule {
 
     @ContributesAndroidInjector

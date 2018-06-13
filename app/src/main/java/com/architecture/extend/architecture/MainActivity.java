@@ -39,7 +39,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
     @Override
     protected void initData() {
         if(mHandler != null){
-            LogUtil.d("MainActivity inject success");
+            LogUtil.d("MainActivity inject success" + mHandler);
         }
     }
 

@@ -2,7 +2,6 @@ package com.architecture.extend.architecture.dagger;
 
 import com.architecture.extend.architecture.MainApplication;
 import com.architecture.extend.baselib.dagger.ApplicationScope;
-import com.architecture.extend.baselib.dagger.BaseApplicationComponent;
 
 import dagger.Component;
 
@@ -11,9 +10,7 @@ import dagger.Component;
  */
 
 @ApplicationScope
-@Component(modules = {
-        MainModule.class
-}, dependencies = BaseApplicationComponent.class)
+@Component(modules = MainModule.class)
 public interface ApplicationComponent {
     void inject(MainApplication application);
 }

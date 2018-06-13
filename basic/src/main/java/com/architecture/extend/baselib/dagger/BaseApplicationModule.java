@@ -5,8 +5,6 @@ import android.os.Handler;
 import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.mvvm.ConfigureInfo;
 
-import javax.inject.Singleton;
-
 import dagger.Module;
 import dagger.Provides;
 import dagger.android.ObjectInjectionModule;
@@ -18,19 +16,19 @@ import dagger.android.ObjectInjectionModule;
 @Module(includes = ObjectInjectionModule.class)
 public abstract class BaseApplicationModule {
 
-    @Singleton
+    @ApplicationScope
     @Provides
     static ConfigureInfo provideConfigureInfo(){
         return ConfigureInfo.defaultConfigure();
     }
 
-    @Singleton
+    @ApplicationScope
     @Provides
     static Handler provideHandler(){
         return new Handler();
     }
 
-    @Singleton
+    @ApplicationScope
     @Provides
     static BaseApplication provideApplication(){
         return BaseApplication.getInstance();
