@@ -21,7 +21,8 @@ public class MainApplication extends BaseApplication {
 
     @Override
     public void onCreate() {
-        DaggerApplicationComponent.builder().build().inject(this);
+        DaggerApplicationComponent.builder()
+                .build().inject(this);
         super.onCreate();
 
         if (mHandler != null) {

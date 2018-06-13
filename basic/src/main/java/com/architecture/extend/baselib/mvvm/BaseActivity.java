@@ -232,7 +232,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
 
     public ConfigureInfo getConfigureInfo() {
-        return ConfigureInfo.defaultConfigure();
+        return injectConfigureInfo;
     }
 
     protected void initPullRefreshView(PtrFrameLayout refreshView) {

@@ -304,11 +304,4 @@ public class Weather extends Bean{
             this.notice = notice;
         }
     }
-
-    @Override
-    public String toString() {
-        return "Weather{" + "id=" + id + ", shidu='" + shidu + '\'' + ", pm25=" + pm25 + ", pm10="
-                + pm10 + ", quality='" + quality + '\'' + ", wendu='" + wendu + '\'' + ", ganmao='"
-                + ganmao + '\'' + '}';
-    }
 }

@@ -2,10 +2,13 @@ package com.architecture.extend.architecture.dagger;
 
 import com.architecture.extend.architecture.FragmentViewModel;
 import com.architecture.extend.architecture.MainActivity;
+import com.architecture.extend.architecture.ActivityModule;
 import com.architecture.extend.architecture.MainFragment;
 import com.architecture.extend.architecture.MainRepository;
 import com.architecture.extend.architecture.MainViewModel;
 import com.architecture.extend.architecture.SecondActivity;
+import com.architecture.extend.architecture.ViewModel1;
+import com.architecture.extend.baselib.dagger.ActicityScope;
 import com.architecture.extend.baselib.dagger.BaseApplicationModule;
 
 import dagger.Module;
@@ -21,18 +24,27 @@ public abstract class MainModule {
     @ContributesAndroidInjector
     abstract MainViewModel contributesMainViewModel();
 
-    @ContributesAndroidInjector
+    @ActicityScope
+    @ContributesAndroidInjector(modules = ActivityModule.class)
     abstract FragmentViewModel contributesFragmentViewModel();
 
-    @ContributesAndroidInjector
+    @ActicityScope
+    @ContributesAndroidInjector(modules = ActivityModule.class)
     abstract MainRepository contributesMainRepository();
 
-    @ContributesAndroidInjector
+    @ActicityScope
+    @ContributesAndroidInjector(modules = ActivityModule.class)
     abstract SecondActivity contributesSecondActivity();
 
-    @ContributesAndroidInjector
+    @ActicityScope
+    @ContributesAndroidInjector(modules = ActivityModule.class)
     abstract MainActivity contributesMainActivity();
 
-    @ContributesAndroidInjector
+    @ActicityScope
+    @ContributesAndroidInjector(modules = ActivityModule.class)
     abstract MainFragment contributesMainFragment();
+
+    @ActicityScope
+    @ContributesAndroidInjector(modules = ActivityModule.class)
+    abstract ViewModel1 contributesViewModel1();
 }

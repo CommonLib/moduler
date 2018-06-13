@@ -6,15 +6,23 @@ import android.view.View;
 
 import com.architecture.extend.architecture.databinding.Activity1Binding;
 import com.architecture.extend.baselib.mvvm.BaseActivity;
+import com.architecture.extend.baselib.util.LogUtil;
+
+import javax.inject.Inject;
 
 /**
  * Created by byang059 on 10/24/17.
  */
 public class SecondActivity extends BaseActivity<ViewModel1> {
 
+    @Inject
+    Weather mWeather;
+
     @Override
     protected void initData() {
-
+        if(mWeather != null){
+            LogUtil.d("SecondActivity mWeather inject success" + mWeather);
+        }
     }
 
     @Override

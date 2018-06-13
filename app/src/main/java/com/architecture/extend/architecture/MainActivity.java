@@ -3,6 +3,7 @@ package com.architecture.extend.architecture;
 import android.Manifest;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.content.Intent;
 import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,7 +12,6 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.alibaba.android.arouter.launcher.ARouter;
 import com.architecture.extend.architecture.databinding.ShareLayoutBinding;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.mvvm.BaseActivity;
@@ -22,7 +22,6 @@ import com.architecture.extend.baselib.mvvm.ViewCreateCallBack;
 import com.architecture.extend.baselib.util.AppUtil;
 import com.architecture.extend.baselib.util.FragmentStack;
 import com.architecture.extend.baselib.util.LogUtil;
-import com.module.contract.router.RouterConstants;
 
 import javax.inject.Inject;
 
@@ -36,10 +35,17 @@ public class MainActivity extends BaseActivity<MainViewModel> {
     @Inject
     Handler mHandler;
 
+    @Inject
+    Weather mWeather;
+
     @Override
     protected void initData() {
         if(mHandler != null){
             LogUtil.d("MainActivity inject success" + mHandler);
+        }
+
+        if(mWeather != null){
+            LogUtil.d("MainActivity mWeather inject success" + mWeather);
         }
     }
 
@@ -53,8 +59,8 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         findViewById(R.id.act_btn_web).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ARouter.getInstance().build(RouterConstants.Pic.PAGE_PIC).navigation();
-                //                startActivity(new Intent(MainActivity.this, SecondActivity.class));
+//                ARouter.getInstance().build(RouterConstants.Pic.PAGE_PIC).navigation();
+                                startActivity(new Intent(MainActivity.this, SecondActivity.class));
 
             }
         });
