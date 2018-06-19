@@ -1,9 +1,12 @@
 package com.architecture.extend.baselib.dagger;
 
+import android.os.AsyncTask;
 import android.os.Handler;
 
 import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.mvvm.ConfigureInfo;
+
+import java.util.concurrent.Executor;
 
 import dagger.Module;
 import dagger.Provides;
@@ -32,5 +35,11 @@ public abstract class BaseApplicationModule {
     @Provides
     static BaseApplication provideApplication(){
         return BaseApplication.getInstance();
+    }
+
+    @ApplicationScope
+    @Provides
+    static Executor provideExecutor(){
+        return AsyncTask.THREAD_POOL_EXECUTOR;
     }
 }

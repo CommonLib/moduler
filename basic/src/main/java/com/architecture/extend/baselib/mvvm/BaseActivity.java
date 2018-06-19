@@ -2,7 +2,6 @@ package com.architecture.extend.baselib.mvvm;
 
 import android.annotation.TargetApi;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
@@ -12,7 +11,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresPermission;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -153,14 +151,8 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         }
         ViewGroup parent = findViewById(android.R.id.content);
         if (isAsyncInflate) {
-            LiveData<View> inflate = getViewModel()
-                    .asyncInflate(layoutId, getLayoutInflater(), parent);
-            inflate.observe(this, new Observer<View>() {
-                @Override
-                public void onChanged(@Nullable View view) {
-                    init(DataBindingUtil.bind(view));
-                }
-            });
+            LiveData<View> inflate = mViewModel.asyncInflate(layoutId, getLayoutInflater(), parent);
+            inflate.observe(this, view -> init(DataBindingUtil.bind(view)));
         } else {
             init(DataBindingUtil.inflate(getLayoutInflater(), layoutId, parent, false));
         }

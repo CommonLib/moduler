@@ -7,7 +7,6 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.arch.lifecycle.ViewModel;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
@@ -21,6 +20,8 @@ import com.architecture.extend.baselib.BaseApplication;
 
 import java.util.concurrent.Executor;
 
+import javax.inject.Inject;
+
 import dagger.android.InjectAble;
 import dagger.android.ObjectInjection;
 
@@ -31,7 +32,8 @@ import dagger.android.ObjectInjection;
 public abstract class BaseViewModel extends ViewModel
         implements ViewForegroundSwitchListener, LifecycleObserver, InjectAble {
 
-    public static final Executor THREAD_POOL_EXECUTOR = AsyncTask.THREAD_POOL_EXECUTOR;
+    @Inject
+    Executor mExecutor;
 
     public BaseViewModel() {
         super();
@@ -122,6 +124,6 @@ public abstract class BaseViewModel extends ViewModel
     }
 
     protected void runOnWorkerThread(Runnable runnable) {
-        THREAD_POOL_EXECUTOR.execute(runnable);
+        mExecutor.execute(runnable);
     }
 }
