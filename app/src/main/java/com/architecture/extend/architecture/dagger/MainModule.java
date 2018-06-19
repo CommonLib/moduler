@@ -1,8 +1,8 @@
 package com.architecture.extend.architecture.dagger;
 
+import com.architecture.extend.architecture.ActivityModule;
 import com.architecture.extend.architecture.FragmentViewModel;
 import com.architecture.extend.architecture.MainActivity;
-import com.architecture.extend.architecture.ActivityModule;
 import com.architecture.extend.architecture.MainFragment;
 import com.architecture.extend.architecture.MainRepository;
 import com.architecture.extend.architecture.MainViewModel;
@@ -25,11 +25,11 @@ public abstract class MainModule {
     abstract MainViewModel contributesMainViewModel();
 
     @ActicityScope
-    @ContributesAndroidInjector(modules = ActivityModule.class)
+    @ContributesAndroidInjector
     abstract FragmentViewModel contributesFragmentViewModel();
 
     @ActicityScope
-    @ContributesAndroidInjector(modules = ActivityModule.class)
+    @ContributesAndroidInjector
     abstract MainRepository contributesMainRepository();
 
     @ActicityScope
@@ -37,14 +37,16 @@ public abstract class MainModule {
     abstract SecondActivity contributesSecondActivity();
 
     @ActicityScope
-    @ContributesAndroidInjector(modules = ActivityModule.class)
+    @ContributesAndroidInjector
     abstract MainActivity contributesMainActivity();
 
     @ActicityScope
-    @ContributesAndroidInjector(modules = ActivityModule.class)
+    @ContributesAndroidInjector
     abstract MainFragment contributesMainFragment();
 
     @ActicityScope
-    @ContributesAndroidInjector(modules = ActivityModule.class)
+    @ContributesAndroidInjector
     abstract ViewModel1 contributesViewModel1();
+
+
 }

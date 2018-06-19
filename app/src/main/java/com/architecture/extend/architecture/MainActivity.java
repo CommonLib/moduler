@@ -35,17 +35,11 @@ public class MainActivity extends BaseActivity<MainViewModel> {
     @Inject
     Handler mHandler;
 
-    @Inject
-    Weather mWeather;
 
     @Override
     protected void initData() {
         if(mHandler != null){
             LogUtil.d("MainActivity inject success" + mHandler);
-        }
-
-        if(mWeather != null){
-            LogUtil.d("MainActivity mWeather inject success" + mWeather);
         }
     }
 
