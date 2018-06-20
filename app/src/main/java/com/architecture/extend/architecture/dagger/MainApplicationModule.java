@@ -19,7 +19,7 @@ import dagger.android.ContributesAndroidInjector;
  */
 
 @Module(includes = BaseApplicationModule.class)
-public abstract class MainModule {
+public abstract class MainApplicationModule {
 
     @ContributesAndroidInjector
     abstract MainViewModel contributesMainViewModel();

@@ -4,7 +4,9 @@ import android.view.View;
 
 import com.architecture.extend.baselib.dagger.ActicityScope;
 import com.architecture.extend.baselib.dagger.BaseActivityModule;
+import com.architecture.extend.baselib.mvvm.BaseActivity;
 
+import dagger.Binds;
 import dagger.Module;
 import dagger.Provides;
 
@@ -13,15 +15,11 @@ import dagger.Provides;
  */
 
 @Module(includes = BaseActivityModule.class)
-public class ActivityModule {
-
-    public ActivityModule(){
-    }
-
+public abstract class ActivityModule {
 
     @ActicityScope
     @Provides
-    Weather provodeWeather() {
+    static Weather provodeWeather() {
         return new Weather();
     }
 
@@ -30,4 +28,7 @@ public class ActivityModule {
     static View provodeView(SecondActivity mainActivity) {
         return new View(mainActivity);
     }
+
+    @Binds
+    abstract BaseActivity provideActivity(SecondActivity mainActivity);
 }

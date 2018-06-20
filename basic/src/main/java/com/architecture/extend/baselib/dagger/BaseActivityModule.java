@@ -1,7 +1,6 @@
 package com.architecture.extend.baselib.dagger;
 
-import android.app.Activity;
-
+import com.architecture.extend.baselib.mvvm.BaseActivity;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import dagger.Module;
@@ -16,7 +15,7 @@ public class BaseActivityModule {
 
     @ActicityScope
     @Provides
-    static RxPermissions provodeRxPermissions(Activity activity) {
+    static RxPermissions provideRxPermissions(BaseActivity activity) {
         return new RxPermissions(activity);
     }
 }

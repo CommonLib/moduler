@@ -1,10 +1,10 @@
 package com.architecture.extend.baselib.mvvm;
 
-import android.os.AsyncTask;
-
 import com.architecture.extend.baselib.BaseApplication;
 
 import java.util.concurrent.Executor;
+
+import javax.inject.Inject;
 
 import dagger.android.InjectAble;
 import dagger.android.ObjectInjection;
@@ -15,18 +15,18 @@ import dagger.android.ObjectInjection;
 
 public abstract class BaseRepository implements InjectAble {
 
-    public static final Executor THREAD_POOL_EXECUTOR = AsyncTask.THREAD_POOL_EXECUTOR;
+    @Inject
+    Executor mExecutor;
 
     public BaseRepository() {
-        ObjectInjection.inject(this, BaseApplication.getInstance());
         onCreate();
     }
 
     public void onCreate() {
-
+        ObjectInjection.inject(this, BaseApplication.getInstance());
     }
 
     protected void runOnWorkerThread(Runnable runnable) {
-        THREAD_POOL_EXECUTOR.execute(runnable);
+        mExecutor.execute(runnable);
     }
 }

@@ -128,10 +128,9 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     @TargetApi(Build.VERSION_CODES.M)
     protected void usePermission(final PermissionCallBack callBack,
                                  @RequiresPermission String... permissions) {
-        if (mRxPermissions == null) {
+        if(mRxPermissions == null){
             mRxPermissions = new RxPermissions(this);
         }
-
         mRxPermissions.requestEach(permissions).subscribe(new Consumer<Permission>() {
             @Override
             public void accept(Permission permission) throws Exception {
@@ -228,7 +227,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     }
 
     protected void initPullRefreshView(PtrFrameLayout refreshView) {
-        final MaterialHeader header = new MaterialHeader(this);
+        MaterialHeader header = new MaterialHeader(this);
         int[] colors = getResources().getIntArray(R.array.google_colors);
         header.setColorSchemeColors(colors);
         header.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));

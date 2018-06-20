@@ -10,7 +10,7 @@ import dagger.Component;
  */
 
 @ApplicationScope
-@Component(modules = MainModule.class)
+@Component(modules = MainApplicationModule.class)
 public interface ApplicationComponent {
     void inject(MainApplication application);
 }
