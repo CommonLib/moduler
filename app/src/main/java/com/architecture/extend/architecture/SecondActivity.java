@@ -5,7 +5,6 @@ import android.view.View;
 
 import com.architecture.extend.baselib.mvvm.BaseActivity;
 import com.architecture.extend.baselib.util.LogUtil;
-import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import javax.inject.Inject;
 
@@ -17,15 +16,11 @@ public class SecondActivity extends BaseActivity<ViewModel1> {
     @Inject
     View mView;
 
-    @Inject
-    RxPermissions mRxPermissions;
-
     @Override
     protected void initData() {
         if (mView != null) {
             LogUtil.d("SecondActivity inject success" + this);
             LogUtil.d("SecondActivity inject success" + mView);
-            LogUtil.d("SecondActivity inject success" + mRxPermissions);
         }
     }
 

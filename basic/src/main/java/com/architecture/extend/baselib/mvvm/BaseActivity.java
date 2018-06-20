@@ -8,7 +8,6 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
@@ -23,10 +22,8 @@ import android.view.ViewGroup;
 import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.util.GenericUtil;
-import com.architecture.extend.baselib.util.LogUtil;
 import com.architecture.extend.baselib.util.ViewUtil;
 import com.architecture.extend.baselib.widget.LoadStateView;
-import com.tbruyelle.rxpermissions2.Permission;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import javax.inject.Inject;
@@ -35,7 +32,6 @@ import dagger.android.AndroidInjection;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.header.MaterialHeader;
-import io.reactivex.functions.Consumer;
 
 
 /**
@@ -53,9 +49,6 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     private LoadStateView mLoadStateView;
     private Toolbar mToolbar;
     private RxPermissions mRxPermissions;
-
-    @Inject
-    Handler mHandler;
 
     @Inject
     public ConfigureInfo injectConfigureInfo;
@@ -78,10 +71,6 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         }
         mConfigureInfo = getConfigureInfo();
         inflateLayout(mConfigureInfo.isAsyncInflate());
-
-        if (mHandler != null) {
-            LogUtil.d("baseActivity inject success");
-        }
     }
 
     @Override
@@ -131,14 +120,11 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         if(mRxPermissions == null){
             mRxPermissions = new RxPermissions(this);
         }
-        mRxPermissions.requestEach(permissions).subscribe(new Consumer<Permission>() {
-            @Override
-            public void accept(Permission permission) throws Exception {
-                if (permission.granted) {
-                    callBack.onGranted(permission.name);
-                } else {
-                    callBack.onDenied(permission.name);
-                }
+        mRxPermissions.requestEach(permissions).subscribe(permission -> {
+            if (permission.granted) {
+                callBack.onGranted(permission.name);
+            } else {
+                callBack.onDenied(permission.name);
             }
         });
     }
@@ -212,8 +198,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     protected abstract void initView(ViewDataBinding dataBinding);
 
-    protected abstract @LayoutRes
-    int getLayoutId();
+    protected abstract @LayoutRes int getLayoutId();
 
     protected void handleIntent(@NonNull Intent intent) {
     }

@@ -15,17 +15,17 @@ import dagger.Provides;
  */
 
 @Module(includes = BaseActivityModule.class)
-public abstract class ActivityModule {
+public abstract class SecondActivityModule {
 
     @ActicityScope
     @Provides
-    static Weather provodeWeather() {
+    static Weather provideWeather() {
         return new Weather();
     }
 
     @ActicityScope
     @Provides
-    static View provodeView(SecondActivity mainActivity) {
+    static View provideView(SecondActivity mainActivity) {
         return new View(mainActivity);
     }
 
