@@ -21,7 +21,7 @@ public class ConfigureInfo {
         return asyncInflate;
     }
 
-    public boolean isEnableToolbar() {
+    public Boolean isEnableToolbar() {
         return toolbar;
     }
 

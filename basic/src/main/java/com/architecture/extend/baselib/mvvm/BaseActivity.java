@@ -117,7 +117,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     @TargetApi(Build.VERSION_CODES.M)
     protected void usePermission(final PermissionCallBack callBack,
                                  @RequiresPermission String... permissions) {
-        if(mRxPermissions == null){
+        if (mRxPermissions == null) {
             mRxPermissions = new RxPermissions(this);
         }
         mRxPermissions.requestEach(permissions).subscribe(permission -> {
@@ -198,7 +198,8 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     protected abstract void initView(ViewDataBinding dataBinding);
 
-    protected abstract @LayoutRes int getLayoutId();
+    protected abstract @LayoutRes
+    int getLayoutId();
 
     protected void handleIntent(@NonNull Intent intent) {
     }

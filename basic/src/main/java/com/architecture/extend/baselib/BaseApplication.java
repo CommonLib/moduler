@@ -2,7 +2,6 @@ package com.architecture.extend.baselib;
 
 import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.support.annotation.WorkerThread;
 import android.support.multidex.MultiDex;
@@ -11,6 +10,8 @@ import android.support.v4.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.architecture.extend.baselib.util.LogUtil;
+
+import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 
@@ -42,8 +43,11 @@ public class BaseApplication extends MultiDexApplication
     @Inject
     DispatchingAndroidInjector<InjectAble> dispatchingViewModelInjector;
 
+    @Inject
+    Executor mExecutor;
+
     private static BaseApplication instance;
-    private static boolean isInit = false;
+    private static boolean isInited = false;
 
     public static BaseApplication getInstance() {
         return instance;
@@ -58,19 +62,10 @@ public class BaseApplication extends MultiDexApplication
     @Override
     public void onCreate() {
         super.onCreate();
-        if (!isInit) {
+        if (!isInited) {
             init(BuildConfig.DEBUG);
-            AsyncTask.THREAD_POOL_EXECUTOR.execute(new Runnable() {
-                @Override
-                public void run() {
-                    asyncInit(BuildConfig.DEBUG);
-                }
-            });
-            isInit = true;
-        }
-
-        if (mHandler != null) {
-            LogUtil.d("BaseApplication inject success"+ mHandler);
+            mExecutor.execute(() -> asyncInit(BuildConfig.DEBUG));
+            isInited = true;
         }
     }
 

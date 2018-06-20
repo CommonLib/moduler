@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android-aspectjx'
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
@@ -56,6 +57,22 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+}
+
+aspectjx {
+    exclude 'android'
+    exclude 'retrofit2'
+    exclude 'com.alibaba.android.arouter'
+    exclude 'okhttp3'
+    exclude 'okio'
+    exclude 'com.tbruyelle.rxpermissions'
+    exclude 'dagger'
+    exclude 'com.bumptech.glide'
+    exclude 'com.google.gson'
+    exclude 'com.google.devtools'
+    exclude 'io.reactivex'
+    exclude 'in.srain.cube'
+    exclude 'javax.annotation'
 }
 
 static def releaseTime() {
