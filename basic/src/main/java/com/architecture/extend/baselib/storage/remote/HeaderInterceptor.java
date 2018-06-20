@@ -4,10 +4,13 @@ package com.architecture.extend.baselib.storage.remote;
 import android.support.annotation.NonNull;
 
 import com.architecture.extend.baselib.BaseApplication;
+import com.architecture.extend.baselib.dagger.ApplicationScope;
 import com.architecture.extend.baselib.util.AppUtil;
 
 import java.io.IOException;
 import java.util.HashMap;
+
+import javax.inject.Inject;
 
 import okhttp3.CacheControl;
 import okhttp3.Interceptor;
@@ -20,7 +23,15 @@ import okhttp3.Response;
  * 描述:
  * 修改:
  */
+@ApplicationScope
 public class HeaderInterceptor implements Interceptor {
+
+    HttpHeaders mHeaders;
+
+    @Inject
+    HeaderInterceptor(HttpHeaders headers) {
+        mHeaders = headers;
+    }
 
     @Override
     public Response intercept(@NonNull Chain chain) throws IOException {
@@ -31,7 +42,7 @@ public class HeaderInterceptor implements Interceptor {
             builder.cacheControl(CacheControl.FORCE_CACHE);
         } else {
             builder.addHeader("Accept", "application/json");
-            HashMap<String, String> headers = RetrofitHelper.getInstance().getHeaders();
+            HashMap<String, String> headers = mHeaders.getHeaders();
             if (headers != null) {
                 for (String key : headers.keySet()) {
                     builder.addHeader(key, headers.get(key));

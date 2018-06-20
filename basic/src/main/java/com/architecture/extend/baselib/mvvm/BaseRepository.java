@@ -1,5 +1,7 @@
 package com.architecture.extend.baselib.mvvm;
 
+import android.support.annotation.CallSuper;
+
 import com.architecture.extend.baselib.BaseApplication;
 
 import java.util.concurrent.Executor;
@@ -22,6 +24,7 @@ public abstract class BaseRepository implements InjectAble {
         onCreate();
     }
 
+    @CallSuper
     public void onCreate() {
         ObjectInjection.inject(this, BaseApplication.getInstance());
     }

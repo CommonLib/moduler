@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.mvvm.ApiResponse;
 import com.architecture.extend.baselib.mvvm.BaseRepository;
-import com.architecture.extend.baselib.storage.remote.RetrofitHelper;
 import com.architecture.extend.baselib.util.LogUtil;
 import com.module.contract.remote.ApiCacheResource;
 
@@ -24,6 +23,9 @@ import retrofit2.Response;
 public class MainRepository extends BaseRepository {
 
     @Inject
+    MainApiService mMainApiService;
+
+    @Inject
     public MainRepository() {
         super();
     }
@@ -32,6 +34,7 @@ public class MainRepository extends BaseRepository {
 
     @Override
     public void onCreate() {
+        super.onCreate();
         WeatherDatabase db = Room
                 .databaseBuilder(BaseApplication.getInstance(), WeatherDatabase.class, "weather")
                 .build();
@@ -68,9 +71,7 @@ public class MainRepository extends BaseRepository {
             @Override
             protected Call<ApiResponse<Weather>> getCall() {
                 LogUtil.d("getCall");
-                MainApiService service = RetrofitHelper.getInstance()
-                        .getService(MainApiService.class);
-                return service.getWeather("北京");
+                return mMainApiService.getWeather("北京");
             }
 
             @Override

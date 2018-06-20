@@ -93,12 +93,9 @@ public abstract class BaseViewModel extends ViewModel
     public LiveData<View> asyncInflate(@LayoutRes final int layoutId, final LayoutInflater layoutInflater,
                                        final ViewGroup viewGroup) {
         final MutableLiveData<View> liveData = new MutableLiveData<>();
-        runOnWorkerThread(new Runnable() {
-            @Override
-            public void run() {
-                View view = layoutInflater.inflate(layoutId, viewGroup, false);
-                liveData.postValue(view);
-            }
+        runOnWorkerThread(() -> {
+            View view = layoutInflater.inflate(layoutId, viewGroup, false);
+            liveData.postValue(view);
         });
         return liveData;
     }
