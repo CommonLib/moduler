@@ -1,4 +1,4 @@
-package com.architecture.extend.architecture;
+package com.architecture.extend.baselib.aop;
 
 import com.architecture.extend.baselib.util.LogUtil;
 
@@ -31,11 +31,4 @@ public class PermissionAspect {
         pjp.proceed();
         LogUtil.d("before");
     }
-    /*private static final String TAG = "xuyisheng";
-
-    @Before("execution(* android.app.Activity.on**(..))")
-    public void onActivityMethodBefore(JoinPoint joinPoint) throws Throwable {
-        String key = joinPoint.getSignature().toString();
-        Log.d(TAG, "onActivityMethodBefore: " + key);
-    }*/
 }
