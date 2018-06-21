@@ -22,10 +22,10 @@ android {
 
     signingConfigs {
         config {
-            storeFile file(rootProject.ext.keyPath)
-            storePassword rootProject.ext.storePassword
-            keyAlias rootProject.ext.keyAlias
-            keyPassword rootProject.ext.keyPassword
+            storeFile file(KEY_PATH)
+            storePassword STORE_PASSWORD
+            keyAlias KEY_ALIAS
+            keyPassword KEY_PASSWORD
         }
     }
 
@@ -34,9 +34,11 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.config
+            versionNameSuffix "_release"
         }
         debug {
             signingConfig signingConfigs.config
+            versionNameSuffix "_debug"
         }
     }
 
@@ -44,15 +46,6 @@ android {
         enabled = true
     }
 
-    android.applicationVariants.all { variant ->
-        variant.outputs.all {
-            if (variant.buildType.name == 'release') {
-                outputFileName = "app_${defaultConfig.versionName}_${releaseTime()}_release.apk"
-            } else if (variant.buildType.name == 'debug') {
-                outputFileName = "app_${defaultConfig.versionName}_${releaseTime()}_debug.apk"
-            }
-        }
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -73,10 +66,6 @@ aspectjx {
     exclude 'com.google'
     exclude 'io.reactivex'
     exclude 'in.srain.cube'
-}
-
-static def releaseTime() {
-    return new Date().format("yyyy-MM-dd", TimeZone.getTimeZone("UTC"))
 }
 
 dependencies {

@@ -1,26 +1,18 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        Properties properties = new Properties()
-        InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream()
-        properties.load(inputStream)
-
         compileSdkVersion = 26
         buildToolsVersion = '26.0.2'
         minSdkVersion = 14
         targetSdkVersion = 25
         supportVersion = '26.1.0'
-
-        keyPath = properties.getProperty('keyPath')
-        keyAlias = properties.getProperty('keyAlias')
-        keyPassword = properties.getProperty('keyPassword')
-        storePassword = properties.getProperty('storePassword')
-        def hasBuildAll = properties.getProperty('buildAll')
-        buildAll = (hasBuildAll == null ? true : hasBuildAll)
     }
 
     repositories {
         jcenter()
+        maven {
+            url 'https://maven.google.com'
+        }
     }
 
     dependencies {
