@@ -32,41 +32,41 @@ import retrofit2.converter.gson.GsonConverterFactory;
  */
 
 @Module(includes = ObjectInjectionModule.class)
-public abstract class BaseApplicationModule {
+public class BaseApplicationModule {
 
     @ApplicationScope
     @Provides
-    static ConfigureInfo provideConfigureInfo() {
+    public ConfigureInfo provideConfigureInfo() {
         return ConfigureInfo.defaultConfigure();
     }
 
     @ApplicationScope
     @Provides
-    static Handler provideHandler() {
+    public Handler provideHandler() {
         return new Handler();
     }
 
     @ApplicationScope
     @Provides
-    static BaseApplication provideApplication() {
+    public BaseApplication provideApplication() {
         return BaseApplication.getInstance();
     }
 
     @ApplicationScope
     @Provides
-    static Executor provideExecutor() {
+    public Executor provideExecutor() {
         return AsyncTask.THREAD_POOL_EXECUTOR;
     }
 
     @ApplicationScope
     @Provides
-    static ACache provideAcache(BaseApplication baseApplication) {
+    public ACache provideAcache(BaseApplication baseApplication) {
         return ACache.get(baseApplication);
     }
 
     @ApplicationScope
     @Provides
-    static Retrofit provideRetrofit(OkHttpClient okHttpClient) {
+    public Retrofit provideRetrofit(OkHttpClient okHttpClient) {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.addSerializationExclusionStrategy(new ExclusionStrategy() {
             @Override
@@ -95,7 +95,7 @@ public abstract class BaseApplicationModule {
 
     @ApplicationScope
     @Provides
-    static OkHttpClient provideOkHttpClient(HeaderInterceptor headerInterceptor) {
+    public OkHttpClient provideOkHttpClient(HeaderInterceptor headerInterceptor) {
         OkHttpClient okHttpClient;
         OkHttpClient.Builder builder = new OkHttpClient.Builder().retryOnConnectionFailure(true)
                 .cache(new Cache(BaseApplication.getInstance().getCacheDir(),

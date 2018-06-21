@@ -9,7 +9,11 @@ import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
-import com.architecture.extend.baselib.util.LogUtil;
+import com.orhanobut.logger.AndroidLogAdapter;
+import com.orhanobut.logger.DiskLogAdapter;
+import com.orhanobut.logger.FormatStrategy;
+import com.orhanobut.logger.Logger;
+import com.orhanobut.logger.PrettyFormatStrategy;
 
 import java.util.concurrent.Executor;
 
@@ -69,13 +73,16 @@ public class BaseApplication extends MultiDexApplication
         }
     }
 
-    protected void init(final boolean debugMode) {
+    protected void init(boolean debugMode) {
         instance = this;
-        LogUtil.init(getClass().getSimpleName(), debugMode);
+        FormatStrategy formatStrategy = PrettyFormatStrategy.newBuilder()
+                .tag(getClass().getSimpleName()).build();
+        Logger.addLogAdapter(new AndroidLogAdapter(formatStrategy));
         if (debugMode) {
             ARouter.openLog();
             ARouter.openDebug();
             ARouter.printStackTrace();
+            Logger.addLogAdapter(new DiskLogAdapter());
         }
         ARouter.init(this);
     }
