@@ -3,7 +3,6 @@ package com.architecture.extend.baselib.mvvm;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
@@ -24,6 +23,7 @@ import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.ViewUtil;
 import com.architecture.extend.baselib.widget.ChildScrollFrameLayout;
 import com.architecture.extend.baselib.widget.LoadStateView;
+import com.blankj.utilcode.util.SizeUtils;
 
 import dagger.android.support.AndroidSupportInjection;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
@@ -172,13 +172,10 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     private void asyncInflateLayout(final ViewGroup parent, LayoutInflater inflater,
                                     @LayoutRes int layoutId) {
         LiveData<View> inflate = getViewModel().asyncInflate(layoutId, inflater, parent);
-        inflate.observe(this, new Observer<View>() {
-            @Override
-            public void onChanged(@Nullable View view) {
-                View packageView = packageContentView(mConfigureInfo, view);
-                parent.addView(packageView);
-                init(DataBindingUtil.bind(view));
-            }
+        inflate.observe(this, view -> {
+            View packageView = packageContentView(mConfigureInfo, view);
+            parent.addView(packageView);
+            init(DataBindingUtil.bind(view));
         });
     }
 
@@ -224,8 +221,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         int[] colors = getResources().getIntArray(R.array.google_colors);
         header.setColorSchemeColors(colors);
         header.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));
-        header.setPadding(0, (int) ViewUtil.dip2px(mActivity, 15), 0,
-                (int) ViewUtil.dip2px(mActivity, 10));
+        header.setPadding(0, SizeUtils.dp2px(15), 0, SizeUtils.dp2px(15));
         header.setPtrFrameLayout(refreshView);
         refreshView.setHeaderView(header);
         refreshView.addPtrUIHandler(header);

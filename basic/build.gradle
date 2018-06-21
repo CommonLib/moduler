@@ -59,4 +59,5 @@ dependencies {
     compile 'android.arch.lifecycle:extensions:1.1.1'
     compile 'android.arch.persistence.room:runtime:1.1.0'
     compile 'org.aspectj:aspectjrt:1.8.9'
+    compile 'com.blankj:utilcode:1.17.0'
 }

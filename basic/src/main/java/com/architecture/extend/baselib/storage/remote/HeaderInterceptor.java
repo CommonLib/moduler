@@ -3,9 +3,8 @@ package com.architecture.extend.baselib.storage.remote;
 
 import android.support.annotation.NonNull;
 
-import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.dagger.ApplicationScope;
-import com.architecture.extend.baselib.util.AppUtil;
+import com.blankj.utilcode.util.NetworkUtils;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -37,7 +36,7 @@ public class HeaderInterceptor implements Interceptor {
     public Response intercept(@NonNull Chain chain) throws IOException {
         Request request = chain.request();
         Request.Builder builder = request.newBuilder();
-        boolean networkAvailable = AppUtil.isNetworkAvailable(BaseApplication.getInstance());
+        boolean networkAvailable = NetworkUtils.isConnected();
         if (!networkAvailable) {
             builder.cacheControl(CacheControl.FORCE_CACHE);
         } else {

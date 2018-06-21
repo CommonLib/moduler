@@ -13,17 +13,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.architecture.extend.architecture.databinding.ShareLayoutBinding;
+import com.architecture.extend.baselib.aop.Permission;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.mvvm.BaseActivity;
 import com.architecture.extend.baselib.mvvm.BaseDialog;
 import com.architecture.extend.baselib.mvvm.ConfigureInfo;
 import com.architecture.extend.baselib.mvvm.Resource;
 import com.architecture.extend.baselib.mvvm.ViewCreateCallBack;
-import com.architecture.extend.baselib.util.AppUtil;
 import com.architecture.extend.baselib.util.FragmentStack;
 import com.architecture.extend.baselib.util.LogUtil;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import in.srain.cube.views.ptr.PtrFrameLayout;
 
@@ -35,14 +36,19 @@ public class MainActivity extends BaseActivity<MainViewModel> {
     @Inject
     Handler mHandler;
 
+    @Inject
+    @Named("launcher")
+    Intent mLauncher;
+
 
     @Override
     protected void initData() {
-        if(mHandler != null){
+        if (mHandler != null) {
             LogUtil.d("MainActivity inject success" + mHandler);
         }
     }
 
+    @Permission
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,8 +59,8 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         findViewById(R.id.act_btn_web).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                ARouter.getInstance().build(RouterConstants.Pic.PAGE_PIC).navigation();
-                                startActivity(new Intent(MainActivity.this, SecondActivity.class));
+                //                ARouter.getInstance().build(RouterConstants.Pic.PAGE_PIC).navigation();
+                startActivity(new Intent(MainActivity.this, SecondActivity.class));
 
             }
         });
@@ -86,6 +92,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
                     public void onGranted(String permission) {
                         LogUtil.d(permission + " onGranted");
                     }
+
                     @Override
                     public void onDenied(String permission) {
                         LogUtil.d(permission + " onDenied");
@@ -148,7 +155,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
 
     @Override
     public void onBackPressed() {
-        AppUtil.startLauncherHome(this);
+        startActivity(mLauncher);
     }
 
     @Override

@@ -24,6 +24,7 @@ import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.ViewUtil;
 import com.architecture.extend.baselib.widget.LoadStateView;
+import com.blankj.utilcode.util.SizeUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import javax.inject.Inject;
@@ -217,7 +218,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         int[] colors = getResources().getIntArray(R.array.google_colors);
         header.setColorSchemeColors(colors);
         header.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));
-        header.setPadding(0, (int) ViewUtil.dip2px(this, 15), 0, (int) ViewUtil.dip2px(this, 10));
+        header.setPadding(0, SizeUtils.dp2px(15), 0, SizeUtils.dp2px(10));
         header.setPtrFrameLayout(refreshView);
         refreshView.setHeaderView(header);
         refreshView.addPtrUIHandler(header);

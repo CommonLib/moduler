@@ -16,10 +16,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.R;
-import com.architecture.extend.baselib.util.AppUtil;
-import com.architecture.extend.baselib.util.ViewUtil;
+import com.blankj.utilcode.util.ScreenUtils;
+import com.blankj.utilcode.util.SizeUtils;
 
 
 /**
@@ -123,18 +122,18 @@ public class BaseDialog extends DialogFragment {
 
             //设置dialog宽度
             if (mWidth == 0) {
-                lp.width = AppUtil.getScreenWidth(BaseApplication.getInstance());
+                lp.width = ScreenUtils.getScreenWidth();
             } else if (mWidth == -1) {
                 lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
             } else {
-                lp.width = (int) ViewUtil.dip2px(BaseApplication.getInstance(), mWidth);
+                lp.width = SizeUtils.dp2px(mWidth);
             }
 
             //设置dialog高度
             if (mHeight == 0) {
                 lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
             } else {
-                lp.height = (int) ViewUtil.dip2px(BaseApplication.getInstance(), mHeight);
+                lp.height = SizeUtils.dp2px(mHeight);
             }
 
             //设置dialog进入、退出的动画

@@ -1,5 +1,6 @@
 package com.architecture.extend.baselib.dagger;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 
@@ -17,6 +18,8 @@ import com.google.gson.GsonBuilder;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
+
+import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
@@ -112,5 +115,14 @@ public class BaseApplicationModule {
             okHttpClient = builder.build();
         }
         return okHttpClient;
+    }
+
+    @ApplicationScope
+    @Provides
+    @Named("launcher")
+    public Intent provideLauncherIntent(){
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        return intent;
     }
 }

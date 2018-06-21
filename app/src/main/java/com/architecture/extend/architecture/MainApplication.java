@@ -6,7 +6,6 @@ import android.os.Handler;
 import com.architecture.extend.architecture.dagger.ApplicationComponent;
 import com.architecture.extend.architecture.dagger.DaggerApplicationComponent;
 import com.architecture.extend.baselib.BaseApplication;
-import com.architecture.extend.baselib.aop.Permission;
 import com.architecture.extend.baselib.util.LogUtil;
 
 import javax.inject.Inject;
@@ -22,7 +21,6 @@ public class MainApplication extends BaseApplication {
     Handler mHandler;
     private ApplicationComponent mApplicationComponent;
 
-    @Permission
     @Override
     public void onCreate() {
         mApplicationComponent = DaggerApplicationComponent.builder().build();

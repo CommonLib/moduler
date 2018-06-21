@@ -9,6 +9,7 @@ import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.blankj.utilcode.util.Utils;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.DiskLogAdapter;
 import com.orhanobut.logger.FormatStrategy;
@@ -78,6 +79,7 @@ public class BaseApplication extends MultiDexApplication
         FormatStrategy formatStrategy = PrettyFormatStrategy.newBuilder()
                 .tag(getClass().getSimpleName()).build();
         Logger.addLogAdapter(new AndroidLogAdapter(formatStrategy));
+        Utils.init(this);
         if (debugMode) {
             ARouter.openLog();
             ARouter.openDebug();
