@@ -8,12 +8,11 @@ import com.architecture.extend.architecture.databinding.FragmentMainBinding;
 import com.architecture.extend.architecture.databinding.ItemLoadMoreBinding;
 import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.base.BaseRecycleAdapter;
-import com.architecture.extend.baselib.base.LoadMoreCallBack;
 import com.architecture.extend.baselib.base.ViewHolder;
 import com.architecture.extend.baselib.mvvm.BaseFragment;
 import com.architecture.extend.baselib.mvvm.ConfigureInfo;
 import com.architecture.extend.baselib.util.LogUtil;
-import com.architecture.extend.baselib.util.ViewUtil;
+import com.jcodecraeer.xrecyclerview.XRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,24 +60,29 @@ public class MainFragment extends BaseFragment<FragmentViewModel> {
                 LinearLayoutManager.VERTICAL, false);
         ViewDataBinding loadBinding = DataBindingUtil
                 .inflate(getLayoutInflater(), R.layout.view_load_more, null, false);
-        ViewUtil.setUpRecycleViewLoadMore(bind.viewScrollContent, mAdapter, manager, loadBinding,
-                R.layout.view_load_more, new LoadMoreCallBack() {
+        bind.viewScrollContent.setAdapter(mAdapter);
+        bind.viewScrollContent.setLayoutManager(manager);
+        bind.viewScrollContent.setLoadingListener(new XRecyclerView.LoadingListener() {
+            @Override
+            public void onRefresh() {
 
+            }
+
+            @Override
+            public void onLoadMore() {
+                LogUtil.d("onLoadMore");
+                BaseApplication.getInstance().getHandler().postDelayed(new Runnable() {
                     @Override
-                    public void onLoadMore() {
-                        LogUtil.d("onLoadMore");
-                        BaseApplication.getInstance().getHandler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                ArrayList<String> str = new ArrayList<String>();
-                                for (int i = 0; i < 10; i++) {
-                                    str.add("load more item" + i);
-                                }
-                                mAdapter.addData(str, R.layout.item_load_more);
-                            }
-                        }, 3000);
+                    public void run() {
+                        ArrayList<String> str = new ArrayList<String>();
+                        for (int i = 0; i < 10; i++) {
+                            str.add("load more item" + i);
+                        }
+                        mAdapter.addData(str, R.layout.item_load_more);
                     }
-                });
+                }, 3000);
+            }
+        });
     }
 
     @Override

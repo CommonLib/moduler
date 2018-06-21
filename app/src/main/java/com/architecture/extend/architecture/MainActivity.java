@@ -48,12 +48,12 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         }
     }
 
-    @Permission
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    @Permission
     @Override
     protected void initView(ViewDataBinding binding) {
         findViewById(R.id.act_btn_web).setOnClickListener(new View.OnClickListener() {
