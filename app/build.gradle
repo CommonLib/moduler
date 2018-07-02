@@ -66,6 +66,7 @@ aspectjx {
     exclude 'com.google'
     exclude 'io.reactivex'
     exclude 'in.srain.cube'
+    enabled false
 }
 
 dependencies {

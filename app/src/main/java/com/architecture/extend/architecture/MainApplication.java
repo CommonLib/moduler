@@ -21,6 +21,7 @@ public class MainApplication extends BaseApplication {
     Handler mHandler;
     private ApplicationComponent mApplicationComponent;
 
+
     @Override
     public void onCreate() {
         mApplicationComponent = DaggerApplicationComponent.builder().build();
@@ -35,7 +36,5 @@ public class MainApplication extends BaseApplication {
     public ApplicationComponent getApplicationComponent(){
         return mApplicationComponent;
     }
-
-
 }
 
