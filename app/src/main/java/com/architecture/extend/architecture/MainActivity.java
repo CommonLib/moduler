@@ -13,7 +13,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.architecture.extend.architecture.databinding.ShareLayoutBinding;
-import com.architecture.extend.baselib.aop.Permission;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.mvvm.BaseActivity;
 import com.architecture.extend.baselib.mvvm.BaseDialog;
@@ -53,7 +52,6 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         super.onCreate(savedInstanceState);
     }
 
-    @Permission
     @Override
     protected void initView(ViewDataBinding binding) {
         findViewById(R.id.act_btn_web).setOnClickListener(new View.OnClickListener() {

@@ -1,8 +1,9 @@
 package com.reference.apublic.web;
 
-import com.alibaba.android.arouter.facade.annotation.Autowired;
 import com.architecture.extend.baselib.mvvm.BaseViewModel;
 import com.module.contract.web.IWebService;
+
+import javax.inject.Inject;
 
 /**
  * Created by byang059 on 9/18/17.
@@ -10,7 +11,7 @@ import com.module.contract.web.IWebService;
 
 public class WebViewModel extends BaseViewModel {
 
-    @Autowired
+    @Inject
     IWebService mIWebService;
 
     @Override

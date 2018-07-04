@@ -73,7 +73,6 @@ public abstract class BaseViewModel extends ViewModel
     @CallSuper
     protected void onCreate() {
         ObjectInjection.inject(this,BaseApplication.getInstance());
-        ARouter.getInstance().inject(this);
     }
 
     @CallSuper

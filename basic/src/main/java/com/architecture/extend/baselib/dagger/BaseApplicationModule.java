@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.BuildConfig;
 import com.architecture.extend.baselib.config.AppConfig;
@@ -120,9 +121,15 @@ public class BaseApplicationModule {
     @ApplicationScope
     @Provides
     @Named("launcher")
-    public Intent provideLauncherIntent(){
+    public Intent provideLauncherIntent() {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.addCategory(Intent.CATEGORY_HOME);
         return intent;
+    }
+
+    @ApplicationScope
+    @Provides
+    public ARouter provideARounter() {
+        return ARouter.getInstance();
     }
 }
