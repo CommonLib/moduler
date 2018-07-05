@@ -12,7 +12,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import dagger.android.AndroidInjector;
-import dagger.android.InjectAble;
 
 import static dagger.internal.Preconditions.checkNotNull;
 
@@ -20,7 +19,7 @@ import static dagger.internal.Preconditions.checkNotNull;
  * Created by byang059 on 5/25/17.
  */
 
-public abstract class BaseRepository implements InjectAble {
+public abstract class BaseRepository {
 
     @Inject
     Executor mExecutor;

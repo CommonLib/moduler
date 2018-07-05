@@ -26,7 +26,6 @@ import javax.inject.Inject;
 import javax.inject.Provider;
 
 import dagger.android.AndroidInjector;
-import dagger.android.InjectAble;
 
 import static dagger.internal.Preconditions.checkNotNull;
 
@@ -35,7 +34,7 @@ import static dagger.internal.Preconditions.checkNotNull;
  */
 
 public abstract class BaseViewModel extends ViewModel
-        implements ViewForegroundSwitchListener, LifecycleObserver, InjectAble {
+        implements ViewForegroundSwitchListener, LifecycleObserver {
 
     @Inject
     Executor mExecutor;

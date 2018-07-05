@@ -24,7 +24,7 @@ import javax.inject.Named;
 
 import dagger.Module;
 import dagger.Provides;
-import dagger.android.ObjectInjectionModule;
+import dagger.android.support.AndroidSupportInjectionModule;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -35,7 +35,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by byang059 on 2/1/18.
  */
 
-@Module(includes = ObjectInjectionModule.class)
+@Module(includes = AndroidSupportInjectionModule.class)
 public class BaseApplicationModule {
 
     @ApplicationScope
