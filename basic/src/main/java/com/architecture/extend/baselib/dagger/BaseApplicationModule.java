@@ -129,7 +129,7 @@ public class BaseApplicationModule {
 
     @ApplicationScope
     @Provides
-    public ARouter provideARounter() {
+    public ARouter provideARouter() {
         return ARouter.getInstance();
     }
 }
