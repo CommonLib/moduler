@@ -1,7 +1,9 @@
-package com.architecture.extend.architecture;
+package com.architecture.extend.architecture.dagger;
 
 import android.view.View;
 
+import com.architecture.extend.architecture.SecondActivity;
+import com.architecture.extend.architecture.Weather;
 import com.architecture.extend.baselib.dagger.ActicityScope;
 import com.architecture.extend.baselib.dagger.BaseActivityModule;
 import com.architecture.extend.baselib.mvvm.BaseActivity;

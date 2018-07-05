@@ -1,49 +1,78 @@
 package com.architecture.extend.architecture.dagger;
 
+import android.app.Activity;
+import android.support.v4.app.Fragment;
+
 import com.architecture.extend.architecture.FragmentViewModel;
 import com.architecture.extend.architecture.MainActivity;
 import com.architecture.extend.architecture.MainFragment;
 import com.architecture.extend.architecture.MainRepository;
 import com.architecture.extend.architecture.MainViewModel;
 import com.architecture.extend.architecture.SecondActivity;
-import com.architecture.extend.architecture.SecondActivityModule;
-import com.architecture.extend.architecture.ViewModel1;
+import com.architecture.extend.architecture.SecondRepository;
+import com.architecture.extend.architecture.SecondViewModel;
 import com.architecture.extend.baselib.dagger.ActicityScope;
+import com.architecture.extend.baselib.dagger.Injector;
 
+import dagger.Binds;
 import dagger.Module;
-import dagger.android.ContributesAndroidInjector;
+import dagger.Subcomponent;
+import dagger.android.ActivityKey;
+import dagger.android.AndroidInjector;
+import dagger.android.support.FragmentKey;
+import dagger.multibindings.IntoMap;
 
 /**
  * Created by byang059 on 2018/6/20.
  */
 
-@Module
+@Module(subcomponents = {
+        SubComponentModule.SecondActivitySubcomponent.class,
+        SubComponentModule.MainActivitySubcomponent.class,
+        SubComponentModule.MainFragmentSubcomponent.class
+})
 public abstract class SubComponentModule {
 
-    @ContributesAndroidInjector
-    abstract MainViewModel contributesMainViewModel();
+    @Binds
+    @IntoMap
+    @ActivityKey(SecondActivity.class)
+    abstract AndroidInjector.Factory<? extends Activity> bindSecondActivityInjectorFactory(
+            SecondActivitySubcomponent.Builder builder);
 
+    @Subcomponent(modules = SecondActivityModule.class)
     @ActicityScope
-    @ContributesAndroidInjector
-    abstract FragmentViewModel contributesFragmentViewModel();
+    public interface SecondActivitySubcomponent
+            extends Injector<SecondActivity, SecondViewModel, SecondRepository> {
 
-    @ActicityScope
-    @ContributesAndroidInjector
-    abstract MainRepository contributesMainRepository();
+        @Subcomponent.Builder
+        abstract class Builder extends AndroidInjector.Builder<SecondActivity> {}
+    }
 
-    @ActicityScope
-    @ContributesAndroidInjector(modules = SecondActivityModule.class)
-    abstract SecondActivity contributesSecondActivity();
+    @Binds
+    @IntoMap
+    @ActivityKey(MainActivity.class)
+    abstract AndroidInjector.Factory<? extends Activity> bindMainActivityInjectorFactory(
+            SubComponentModule.MainActivitySubcomponent.Builder builder);
 
+    @Subcomponent
     @ActicityScope
-    @ContributesAndroidInjector
-    abstract MainActivity contributesMainActivity();
+    public interface MainActivitySubcomponent
+            extends Injector<MainActivity, MainViewModel, MainRepository> {
+        @Subcomponent.Builder
+        abstract class Builder extends AndroidInjector.Builder<MainActivity> {}
+    }
 
-    @ActicityScope
-    @ContributesAndroidInjector
-    abstract MainFragment contributesMainFragment();
+    @Binds
+    @IntoMap
+    @FragmentKey(MainFragment.class)
+    abstract AndroidInjector.Factory<? extends Fragment> bindMainFragmentInjectorFactory(
+            SubComponentModule.MainFragmentSubcomponent.Builder builder);
 
+    @Subcomponent
     @ActicityScope
-    @ContributesAndroidInjector
-    abstract ViewModel1 contributesViewModel1();
+    public interface MainFragmentSubcomponent
+            extends Injector<MainFragment, FragmentViewModel, Object> {
+        @Subcomponent.Builder
+        abstract class Builder extends AndroidInjector.Builder<MainFragment> {}
+    }
 }

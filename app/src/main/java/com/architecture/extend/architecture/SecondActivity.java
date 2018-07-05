@@ -11,7 +11,7 @@ import javax.inject.Inject;
 /**
  * Created by byang059 on 10/24/17.
  */
-public class SecondActivity extends BaseActivity<ViewModel1> {
+public class SecondActivity extends BaseActivity<SecondViewModel> {
 
     @Inject
     View mView;

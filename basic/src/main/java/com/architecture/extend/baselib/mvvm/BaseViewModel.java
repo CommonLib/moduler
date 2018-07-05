@@ -10,6 +10,7 @@ import android.arch.lifecycle.ViewModel;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,13 +18,17 @@ import android.view.ViewGroup;
 import com.alibaba.android.arouter.facade.Postcard;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.architecture.extend.baselib.BaseApplication;
+import com.architecture.extend.baselib.dagger.Injector;
 
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
+import dagger.android.AndroidInjector;
 import dagger.android.InjectAble;
-import dagger.android.ObjectInjection;
+
+import static dagger.internal.Preconditions.checkNotNull;
 
 /**
  * Created by byang059 on 5/24/17.
@@ -40,7 +45,7 @@ public abstract class BaseViewModel extends ViewModel
         onCreate();
     }
 
-    public BaseApplication getApplication(){
+    public BaseApplication getApplication() {
         return BaseApplication.getInstance();
     }
 
@@ -72,7 +77,6 @@ public abstract class BaseViewModel extends ViewModel
 
     @CallSuper
     protected void onCreate() {
-        ObjectInjection.inject(this,BaseApplication.getInstance());
     }
 
     @CallSuper
@@ -89,7 +93,8 @@ public abstract class BaseViewModel extends ViewModel
 
     }
 
-    public LiveData<View> asyncInflate(@LayoutRes final int layoutId, final LayoutInflater layoutInflater,
+    public LiveData<View> asyncInflate(@LayoutRes final int layoutId,
+                                       final LayoutInflater layoutInflater,
                                        final ViewGroup viewGroup) {
         final MutableLiveData<View> liveData = new MutableLiveData<>();
         runOnWorkerThread(() -> {
@@ -121,5 +126,38 @@ public abstract class BaseViewModel extends ViewModel
 
     protected void runOnWorkerThread(Runnable runnable) {
         mExecutor.execute(runnable);
+    }
+
+
+    public boolean maybeInject(Activity instance) {
+        Provider<AndroidInjector.Factory<? extends Activity>> factoryProvider = BaseApplication
+                .getInstance().getInjectorActivityFactories()
+                .get(instance.getClass());
+        if (factoryProvider == null) {
+            return false;
+        }
+
+        @SuppressWarnings("unchecked") AndroidInjector.Factory<Activity> factory = (AndroidInjector.Factory<Activity>) factoryProvider
+                .get();
+        AndroidInjector<Activity> injector = checkNotNull(factory.create(instance),
+                "%s.create(I) should not return null.", factory.getClass());
+        ((Injector) injector).injectViewModel(this);
+        return true;
+    }
+
+    public boolean maybeInject(Fragment instance) {
+        Provider<AndroidInjector.Factory<? extends Fragment>> factoryProvider = BaseApplication
+                .getInstance().getInjectorFragmentFactories()
+                .get(instance.getClass());
+        if (factoryProvider == null) {
+            return false;
+        }
+
+        @SuppressWarnings("unchecked") AndroidInjector.Factory<Fragment> factory = (AndroidInjector.Factory<Fragment>) factoryProvider
+                .get();
+        AndroidInjector<Fragment> injector = checkNotNull(factory.create(instance),
+                "%s.create(I) should not return null.", factory.getClass());
+        ((Injector) injector).injectViewModel(this);
+        return true;
     }
 }

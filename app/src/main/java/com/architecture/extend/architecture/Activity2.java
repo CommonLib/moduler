@@ -8,7 +8,7 @@ import com.architecture.extend.baselib.mvvm.BaseActivity;
  * Created by byang059 on 10/24/17.
  */
 
-public class Activity2 extends BaseActivity<ViewModel1> {
+public class Activity2 extends BaseActivity<SecondViewModel> {
 
     @Override
     protected void initData() {

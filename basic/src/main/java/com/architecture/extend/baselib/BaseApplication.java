@@ -16,16 +16,15 @@ import com.orhanobut.logger.FormatStrategy;
 import com.orhanobut.logger.Logger;
 import com.orhanobut.logger.PrettyFormatStrategy;
 
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 
 import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasActivityInjector;
-import dagger.android.HasObjectInjector;
-import dagger.android.InjectAble;
-import dagger.android.InjectObjectHolder;
 import dagger.android.support.HasSupportFragmentInjector;
 
 /**
@@ -33,8 +32,7 @@ import dagger.android.support.HasSupportFragmentInjector;
  */
 
 public class BaseApplication extends MultiDexApplication
-        implements HasActivityInjector, HasObjectInjector, HasSupportFragmentInjector,
-                   InjectObjectHolder {
+        implements HasActivityInjector, HasSupportFragmentInjector {
 
     @Inject
     Handler mHandler;
@@ -46,7 +44,10 @@ public class BaseApplication extends MultiDexApplication
     DispatchingAndroidInjector<Fragment> dispatchingFragmentInjector;
 
     @Inject
-    DispatchingAndroidInjector<InjectAble> dispatchingViewModelInjector;
+    Map<Class<? extends Activity>, Provider<AndroidInjector.Factory<? extends Activity>>> injectorActivityFactories;
+
+    @Inject
+    Map<Class<? extends Fragment>, Provider<AndroidInjector.Factory<? extends Fragment>>> injectorFragmentFactories;
 
     @Inject
     Executor mExecutor;
@@ -117,8 +118,11 @@ public class BaseApplication extends MultiDexApplication
         return dispatchingActivityInjector;
     }
 
-    @Override
-    public AndroidInjector<InjectAble> objectInjector() {
-        return dispatchingViewModelInjector;
+    public Map<Class<? extends Activity>, Provider<AndroidInjector.Factory<? extends Activity>>> getInjectorActivityFactories() {
+        return injectorActivityFactories;
+    }
+
+    public Map<Class<? extends Fragment>, Provider<AndroidInjector.Factory<? extends Fragment>>> getInjectorFragmentFactories() {
+        return injectorFragmentFactories;
     }
 }

@@ -25,12 +25,12 @@ public class MainRepository extends BaseRepository {
     @Inject
     MainApiService mMainApiService;
 
-    @Inject
-    public MainRepository() {
-        super();
-    }
-
     WeatherDao weatherDao;
+
+    @Inject
+    public MainRepository(MainActivity activity) {
+        super(activity);
+    }
 
     @Override
     public void onCreate() {

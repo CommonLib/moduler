@@ -57,6 +57,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         mIsForeground = true;
         Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
         mViewModel = ViewModelProviders.of(mActivity).get(viewModelClazz);
+        mViewModel.maybeInject(this);
         getLifecycle().addObserver(mViewModel);
         setForegroundSwitchCallBack(mViewModel);
         Bundle arguments = getArguments();

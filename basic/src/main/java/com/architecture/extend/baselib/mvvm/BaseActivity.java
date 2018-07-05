@@ -61,6 +61,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         mIsForeground = true;
         Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
         mViewModel = ViewModelProviders.of(this).get(viewModelClazz);
+        mViewModel.maybeInject(this);
         getLifecycle().addObserver(mViewModel);
         setForegroundSwitchCallBack(mViewModel);
         Intent intent = getIntent();
