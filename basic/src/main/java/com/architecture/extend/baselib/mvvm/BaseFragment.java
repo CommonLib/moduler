@@ -19,13 +19,15 @@ import android.widget.FrameLayout;
 
 import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.base.PermissionCallBack;
+import com.architecture.extend.baselib.dagger.InjectionUtil;
+import com.architecture.extend.baselib.dagger.Injector;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.ViewUtil;
 import com.architecture.extend.baselib.widget.ChildScrollFrameLayout;
 import com.architecture.extend.baselib.widget.LoadStateView;
 import com.blankj.utilcode.util.SizeUtils;
 
-import dagger.android.support.AndroidSupportInjection;
+import dagger.android.AndroidInjector;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.header.MaterialHeader;
@@ -43,10 +45,11 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     private ConfigureInfo mConfigureInfo;
     private PtrFrameLayout mPullToRefreshView;
     private LoadStateView mLoadStateView;
+    private AndroidInjector<Fragment> mInjector;
 
     @Override
     public void onAttach(Activity activity) {
-        AndroidSupportInjection.inject(this);
+        mInjector = InjectionUtil.maybeInject(this);
         super.onAttach(activity);
         mActivity = (BaseActivity) activity;
     }
@@ -57,7 +60,9 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         mIsForeground = true;
         Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
         mViewModel = ViewModelProviders.of(mActivity).get(viewModelClazz);
-        mViewModel.maybeInject(this);
+        if(mInjector instanceof Injector){
+            ((Injector) mInjector).injectViewModel(mViewModel);
+        }
         getLifecycle().addObserver(mViewModel);
         setForegroundSwitchCallBack(mViewModel);
         Bundle arguments = getArguments();

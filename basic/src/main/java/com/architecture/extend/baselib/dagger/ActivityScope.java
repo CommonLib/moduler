@@ -13,4 +13,4 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Scope
 @Retention(RUNTIME)
 @Documented
-public @interface ActicityScope {}
+public @interface ActivityScope {}

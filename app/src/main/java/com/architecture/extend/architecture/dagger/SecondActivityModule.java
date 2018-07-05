@@ -4,7 +4,7 @@ import android.view.View;
 
 import com.architecture.extend.architecture.SecondActivity;
 import com.architecture.extend.architecture.Weather;
-import com.architecture.extend.baselib.dagger.ActicityScope;
+import com.architecture.extend.baselib.dagger.ActivityScope;
 import com.architecture.extend.baselib.dagger.BaseActivityModule;
 import com.architecture.extend.baselib.mvvm.BaseActivity;
 
@@ -19,13 +19,13 @@ import dagger.Provides;
 @Module(includes = BaseActivityModule.class)
 public abstract class SecondActivityModule {
 
-    @ActicityScope
+    @ActivityScope
     @Provides
     static Weather provideWeather() {
         return new Weather();
     }
 
-    @ActicityScope
+    @ActivityScope
     @Provides
     static View provideView(SecondActivity mainActivity) {
         return new View(mainActivity);

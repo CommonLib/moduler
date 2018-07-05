@@ -20,7 +20,7 @@ public class SecondActivity extends BaseActivity<SecondViewModel> {
     protected void initData() {
         if (mView != null) {
             LogUtil.d("SecondActivity inject success" + this);
-            LogUtil.d("SecondActivity inject success" + mView);
+            System.out.println(mView);
         }
     }
 

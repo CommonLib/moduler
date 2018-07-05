@@ -1,6 +1,7 @@
 package com.architecture.extend.baselib.mvvm;
 
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
@@ -21,6 +22,8 @@ import android.view.ViewGroup;
 
 import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.base.PermissionCallBack;
+import com.architecture.extend.baselib.dagger.InjectionUtil;
+import com.architecture.extend.baselib.dagger.Injector;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.ViewUtil;
 import com.architecture.extend.baselib.widget.LoadStateView;
@@ -29,7 +32,7 @@ import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import javax.inject.Inject;
 
-import dagger.android.AndroidInjection;
+import dagger.android.AndroidInjector;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.header.MaterialHeader;
@@ -53,15 +56,18 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     @Inject
     public ConfigureInfo injectConfigureInfo;
+    private AndroidInjector<Activity> mInjector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        AndroidInjection.inject(this);
+        mInjector = InjectionUtil.maybeInject(this);
         super.onCreate(savedInstanceState);
         mIsForeground = true;
         Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
         mViewModel = ViewModelProviders.of(this).get(viewModelClazz);
-        mViewModel.maybeInject(this);
+        if(mInjector instanceof Injector){
+            ((Injector) mInjector).injectViewModel(mViewModel);
+        }
         getLifecycle().addObserver(mViewModel);
         setForegroundSwitchCallBack(mViewModel);
         Intent intent = getIntent();
@@ -268,5 +274,9 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     public Toolbar getToolbar() {
         return mToolbar;
+    }
+
+    public AndroidInjector<Activity> getInjector() {
+        return mInjector;
     }
 }

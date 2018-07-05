@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import com.alibaba.android.arouter.facade.Postcard;
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.architecture.extend.baselib.BaseApplication;
-import com.architecture.extend.baselib.dagger.InjectionUtil;
 
 import java.util.concurrent.Executor;
 
@@ -119,13 +118,5 @@ public abstract class BaseViewModel extends ViewModel
 
     protected void runOnWorkerThread(Runnable runnable) {
         mExecutor.execute(runnable);
-    }
-
-    public void maybeInject(BaseActivity activity) {
-        InjectionUtil.maybeInject(activity, this);
-    }
-
-    public void maybeInject(BaseFragment fragment) {
-        InjectionUtil.maybeInject(fragment, this);
     }
 }

@@ -11,7 +11,7 @@ import com.architecture.extend.architecture.MainViewModel;
 import com.architecture.extend.architecture.SecondActivity;
 import com.architecture.extend.architecture.SecondRepository;
 import com.architecture.extend.architecture.SecondViewModel;
-import com.architecture.extend.baselib.dagger.ActicityScope;
+import com.architecture.extend.baselib.dagger.ActivityScope;
 import com.architecture.extend.baselib.dagger.Injector;
 
 import dagger.Binds;
@@ -40,7 +40,7 @@ public abstract class SubComponentModule {
             SecondActivitySubcomponent.Builder builder);
 
     @Subcomponent(modules = SecondActivityModule.class)
-    @ActicityScope
+    @ActivityScope
     public interface SecondActivitySubcomponent
             extends Injector<SecondActivity, SecondViewModel, SecondRepository> {
 
@@ -55,7 +55,7 @@ public abstract class SubComponentModule {
             SubComponentModule.MainActivitySubcomponent.Builder builder);
 
     @Subcomponent
-    @ActicityScope
+    @ActivityScope
     public interface MainActivitySubcomponent
             extends Injector<MainActivity, MainViewModel, MainRepository> {
         @Subcomponent.Builder
@@ -69,7 +69,7 @@ public abstract class SubComponentModule {
             SubComponentModule.MainFragmentSubcomponent.Builder builder);
 
     @Subcomponent
-    @ActicityScope
+    @ActivityScope
     public interface MainFragmentSubcomponent
             extends Injector<MainFragment, FragmentViewModel, Object> {
         @Subcomponent.Builder
