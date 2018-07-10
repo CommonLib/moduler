@@ -14,6 +14,9 @@ public class SecondViewModel extends BaseViewModel{
     @Inject
     View mView;
 
+    @Inject
+    SecondRepository mSecondRepository;
+
     @Override
     public void onViewCreate() {
         super.onViewCreate();

@@ -12,6 +12,7 @@ import com.architecture.extend.baselib.util.LogUtil;
 import com.module.contract.remote.ApiCacheResource;
 
 import javax.inject.Inject;
+import javax.inject.Singleton;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -20,6 +21,7 @@ import retrofit2.Response;
  * Created by byang059 on 5/27/17.
  */
 
+@Singleton
 public class MainRepository extends BaseRepository {
 
     @Inject
@@ -28,8 +30,8 @@ public class MainRepository extends BaseRepository {
     WeatherDao weatherDao;
 
     @Inject
-    public MainRepository(MainActivity activity) {
-        super(activity);
+    public MainRepository() {
+        super();
     }
 
     @Override

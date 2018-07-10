@@ -21,6 +21,7 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
 import javax.inject.Named;
+import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -38,37 +39,37 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @Module(includes = AndroidSupportInjectionModule.class)
 public class BaseApplicationModule {
 
-    @ApplicationScope
+    @Singleton
     @Provides
     public ConfigureInfo provideConfigureInfo() {
         return ConfigureInfo.defaultConfigure();
     }
 
-    @ApplicationScope
+    @Singleton
     @Provides
     public Handler provideHandler() {
         return new Handler();
     }
 
-    @ApplicationScope
+    @Singleton
     @Provides
     public BaseApplication provideApplication() {
         return BaseApplication.getInstance();
     }
 
-    @ApplicationScope
+    @Singleton
     @Provides
     public Executor provideExecutor() {
         return AsyncTask.THREAD_POOL_EXECUTOR;
     }
 
-    @ApplicationScope
+    @Singleton
     @Provides
     public ACache provideAcache(BaseApplication baseApplication) {
         return ACache.get(baseApplication);
     }
 
-    @ApplicationScope
+    @Singleton
     @Provides
     public Retrofit provideRetrofit(OkHttpClient okHttpClient) {
         GsonBuilder gsonBuilder = new GsonBuilder();
@@ -97,7 +98,7 @@ public class BaseApplicationModule {
                 .addConverterFactory(gsonConverterFactory).build();
     }
 
-    @ApplicationScope
+    @Singleton
     @Provides
     public OkHttpClient provideOkHttpClient(HeaderInterceptor headerInterceptor) {
         OkHttpClient okHttpClient;
@@ -118,7 +119,7 @@ public class BaseApplicationModule {
         return okHttpClient;
     }
 
-    @ApplicationScope
+    @Singleton
     @Provides
     @Named("launcher")
     public Intent provideLauncherIntent() {
@@ -127,7 +128,7 @@ public class BaseApplicationModule {
         return intent;
     }
 
-    @ApplicationScope
+    @Singleton
     @Provides
     public ARouter provideARouter() {
         return ARouter.getInstance();

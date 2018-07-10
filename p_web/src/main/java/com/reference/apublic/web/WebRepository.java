@@ -8,7 +8,4 @@ import com.architecture.extend.baselib.mvvm.BaseRepository;
 
 public class WebRepository extends BaseRepository {
 
-    public WebRepository(WebActivity activity) {
-        super(activity);
-    }
 }

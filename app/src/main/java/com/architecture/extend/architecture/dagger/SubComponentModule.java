@@ -19,6 +19,7 @@ import dagger.Module;
 import dagger.Subcomponent;
 import dagger.android.ActivityKey;
 import dagger.android.AndroidInjector;
+import dagger.android.ContributesAndroidInjector;
 import dagger.android.support.FragmentKey;
 import dagger.multibindings.IntoMap;
 
@@ -42,7 +43,7 @@ public abstract class SubComponentModule {
     @Subcomponent(modules = SecondActivityModule.class)
     @ActivityScope
     public interface SecondActivitySubcomponent
-            extends Injector<SecondActivity, SecondViewModel, SecondRepository> {
+            extends Injector<SecondActivity, SecondViewModel> {
 
         @Subcomponent.Builder
         abstract class Builder extends AndroidInjector.Builder<SecondActivity> {}
@@ -57,7 +58,7 @@ public abstract class SubComponentModule {
     @Subcomponent
     @ActivityScope
     public interface MainActivitySubcomponent
-            extends Injector<MainActivity, MainViewModel, MainRepository> {
+            extends Injector<MainActivity, MainViewModel> {
         @Subcomponent.Builder
         abstract class Builder extends AndroidInjector.Builder<MainActivity> {}
     }
@@ -71,8 +72,15 @@ public abstract class SubComponentModule {
     @Subcomponent
     @ActivityScope
     public interface MainFragmentSubcomponent
-            extends Injector<MainFragment, FragmentViewModel, Object> {
+            extends Injector<MainFragment, FragmentViewModel> {
         @Subcomponent.Builder
         abstract class Builder extends AndroidInjector.Builder<MainFragment> {}
     }
+
+    @ContributesAndroidInjector
+    public abstract MainRepository contributesMainRepository();
+
+
+    @ContributesAndroidInjector
+    public abstract SecondRepository contributesSecondRepository();
 }
