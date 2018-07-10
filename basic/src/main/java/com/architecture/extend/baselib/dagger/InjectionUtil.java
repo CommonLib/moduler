@@ -18,7 +18,7 @@ import static dagger.internal.Preconditions.checkNotNull;
 public class InjectionUtil {
 
 
-    public static AndroidInjector<Activity> maybeInject(Activity instance) {
+    public static AndroidInjector<Activity> inject(Activity instance) {
         Provider<AndroidInjector.Factory<? extends Activity>> factoryProvider = BaseApplication
                 .getInstance().getInjectorActivityFactories().get(instance.getClass());
         if (factoryProvider == null) {
@@ -33,7 +33,7 @@ public class InjectionUtil {
         return injector;
     }
 
-    public static AndroidInjector<Fragment> maybeInject(Fragment instance) {
+    public static AndroidInjector<Fragment> inject(Fragment instance) {
         Provider<AndroidInjector.Factory<? extends Fragment>> factoryProvider = BaseApplication
                 .getInstance().getInjectorFragmentFactories().get(instance.getClass());
         if (factoryProvider == null) {

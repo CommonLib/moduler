@@ -49,7 +49,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
 
     @Override
     public void onAttach(Activity activity) {
-        mInjector = InjectionUtil.maybeInject(this);
+        mInjector = InjectionUtil.inject(this);
         super.onAttach(activity);
         mActivity = (BaseActivity) activity;
     }

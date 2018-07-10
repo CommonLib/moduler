@@ -19,7 +19,7 @@ public abstract class BaseRepository extends Fragment{
     Executor mExecutor;
 
     public BaseRepository() {
-        InjectionUtil.maybeInject(this);
+        InjectionUtil.inject(this);
         onCreate();
     }
 

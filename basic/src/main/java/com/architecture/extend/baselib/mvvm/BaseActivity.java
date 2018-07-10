@@ -60,7 +60,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mInjector = InjectionUtil.maybeInject(this);
+        mInjector = InjectionUtil.inject(this);
         super.onCreate(savedInstanceState);
         mIsForeground = true;
         Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
