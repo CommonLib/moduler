@@ -58,11 +58,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mIsForeground = true;
-        Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
-        mViewModel = ViewModelProviders.of(mActivity).get(viewModelClazz);
-        if(mInjector instanceof Injector){
-            ((Injector) mInjector).injectViewModel(mViewModel);
-        }
+        mViewModel = instanceViewModel(mInjector);
         getLifecycle().addObserver(mViewModel);
         setForegroundSwitchCallBack(mViewModel);
         Bundle arguments = getArguments();
@@ -247,6 +243,15 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
                 return super.checkCanDoRefresh(frame, content, header);
             }
         });
+    }
+
+    public <T> T instanceViewModel(AndroidInjector<Fragment> injector) {
+        Class viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
+        Object viewModel = ViewModelProviders.of(this).get(viewModelClazz);
+        if(injector instanceof Injector){
+            ((Injector) injector).injectViewModel(viewModel);
+        }
+        return (T) viewModel;
     }
 
     public void startPage(Bundle bundle, String path) {

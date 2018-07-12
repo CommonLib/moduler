@@ -56,18 +56,13 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     @Inject
     public ConfigureInfo injectConfigureInfo;
-    private AndroidInjector<Activity> mInjector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mInjector = InjectionUtil.inject(this);
+        AndroidInjector<Activity> injector = InjectionUtil.inject(this);
         super.onCreate(savedInstanceState);
         mIsForeground = true;
-        Class<VM> viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
-        mViewModel = ViewModelProviders.of(this).get(viewModelClazz);
-        if(mInjector instanceof Injector){
-            ((Injector) mInjector).injectViewModel(mViewModel);
-        }
+        mViewModel = instanceViewModel(injector);
         getLifecycle().addObserver(mViewModel);
         setForegroundSwitchCallBack(mViewModel);
         Intent intent = getIntent();
@@ -202,6 +197,15 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         return super.onOptionsItemSelected(item);
     }
 
+    public <T> T instanceViewModel(AndroidInjector<Activity> injector) {
+        Class viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
+        Object viewModel = ViewModelProviders.of(this).get(viewModelClazz);
+        if(injector instanceof Injector){
+            ((Injector) injector).injectViewModel(viewModel);
+        }
+        return (T) viewModel;
+    }
+
     protected abstract void initData();
 
     protected abstract void initView(ViewDataBinding dataBinding);
@@ -274,9 +278,5 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     public Toolbar getToolbar() {
         return mToolbar;
-    }
-
-    public AndroidInjector<Activity> getInjector() {
-        return mInjector;
     }
 }
