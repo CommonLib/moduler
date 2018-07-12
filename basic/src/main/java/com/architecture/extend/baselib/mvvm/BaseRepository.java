@@ -3,8 +3,6 @@ package com.architecture.extend.baselib.mvvm;
 import android.support.annotation.CallSuper;
 import android.support.v4.app.Fragment;
 
-import com.architecture.extend.baselib.dagger.InjectionUtil;
-
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -17,11 +15,6 @@ public abstract class BaseRepository extends Fragment{
 
     @Inject
     Executor mExecutor;
-
-    public BaseRepository() {
-        InjectionUtil.inject(this);
-        onCreate();
-    }
 
     @CallSuper
     public void onCreate() {

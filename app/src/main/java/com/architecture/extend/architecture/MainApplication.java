@@ -24,10 +24,10 @@ public class MainApplication extends BaseApplication {
 
     @Override
     public void onCreate() {
+        setApplication(this);
         mApplicationComponent = DaggerApplicationComponent.builder().build();
         mApplicationComponent.inject(this);
         super.onCreate();
-
         if (mHandler != null) {
             LogUtil.d("MainApplication inject success" + mHandler);
         }

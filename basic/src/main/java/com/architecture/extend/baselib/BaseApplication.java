@@ -76,7 +76,6 @@ public class BaseApplication extends MultiDexApplication
     }
 
     protected void init(boolean debugMode) {
-        instance = this;
         FormatStrategy formatStrategy = PrettyFormatStrategy.newBuilder()
                 .tag(getClass().getSimpleName()).build();
         Logger.addLogAdapter(new AndroidLogAdapter(formatStrategy));
@@ -124,5 +123,9 @@ public class BaseApplication extends MultiDexApplication
 
     public Map<Class<? extends Fragment>, Provider<AndroidInjector.Factory<? extends Fragment>>> getInjectorFragmentFactories() {
         return injectorFragmentFactories;
+    }
+
+    public static void setApplication(BaseApplication instance) {
+        BaseApplication.instance = instance;
     }
 }
