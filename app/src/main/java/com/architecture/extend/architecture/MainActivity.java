@@ -39,12 +39,12 @@ public class MainActivity extends BaseActivity<MainViewModel> {
     @Named("launcher")
     Intent mLauncher;
 
-
     @Override
     protected void initData() {
         if (mHandler != null) {
             LogUtil.d("MainActivity inject success" + mHandler);
         }
+        LogUtil.d("mMainRepository inject success" + mMainRepository.mMainApiService);
     }
 
     @Override

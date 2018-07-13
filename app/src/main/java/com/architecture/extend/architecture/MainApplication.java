@@ -5,12 +5,17 @@ import com.architecture.extend.architecture.dagger.ApplicationComponent;
 import com.architecture.extend.architecture.dagger.DaggerApplicationComponent;
 import com.architecture.extend.baselib.BaseApplication;
 
+import javax.inject.Inject;
+
 
 /**
  * Created by byang059 on 12/19/16.
  */
 
 public class MainApplication extends BaseApplication {
+
+    @Inject
+    SecondRepository mSecondRepository;
 
     private ApplicationComponent mApplicationComponent;
 
