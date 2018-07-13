@@ -15,8 +15,8 @@ public class WebViewModel extends BaseViewModel {
     IWebService mIWebService;
 
     @Override
-    protected void onCreate() {
-        super.onCreate();
+    public void onViewCreate() {
+        super.onViewCreate();
         String abc = mIWebService.dealString("abc");
     }
 }

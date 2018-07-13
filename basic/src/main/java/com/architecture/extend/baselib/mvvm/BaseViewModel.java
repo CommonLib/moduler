@@ -8,7 +8,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.arch.lifecycle.ViewModel;
 import android.os.Bundle;
-import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,11 +30,6 @@ public abstract class BaseViewModel extends ViewModel
 
     @Inject
     Executor mExecutor;
-
-    public BaseViewModel() {
-        super();
-        onCreate();
-    }
 
     public BaseApplication getApplication() {
         return BaseApplication.getInstance();
@@ -63,16 +57,6 @@ public abstract class BaseViewModel extends ViewModel
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void onViewDestroy() {
-        onDestroy();
-    }
-
-
-    @CallSuper
-    protected void onCreate() {
-    }
-
-    @CallSuper
-    protected void onDestroy() {
     }
 
     @Override

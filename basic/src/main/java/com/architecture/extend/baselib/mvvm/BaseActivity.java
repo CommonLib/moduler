@@ -9,6 +9,7 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.MessageQueue;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
@@ -43,7 +44,7 @@ import in.srain.cube.views.ptr.header.MaterialHeader;
  */
 
 public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatActivity
-        implements Viewable {
+        implements Viewable, MessageQueue.IdleHandler {
 
     private VM mViewModel;
     private boolean mIsForeground;
@@ -56,6 +57,9 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     @Inject
     public ConfigureInfo injectConfigureInfo;
+
+    @Inject
+    MessageQueue mMessageQueue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +78,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         }
         mConfigureInfo = getConfigureInfo();
         inflateLayout(mConfigureInfo.isAsyncInflate());
+        mMessageQueue.addIdleHandler(this);
     }
 
     @Override
@@ -278,5 +283,10 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     public Toolbar getToolbar() {
         return mToolbar;
+    }
+
+    @Override
+    public boolean queueIdle() {
+        return false;
     }
 }

@@ -8,6 +8,7 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.MessageQueue;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,6 +28,8 @@ import com.architecture.extend.baselib.widget.ChildScrollFrameLayout;
 import com.architecture.extend.baselib.widget.LoadStateView;
 import com.blankj.utilcode.util.SizeUtils;
 
+import javax.inject.Inject;
+
 import dagger.android.AndroidInjector;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
@@ -35,7 +38,8 @@ import in.srain.cube.views.ptr.header.MaterialHeader;
 /**
  * Created by burtYang on 10/09/17.
  */
-public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment implements Viewable {
+public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment implements Viewable,
+                                                                                         MessageQueue.IdleHandler {
 
     private VM mViewModel;
     private boolean mIsForeground;
@@ -46,6 +50,8 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     private PtrFrameLayout mPullToRefreshView;
     private LoadStateView mLoadStateView;
     private AndroidInjector<Fragment> mInjector;
+    @Inject
+    MessageQueue mMessageQueue;
 
     @Override
     public void onAttach(Activity activity) {
@@ -68,6 +74,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
         if (savedInstanceState != null) {
             onRestoreInitData(savedInstanceState);
         }
+        mMessageQueue.addIdleHandler(this);
     }
 
     @Nullable
@@ -281,5 +288,10 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
 
     protected BaseActivity getBindActivity() {
         return mActivity;
+    }
+
+    @Override
+    public boolean queueIdle() {
+        return false;
     }
 }

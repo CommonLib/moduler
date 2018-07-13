@@ -3,7 +3,7 @@ package com.architecture.extend.baselib;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
-import android.support.annotation.WorkerThread;
+import android.os.MessageQueue;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.Fragment;
@@ -17,7 +17,6 @@ import com.orhanobut.logger.Logger;
 import com.orhanobut.logger.PrettyFormatStrategy;
 
 import java.util.Map;
-import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -32,7 +31,7 @@ import dagger.android.support.HasSupportFragmentInjector;
  */
 
 public class BaseApplication extends MultiDexApplication
-        implements HasActivityInjector, HasSupportFragmentInjector {
+        implements HasActivityInjector, HasSupportFragmentInjector, MessageQueue.IdleHandler {
 
     @Inject
     Handler mHandler;
@@ -50,7 +49,7 @@ public class BaseApplication extends MultiDexApplication
     Map<Class<? extends Fragment>, Provider<AndroidInjector.Factory<? extends Fragment>>> injectorFragmentFactories;
 
     @Inject
-    Executor mExecutor;
+    MessageQueue mQueue;
 
     private static BaseApplication instance;
     private static boolean isInited = false;
@@ -70,7 +69,7 @@ public class BaseApplication extends MultiDexApplication
         super.onCreate();
         if (!isInited) {
             init(BuildConfig.DEBUG);
-            mExecutor.execute(() -> asyncInit(BuildConfig.DEBUG));
+            mQueue.addIdleHandler(this);
             isInited = true;
         }
     }
@@ -87,11 +86,6 @@ public class BaseApplication extends MultiDexApplication
             Logger.addLogAdapter(new DiskLogAdapter());
         }
         ARouter.init(this);
-    }
-
-    @WorkerThread
-    protected void asyncInit(boolean debugMode) {
-
     }
 
     public void exit() {
@@ -127,5 +121,10 @@ public class BaseApplication extends MultiDexApplication
 
     public static void setApplication(BaseApplication instance) {
         BaseApplication.instance = instance;
+    }
+
+    @Override
+    public boolean queueIdle() {
+        return false;
     }
 }

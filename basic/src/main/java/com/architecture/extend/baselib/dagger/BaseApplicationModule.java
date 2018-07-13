@@ -3,6 +3,8 @@ package com.architecture.extend.baselib.dagger;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
+import android.os.MessageQueue;
 
 import com.alibaba.android.arouter.launcher.ARouter;
 import com.architecture.extend.baselib.BaseApplication;
@@ -132,5 +134,11 @@ public class BaseApplicationModule {
     @Provides
     public ARouter provideARouter() {
         return ARouter.getInstance();
+    }
+
+    @Singleton
+    @Provides
+    public MessageQueue provideMessageQueue() {
+        return Looper.myQueue();
     }
 }
