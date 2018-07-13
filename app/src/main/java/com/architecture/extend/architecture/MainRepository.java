@@ -7,7 +7,6 @@ import android.support.annotation.NonNull;
 
 import com.architecture.extend.baselib.BaseApplication;
 import com.architecture.extend.baselib.mvvm.ApiResponse;
-import com.architecture.extend.baselib.mvvm.BaseRepository;
 import com.architecture.extend.baselib.util.LogUtil;
 import com.module.contract.remote.ApiCacheResource;
 
@@ -22,7 +21,7 @@ import retrofit2.Response;
  */
 
 @Singleton
-public class MainRepository extends BaseRepository {
+public class MainRepository{
 
     @Inject
     MainApiService mMainApiService;
@@ -36,9 +35,7 @@ public class MainRepository extends BaseRepository {
     public MainRepository() {
     }
 
-    @Override
     public void onCreate() {
-        super.onCreate();
         WeatherDatabase db = Room
                 .databaseBuilder(BaseApplication.getInstance(), WeatherDatabase.class, "weather")
                 .build();
