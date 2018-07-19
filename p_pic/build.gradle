@@ -4,60 +4,15 @@ if (Boolean.parseBoolean(buildAll)) {
     apply plugin: 'com.android.application'
 }
 
+apply from: rootProject.rootDir.getAbsolutePath() + "/module.gradle"
+
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
-
-    defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [ moduleName : project.getName() ]
-            }
-        }
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    sourceSets {
-        main {
-            if (!Boolean.parseBoolean(buildAll)) {
-                manifest.srcFile 'src/main/debug/AndroidManifest.xml'
-            } else {
-                manifest.srcFile 'src/main/release/AndroidManifest.xml'
-            }
-        }
-    }
-
-    dataBinding {
-        enabled = true
-    }
-
     resourcePrefix "pic_"
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
 }
-
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    annotationProcessor 'com.alibaba:arouter-compiler:1.1.4'
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.13'
-    annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
-    compile project(':contract')
 }

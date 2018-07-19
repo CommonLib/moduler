@@ -1,0 +1,17 @@
+apply from: rootProject.rootDir.getAbsolutePath() + "/android.gradle"
+
+android {
+    sourceSets {
+        main {
+            if (!Boolean.parseBoolean(buildAll)) {
+                manifest.srcFile 'src/main/debug/AndroidManifest.xml'
+            } else {
+                manifest.srcFile 'src/main/release/AndroidManifest.xml'
+            }
+        }
+    }
+}
+
+dependencies {
+    compile project(':contract')
+}

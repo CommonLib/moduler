@@ -1,23 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-aspectjx'
+apply from: rootProject.rootDir.getAbsolutePath() + "/android.gradle"
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
     defaultConfig {
         applicationId "com.architecture.extend.architecture"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [moduleName: project.getName()]
-            }
-        }
-
     }
 
     signingConfigs {
@@ -40,15 +28,6 @@ android {
             signingConfig signingConfigs.config
             versionNameSuffix "_debug"
         }
-    }
-
-    dataBinding {
-        enabled = true
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -74,10 +53,6 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    annotationProcessor 'com.alibaba:arouter-compiler:1.1.4'
-    annotationProcessor "android.arch.persistence.room:compiler:1.1.0"
-    annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
-    annotationProcessor 'com.google.dagger:dagger-android-processor:2.13'
     if (Boolean.parseBoolean(buildAll)) {
         compile project(':p_web')
         compile project(':p_pic')
