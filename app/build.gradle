@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'android-aspectjx'
 apply from: rootProject.rootDir.getAbsolutePath() + "/android.gradle"
 
 android {
@@ -29,10 +28,6 @@ android {
             versionNameSuffix "_debug"
         }
     }
-}
-
-aspectjx {
-    include 'com.architecture.extend'
 }
 
 dependencies {

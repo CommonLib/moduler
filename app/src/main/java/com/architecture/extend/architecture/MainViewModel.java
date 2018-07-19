@@ -31,7 +31,7 @@ public class MainViewModel extends BaseViewModel {
     private LiveData<Resource<Weather>> mPullToRefresh;
     private ApiBundleResource<Weather, Weather> mPullToRefreshResource;
 
-    public LiveData getUserString() {
+    public LiveData getUserString(String abc,String bcd) {
         if (mStringMutableLiveData != null) {
             return mStringMutableLiveData;
         }

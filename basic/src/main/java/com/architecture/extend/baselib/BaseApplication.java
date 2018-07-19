@@ -53,6 +53,7 @@ public class BaseApplication extends MultiDexApplication
 
     private static BaseApplication instance;
     private static boolean isInited = false;
+    public static boolean isDebug = false;
 
     public static BaseApplication getInstance() {
         return instance;
@@ -68,7 +69,8 @@ public class BaseApplication extends MultiDexApplication
     public void onCreate() {
         super.onCreate();
         if (!isInited) {
-            init(BuildConfig.DEBUG);
+            isDebug = BuildConfig.DEBUG;
+            init(isDebug);
             mQueue.addIdleHandler(this);
             isInited = true;
         }

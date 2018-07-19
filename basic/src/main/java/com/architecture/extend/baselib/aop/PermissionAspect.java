@@ -24,11 +24,11 @@ public class PermissionAspect {
     @Around("pointCut()")
     public void onActivityMethodAround(ProceedingJoinPoint pjp) throws Throwable {
         Signature signature = pjp.getSignature();
-        MethodSignature methodSignature = (MethodSignature)signature;
+        MethodSignature methodSignature = (MethodSignature) signature;
         Method targetMethod = methodSignature.getMethod();
-
-        LogUtil.d("after");
+        long start = System.currentTimeMillis();
         pjp.proceed();
-        LogUtil.d("before");
+        long end = System.currentTimeMillis();
+        LogUtil.d(targetMethod.getName() + " execute time:" + (end - start) + "ms");
     }
 }

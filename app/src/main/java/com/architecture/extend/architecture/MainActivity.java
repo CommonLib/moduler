@@ -13,7 +13,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.architecture.extend.architecture.databinding.ShareLayoutBinding;
-import com.architecture.extend.baselib.aop.Permission;
+import com.architecture.extend.baselib.aop.DebugLog;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.mvvm.BaseActivity;
 import com.architecture.extend.baselib.mvvm.BaseDialog;
@@ -40,7 +40,6 @@ public class MainActivity extends BaseActivity<MainViewModel> {
     @Named("launcher")
     Intent mLauncher;
 
-    @Permission
     @Override
     protected void initData() {
         if (mHandler != null) {
@@ -49,11 +48,13 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         LogUtil.d("mMainRepository inject success" + mMainRepository.mMainApiService);
     }
 
+    @DebugLog
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
+    @DebugLog
     @Override
     protected void initView(ViewDataBinding binding) {
         findViewById(R.id.act_btn_web).setOnClickListener(new View.OnClickListener() {
@@ -99,7 +100,8 @@ public class MainActivity extends BaseActivity<MainViewModel> {
                     }
                 }, Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE);
                 //                startActivity(new Intent(MainActivity.this, SecondActivity.class));
-                getViewModel().getUserString().observe(MainActivity.this, new Observer<String>() {
+                getViewModel().getUserString("abc","bcd").observe(MainActivity.this, new
+                        Observer<String>() {
                     @Override
                     public void onChanged(@Nullable String s) {
                         LogUtil.d("ui onChanged =>" + s);
