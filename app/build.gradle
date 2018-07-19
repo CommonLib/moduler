@@ -32,20 +32,7 @@ android {
 }
 
 aspectjx {
-    exclude 'android.databinding'
-    exclude 'android.arch'
-    exclude 'android.support'
-    exclude 'org.aspectj'
-    exclude 'retrofit2'
-    exclude 'com.alibaba.android.arouter'
-    exclude 'okhttp3'
-    exclude 'okio'
-    exclude 'com.tbruyelle.rxpermissions'
-    exclude 'com.bumptech.glide'
-    exclude 'com.google'
-    exclude 'io.reactivex'
-    exclude 'in.srain.cube'
-    enabled false
+    include 'com.architecture.extend'
 }
 
 dependencies {
