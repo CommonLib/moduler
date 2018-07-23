@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.os.SystemClock;
 
+import com.architecture.extend.baselib.aop.DebugLog;
 import com.architecture.extend.baselib.mvvm.AsyncTransforms;
 import com.architecture.extend.baselib.mvvm.BaseViewModel;
 import com.architecture.extend.baselib.mvvm.Resource;
@@ -31,6 +32,7 @@ public class MainViewModel extends BaseViewModel {
     private LiveData<Resource<Weather>> mPullToRefresh;
     private ApiBundleResource<Weather, Weather> mPullToRefreshResource;
 
+    @DebugLog
     public LiveData getUserString(String abc,String bcd) {
         if (mStringMutableLiveData != null) {
             return mStringMutableLiveData;

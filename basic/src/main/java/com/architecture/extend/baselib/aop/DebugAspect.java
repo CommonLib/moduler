@@ -23,13 +23,14 @@ public class DebugAspect {
     }
 
     @Around("pointCut()")
-    public void onActivityMethodAround(ProceedingJoinPoint pjp) throws Throwable {
+    public Object onActivityMethodAround(ProceedingJoinPoint pjp) throws Throwable {
+        Object result;
         if (BaseApplication.isDebug) {
             Signature signature = pjp.getSignature();
             MethodSignature methodSignature = (MethodSignature) signature;
             Method targetMethod = methodSignature.getMethod();
             long start = System.currentTimeMillis();
-            pjp.proceed();
+            result = pjp.proceed();
             long end = System.currentTimeMillis();
             String[] parameterNames = methodSignature.getParameterNames();
             Object[] args = pjp.getArgs();
@@ -37,12 +38,13 @@ public class DebugAspect {
             sb.append("invoke method ").append(targetMethod.getDeclaringClass().getSimpleName())
                     .append(".").append(targetMethod.getName()).append("()").append(", ");
             for (int i = 0; i < args.length; i++) {
-                sb.append(parameterNames[i]).append(" = ").append(args[0]).append(",");
+                sb.append(parameterNames[i]).append(" = ").append(args[0]).append(", ");
             }
             sb.append(" execute cost time: ").append(end - start).append("ms");
             LogUtil.d(sb.toString());
         } else {
-            pjp.proceed();
+            result = pjp.proceed();
         }
+        return result;
     }
 }
