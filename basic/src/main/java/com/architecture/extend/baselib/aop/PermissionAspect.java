@@ -1,6 +1,9 @@
 package com.architecture.extend.baselib.aop;
 
+import com.architecture.extend.baselib.BaseApplication;
+import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.mvvm.Viewable;
+import com.blankj.utilcode.util.ToastUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -44,6 +47,9 @@ public class PermissionAspect {
                     throw new PermissionAspectException("origin method should not throw exception",
                             throwable);
                 }
+            }else{
+                BaseApplication.getInstance().showApplicationInfo();
+                ToastUtils.showShort(R.string.please_authorization);
             }
         });
         return null;

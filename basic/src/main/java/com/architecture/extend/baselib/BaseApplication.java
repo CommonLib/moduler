@@ -2,6 +2,8 @@ package com.architecture.extend.baselib;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.MessageQueue;
 import android.support.multidex.MultiDex;
@@ -128,5 +130,13 @@ public class BaseApplication extends MultiDexApplication
     @Override
     public boolean queueIdle() {
         return false;
+    }
+
+    public void showApplicationInfo() {
+        Intent localIntent = new Intent();
+        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+        localIntent.setData(Uri.fromParts("package", getPackageName(), null));
+        startActivity(localIntent);
     }
 }
