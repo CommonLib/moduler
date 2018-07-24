@@ -137,6 +137,14 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         });
     }
 
+    @Override
+    public RxPermissions getRxPermissions() {
+        if (mRxPermissions == null) {
+            mRxPermissions = new RxPermissions(this);
+        }
+        return mRxPermissions;
+    }
+
     private void inflateLayout(boolean isAsyncInflate) {
         int layoutId = getLayoutId();
         if (layoutId <= 0) {

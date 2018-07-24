@@ -27,6 +27,7 @@ import com.architecture.extend.baselib.util.ViewUtil;
 import com.architecture.extend.baselib.widget.ChildScrollFrameLayout;
 import com.architecture.extend.baselib.widget.LoadStateView;
 import com.blankj.utilcode.util.SizeUtils;
+import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import javax.inject.Inject;
 
@@ -293,5 +294,10 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     @Override
     public boolean queueIdle() {
         return false;
+    }
+
+    @Override
+    public RxPermissions getRxPermissions() {
+        return mActivity.getRxPermissions();
     }
 }

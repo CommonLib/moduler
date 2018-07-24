@@ -2,10 +2,10 @@
 <manifest package="com.architecture.extend.architecture"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.needPermission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.needPermission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.needPermission.READ_CONTACTS" />
+    <uses-permission android:name="android.needPermission.CALL_PHONE" />
 
     <application
         android:allowBackup="true"

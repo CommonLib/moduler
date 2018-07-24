@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.architecture.extend.architecture.databinding.ShareLayoutBinding;
 import com.architecture.extend.baselib.aop.DebugLog;
+import com.architecture.extend.baselib.aop.NeedPermission;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.mvvm.BaseActivity;
 import com.architecture.extend.baselib.mvvm.BaseDialog;
@@ -88,26 +89,18 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         findViewById(R.id.act_btn_pic).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                onClickPicBtn(v);
                 usePermission(new PermissionCallBack() {
                     @Override
                     public void onGranted(String permission) {
-                        LogUtil.d(permission + " onGranted");
+
                     }
 
                     @Override
                     public void onDenied(String permission) {
-                        LogUtil.d(permission + " onDenied");
-                    }
-                }, Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE);
-                //                startActivity(new Intent(MainActivity.this, SecondActivity.class));
-                getViewModel().getUserString("abc","bcd").observe(MainActivity.this, new
-                        Observer<String>() {
-                    @Override
-                    public void onChanged(@Nullable String s) {
-                        LogUtil.d("ui onChanged =>" + s);
-                    }
-                });
 
+                    }
+                },Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE);
             }
         });
 
@@ -142,6 +135,19 @@ public class MainActivity extends BaseActivity<MainViewModel> {
                 }
             }
         });
+    }
+
+    @NeedPermission(permission = {Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE})
+    private void onClickPicBtn(View v) {
+        LogUtil.d("onGranted");
+        //startActivity(new Intent(MainActivity.this, SecondActivity.class));
+        getViewModel().getUserString("abc","bcd").observe(MainActivity.this, new
+                Observer<String>() {
+                    @Override
+                    public void onChanged(@Nullable String s) {
+                        LogUtil.d("ui onChanged =>" + s);
+                    }
+                });
     }
 
     @Override

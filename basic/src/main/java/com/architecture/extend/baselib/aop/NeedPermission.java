@@ -11,6 +11,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.CLASS)
-public @interface Permission {
-
+public @interface NeedPermission {
+    String[] permission();
 }
