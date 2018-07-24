@@ -15,7 +15,6 @@ import android.widget.Toast;
 import com.architecture.extend.architecture.databinding.ShareLayoutBinding;
 import com.architecture.extend.baselib.aop.DebugLog;
 import com.architecture.extend.baselib.aop.NeedPermission;
-import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.mvvm.BaseActivity;
 import com.architecture.extend.baselib.mvvm.BaseDialog;
 import com.architecture.extend.baselib.mvvm.ConfigureInfo;
@@ -89,18 +88,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
         findViewById(R.id.act_btn_pic).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                onClickPicBtn(v);
-                usePermission(new PermissionCallBack() {
-                    @Override
-                    public void onGranted(String permission) {
-
-                    }
-
-                    @Override
-                    public void onDenied(String permission) {
-
-                    }
-                },Manifest.permission.READ_CONTACTS, Manifest.permission.CALL_PHONE);
+                onClickPicBtn(v);
             }
         });
 
