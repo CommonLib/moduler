@@ -11,7 +11,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     private ViewDataBinding mBinding;
     private Context mContext;
     private int mLayoutId;
-    public int mPosition;
+    private int mPosition;
 
     private ViewHolder(Context context, ViewDataBinding binding) {
         super(binding.getRoot());
@@ -29,8 +29,7 @@ public class ViewHolder extends RecyclerView.ViewHolder {
     }
 
     public static ViewHolder get(Context context, ViewDataBinding binding) {
-        ViewHolder holder = new ViewHolder(context, binding);
-        return holder;
+        return new ViewHolder(context, binding);
     }
 
     public ViewDataBinding getBinding() {

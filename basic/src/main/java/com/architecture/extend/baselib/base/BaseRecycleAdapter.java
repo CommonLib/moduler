@@ -13,7 +13,7 @@ import java.util.List;
  * @author:dongpo: 6/21/2016
  */
 public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<ViewHolder> {
-    private SparseArray<List<? extends Object>> mDataLayouts;
+    private SparseArray<List<? extends Object>> mDataLayouts = new SparseArray<>();
     private SparseArray<ViewDataBinding> headerFooters;
     private List<Integer> mHeaders;
     private List<Integer> mFooters;
@@ -22,13 +22,11 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<ViewHol
     private int mUserItemCount;
 
     public BaseRecycleAdapter(List<T> data, int layoutId) {
-        mDataLayouts = new SparseArray<>();
         mDataLayouts.put(layoutId, data);
         mUserItemCount = reCountUserItem();
     }
 
     public BaseRecycleAdapter() {
-        mDataLayouts = new SparseArray<>();
     }
 
     public void addItemType(List<? extends Object> data, int layoutId) {

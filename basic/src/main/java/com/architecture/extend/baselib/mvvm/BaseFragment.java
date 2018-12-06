@@ -39,8 +39,8 @@ import in.srain.cube.views.ptr.header.MaterialHeader;
 /**
  * Created by burtYang on 10/09/17.
  */
-public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment implements Viewable,
-                                                                                         MessageQueue.IdleHandler {
+public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
+        implements Viewable, MessageQueue.IdleHandler, RequestPermissionAble {
 
     private VM mViewModel;
     private boolean mIsForeground;
@@ -256,7 +256,7 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment im
     public <T> T instanceViewModel(AndroidInjector<Fragment> injector) {
         Class viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
         Object viewModel = ViewModelProviders.of(this).get(viewModelClazz);
-        if(injector instanceof Injector){
+        if (injector instanceof Injector) {
             ((Injector) injector).injectViewModel(viewModel);
         }
         return (T) viewModel;

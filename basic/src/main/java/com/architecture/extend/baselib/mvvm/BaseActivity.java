@@ -44,7 +44,7 @@ import in.srain.cube.views.ptr.header.MaterialHeader;
  */
 
 public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatActivity
-        implements Viewable, MessageQueue.IdleHandler {
+        implements Viewable, MessageQueue.IdleHandler, RequestPermissionAble {
 
     private VM mViewModel;
     private boolean mIsForeground;

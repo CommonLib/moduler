@@ -11,8 +11,8 @@ import lombok.Data;
  * Created by byang059 on 11/21/17.
  */
 
-@Entity
 @Data
+@Entity
 public class Weather extends Bean{
 
     @PrimaryKey
