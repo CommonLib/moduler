@@ -5,11 +5,14 @@ import android.arch.persistence.room.PrimaryKey;
 
 import com.architecture.extend.baselib.base.Bean;
 
+import lombok.Data;
+
 /**
  * Created by byang059 on 11/21/17.
  */
 
 @Entity
+@Data
 public class Weather extends Bean{
 
     @PrimaryKey
@@ -35,64 +38,7 @@ public class Weather extends Bean{
 //    private YesterdayBean yesterday;
 //    private List<ForecastBean> forecast;
 
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getShidu() {
-        return shidu;
-    }
-
-    public void setShidu(String shidu) {
-        this.shidu = shidu;
-    }
-
-    public double getPm25() {
-        return pm25;
-    }
-
-    public void setPm25(double pm25) {
-        this.pm25 = pm25;
-    }
-
-    public double getPm10() {
-        return pm10;
-    }
-
-    public void setPm10(double pm10) {
-        this.pm10 = pm10;
-    }
-
-    public String getQuality() {
-        return quality;
-    }
-
-    public void setQuality(String quality) {
-        this.quality = quality;
-    }
-
-    public String getWendu() {
-        return wendu;
-    }
-
-    public void setWendu(String wendu) {
-        this.wendu = wendu;
-    }
-
-    public String getGanmao() {
-        return ganmao;
-    }
-
-    public void setGanmao(String ganmao) {
-        this.ganmao = ganmao;
-    }
-
-
+    @Data
     public static class YesterdayBean {
         /**
          * date : 21日星期二
@@ -117,88 +63,9 @@ public class Weather extends Bean{
         private String fl;
         private String type;
         private String notice;
-
-        public String getDate() {
-            return date;
-        }
-
-        public void setDate(String date) {
-            this.date = date;
-        }
-
-        public String getSunrise() {
-            return sunrise;
-        }
-
-        public void setSunrise(String sunrise) {
-            this.sunrise = sunrise;
-        }
-
-        public String getHigh() {
-            return high;
-        }
-
-        public void setHigh(String high) {
-            this.high = high;
-        }
-
-        public String getLow() {
-            return low;
-        }
-
-        public void setLow(String low) {
-            this.low = low;
-        }
-
-        public String getSunset() {
-            return sunset;
-        }
-
-        public void setSunset(String sunset) {
-            this.sunset = sunset;
-        }
-
-        public double getAqi() {
-            return aqi;
-        }
-
-        public void setAqi(double aqi) {
-            this.aqi = aqi;
-        }
-
-        public String getFx() {
-            return fx;
-        }
-
-        public void setFx(String fx) {
-            this.fx = fx;
-        }
-
-        public String getFl() {
-            return fl;
-        }
-
-        public void setFl(String fl) {
-            this.fl = fl;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getNotice() {
-            return notice;
-        }
-
-        public void setNotice(String notice) {
-            this.notice = notice;
-        }
     }
 
+    @Data
     public static class ForecastBean {
         /**
          * date : 22日星期三
@@ -223,85 +90,5 @@ public class Weather extends Bean{
         private String fl;
         private String type;
         private String notice;
-
-        public String getDate() {
-            return date;
-        }
-
-        public void setDate(String date) {
-            this.date = date;
-        }
-
-        public String getSunrise() {
-            return sunrise;
-        }
-
-        public void setSunrise(String sunrise) {
-            this.sunrise = sunrise;
-        }
-
-        public String getHigh() {
-            return high;
-        }
-
-        public void setHigh(String high) {
-            this.high = high;
-        }
-
-        public String getLow() {
-            return low;
-        }
-
-        public void setLow(String low) {
-            this.low = low;
-        }
-
-        public String getSunset() {
-            return sunset;
-        }
-
-        public void setSunset(String sunset) {
-            this.sunset = sunset;
-        }
-
-        public double getAqi() {
-            return aqi;
-        }
-
-        public void setAqi(double aqi) {
-            this.aqi = aqi;
-        }
-
-        public String getFx() {
-            return fx;
-        }
-
-        public void setFx(String fx) {
-            this.fx = fx;
-        }
-
-        public String getFl() {
-            return fl;
-        }
-
-        public void setFl(String fl) {
-            this.fl = fl;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
-        }
-
-        public String getNotice() {
-            return notice;
-        }
-
-        public void setNotice(String notice) {
-            this.notice = notice;
-        }
     }
 }
