@@ -1,0 +1,10 @@
+if (Boolean.parseBoolean(buildAll)) {
+    apply from: rootDir.absolutePath + "/configure/module-lib.gradle"
+} else {
+    apply from: rootDir.absolutePath + "/configure/module-application.gradle"
+}
+apply from: rootDir.absolutePath + "/configure/android.gradle"
+
+dependencies {
+    compile project(':contract')
+}

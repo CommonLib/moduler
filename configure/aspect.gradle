@@ -1,0 +1,5 @@
+apply plugin: 'me.ele.lancet'
+
+dependencies {
+    provided 'me.ele:lancet-base:1.0.4'
+}

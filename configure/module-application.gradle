@@ -1,0 +1,10 @@
+apply plugin: 'com.android.application'
+apply from: rootDir.absolutePath + "/configure/aspect.gradle"
+
+android {
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/debug/AndroidManifest.xml'
+        }
+    }
+}

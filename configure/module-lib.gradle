@@ -1,0 +1,9 @@
+apply plugin: 'com.android.library'
+
+android {
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/release/AndroidManifest.xml'
+        }
+    }
+}
