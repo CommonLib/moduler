@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply from: rootDir.absolutePath + "/configure/android.gradle"
+apply from: rootDir.absolutePath + "/configure/aspect.gradle"
 
 android {
     defaultConfig {
