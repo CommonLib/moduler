@@ -179,9 +179,6 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         mViewModel.startPageForResult(bundle, path, this, requestCode);
     }
 
-    protected void onPullRefreshBegin(PtrFrameLayout frame) {
-    }
-
     public PtrFrameLayout getPullToRefreshView() {
         return mViewDelegate.getPullToRefreshView();
     }

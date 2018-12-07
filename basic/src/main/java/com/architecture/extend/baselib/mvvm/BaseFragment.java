@@ -176,9 +176,6 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
         mViewModel.startPageForResult(bundle, path, mActivity, requestCode);
     }
 
-    protected void onRefreshBegin(PtrFrameLayout frame) {
-    }
-
     protected PtrFrameLayout getPullToRefreshView() {
         return mViewDelegate.getPullToRefreshView();
     }
