@@ -16,11 +16,11 @@ public class WebActivity extends BaseActivity<WebViewModel> {
 
 
     @Override
-    protected void initData() {
+    public void initData() {
     }
 
     @Override
-    protected void initView(ViewDataBinding binding) {
+    public void initView(ViewDataBinding binding) {
 
     }
 

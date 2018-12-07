@@ -3,19 +3,15 @@ package com.architecture.extend.baselib.mvvm;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Observer;
 import android.support.annotation.MainThread;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.architecture.extend.baselib.util.LogUtil;
 
 import java.lang.reflect.Field;
-import java.util.concurrent.Callable;
 
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Request;
 import retrofit2.Call;
@@ -41,21 +37,14 @@ public abstract class NetworkBundleResource<ResultType, RequestType> {
             mResult.removeSource(mCacheSource);
         }
         mCacheSource = loadFromCache();
-        mResult.setValue((Resource<ResultType>) Resource.loading());
-        mResult.addSource(mCacheSource, new Observer<ResultType>() {
-            @Override
-            public void onChanged(@Nullable ResultType data) {
-                mResult.removeSource(mCacheSource);
-                if (shouldFetch(data)) {
-                    fetchFromNetwork();
-                } else {
-                    mResult.addSource(mCacheSource, new Observer<ResultType>() {
-                        @Override
-                        public void onChanged(@Nullable ResultType newData) {
-                            mResult.setValue(Resource.success(newData));
-                        }
-                    });
-                }
+        mResult.setValue(Resource.loading());
+        mResult.addSource(mCacheSource, data -> {
+            mResult.removeSource(mCacheSource);
+            if (shouldFetch(data)) {
+                fetchFromNetwork();
+            } else {
+                mResult.addSource(mCacheSource,
+                        newData -> mResult.setValue(Resource.success(newData)));
             }
         });
     }
@@ -71,36 +60,25 @@ public abstract class NetworkBundleResource<ResultType, RequestType> {
         final LiveData<ResponseWrapper<RequestType>> apiResponse = createCall();
         // we re-attach mCacheSource as a new source,
         // it will dispatch its latest value quickly
-        mResult.addSource(mCacheSource, new Observer<ResultType>() {
-            @Override
-            public void onChanged(@Nullable ResultType newData) {
-                if (newData != null) {
-                    mResult.setValue(Resource.cache(newData));
-                }
+        mResult.addSource(mCacheSource, newData -> {
+            if (newData != null) {
+                mResult.setValue(Resource.cache(newData));
             }
         });
-        mResult.addSource(apiResponse, new Observer<ResponseWrapper<RequestType>>() {
-            @Override
-            public void onChanged(@Nullable final ResponseWrapper<RequestType> response) {
-                mResult.removeSource(apiResponse);
-                mResult.removeSource(mCacheSource);
-                //noinspection ConstantConditions
-                if (response.isSuccessful()) {
-                    //also need business fault
-                    ApiResponse<RequestType> body = response.response.body();
-                    if (body != null) {
-                        saveResultAndReInit(body.data);
-                    }
-                } else {
-                    onFetchFailed(response.response, response.throwable);
-                    mResult.addSource(mCacheSource, new Observer<ResultType>() {
-                        @Override
-                        public void onChanged(@Nullable ResultType resultType) {
-                            mResult.setValue((Resource<ResultType>) Resource
-                                    .error(response.throwable.getMessage()));
-                        }
-                    });
+        mResult.addSource(apiResponse, response -> {
+            mResult.removeSource(apiResponse);
+            mResult.removeSource(mCacheSource);
+            //noinspection ConstantConditions
+            if (response.isSuccessful()) {
+                //also need business fault
+                ApiResponse<RequestType> body = response.response.body();
+                if (body != null) {
+                    saveResultAndReInit(body.data);
                 }
+            } else {
+                onFetchFailed(response.response, response.throwable);
+                mResult.addSource(mCacheSource, resultType -> mResult
+                        .setValue(Resource.error(response.throwable.getMessage())));
             }
         });
     }
@@ -142,32 +120,18 @@ public abstract class NetworkBundleResource<ResultType, RequestType> {
     private void saveResultAndReInit(final RequestType result) {
         LogUtil.d("NetworkBundleResource_saveResultAndReInit() result = " + result);
         if (result == null) {
-            mResult.setValue((Resource<ResultType>) Resource.success(null));
+            mResult.setValue(Resource.success(null));
             return;
         }
-        Flowable.fromCallable(new Callable<RequestType>() {
-            @Override
-            public RequestType call() throws Exception {
-                return result;
-            }
-        }).subscribeOn(Schedulers.io()).doOnNext(new Consumer<RequestType>() {
-            @Override
-            public void accept(RequestType requestType) throws Exception {
-                saveCallResult(requestType);
-            }
-        }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<RequestType>() {
-            @Override
-            public void accept(RequestType requestType) throws Exception {
-                mCacheSource = loadFromCache();
-                mResult.addSource(mCacheSource, new Observer<ResultType>() {
-                    @Override
-                    public void onChanged(@Nullable ResultType newData) {
+        Flowable.fromCallable(() -> result).subscribeOn(Schedulers.io())
+                .doOnNext(this::saveCallResult).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(requestType -> {
+                    mCacheSource = loadFromCache();
+                    mResult.addSource(mCacheSource, newData -> {
                         LogUtil.d("NetworkBundleResource_onChanged() notify ui from cache");
                         mResult.setValue(Resource.success(newData));
-                    }
+                    });
                 });
-            }
-        });
     }
 
     protected abstract void saveCallResult(RequestType result);

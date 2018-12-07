@@ -11,12 +11,12 @@ import com.architecture.extend.baselib.mvvm.BaseActivity;
 public class Activity2 extends BaseActivity<SecondViewModel> {
 
     @Override
-    protected void initData() {
+    public void initData() {
 
     }
 
     @Override
-    protected void initView(ViewDataBinding binding) {
+    public void initView(ViewDataBinding binding) {
 
     }
 

@@ -2,11 +2,10 @@ package com.architecture.extend.baselib.mvvm;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.MessageQueue;
@@ -44,7 +43,7 @@ import in.srain.cube.views.ptr.header.MaterialHeader;
  */
 
 public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatActivity
-        implements Viewable, MessageQueue.IdleHandler, RequestPermissionAble {
+        implements ViewLayer, MessageQueue.IdleHandler, RequestPermissionAble {
 
     private VM mViewModel;
     private boolean mIsForeground;
@@ -77,7 +76,8 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
             onRestoreInitData(savedInstanceState);
         }
         mConfigureInfo = getConfigureInfo();
-        inflateLayout(mConfigureInfo.isAsyncInflate());
+        ViewGroup parent = findViewById(android.R.id.content);
+        initViewFromConfigureInfo(mConfigureInfo, getLayoutInflater(), parent, this, getLayoutId());
         mMessageQueue.addIdleHandler(this);
     }
 
@@ -145,26 +145,6 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         return mRxPermissions;
     }
 
-    private void inflateLayout(boolean isAsyncInflate) {
-        int layoutId = getLayoutId();
-        if (layoutId <= 0) {
-            return;
-        }
-        ViewGroup parent = findViewById(android.R.id.content);
-        if (isAsyncInflate) {
-            LiveData<View> inflate = mViewModel.asyncInflate(layoutId, getLayoutInflater(), parent);
-            inflate.observe(this, view -> init(DataBindingUtil.bind(view)));
-        } else {
-            init(DataBindingUtil.inflate(getLayoutInflater(), layoutId, parent, false));
-        }
-    }
-
-    private void init(ViewDataBinding binding) {
-        setContentView(packageContentView(binding.getRoot()));
-        initView(binding);
-        initData();
-    }
-
     private void initToolBar(Toolbar toolbar) {
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -175,21 +155,21 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         }
     }
 
-    public View packageContentView(View view) {
+    public View packageContentView(ConfigureInfo configureInfo, View view) {
         View contentView = view;
-        if (mConfigureInfo.isLoadingState()) {
+        if (configureInfo.isLoadingState()) {
             mLoadStateView = ViewUtil.addLoadingStateView(contentView);
             initLoadingStateView(mLoadStateView);
             contentView = mLoadStateView;
         }
 
-        if (mConfigureInfo.isPullToRefresh()) {
+        if (configureInfo.isPullToRefresh()) {
             mPullToRefreshView = ViewUtil.addPullToRefreshView(contentView);
             initPullRefreshView(mPullToRefreshView);
             contentView = mPullToRefreshView;
         }
 
-        Boolean enableToolbar = mConfigureInfo.isEnableToolbar();
+        Boolean enableToolbar = configureInfo.isEnableToolbar();
         if (enableToolbar != null && enableToolbar) {
             contentView = ViewUtil.addToolBarView(this, R.layout.view_tool_bar, contentView);
             mToolbar = contentView.findViewById(R.id.common_tl_toolbar);
@@ -213,18 +193,13 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     public <T> T instanceViewModel(AndroidInjector<Activity> injector) {
         Class viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
         Object viewModel = ViewModelProviders.of(this).get(viewModelClazz);
-        if(injector instanceof Injector){
+        if (injector instanceof Injector) {
             ((Injector) injector).injectViewModel(viewModel);
         }
         return (T) viewModel;
     }
 
-    protected abstract void initData();
-
-    protected abstract void initView(ViewDataBinding dataBinding);
-
-    protected abstract @LayoutRes
-    int getLayoutId();
+    protected abstract @LayoutRes int getLayoutId();
 
     protected void handleIntent(@NonNull Intent intent) {
     }
@@ -296,5 +271,15 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     @Override
     public boolean queueIdle() {
         return false;
+    }
+
+    @Override
+    public void attachContentView(ViewGroup viewGroup, View content) {
+        setContentView(content);
+    }
+
+    @Override
+    public LifecycleOwner getLifecycleOwner() {
+        return this;
     }
 }

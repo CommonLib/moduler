@@ -2,10 +2,9 @@ package com.architecture.extend.baselib.mvvm;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.MessageQueue;
@@ -16,7 +15,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.base.PermissionCallBack;
@@ -24,7 +22,6 @@ import com.architecture.extend.baselib.dagger.InjectionUtil;
 import com.architecture.extend.baselib.dagger.Injector;
 import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.util.ViewUtil;
-import com.architecture.extend.baselib.widget.ChildScrollFrameLayout;
 import com.architecture.extend.baselib.widget.LoadStateView;
 import com.blankj.utilcode.util.SizeUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
@@ -40,7 +37,7 @@ import in.srain.cube.views.ptr.header.MaterialHeader;
  * Created by burtYang on 10/09/17.
  */
 public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
-        implements Viewable, MessageQueue.IdleHandler, RequestPermissionAble {
+        implements ViewLayer, MessageQueue.IdleHandler, RequestPermissionAble {
 
     private VM mViewModel;
     private boolean mIsForeground;
@@ -83,21 +80,8 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         mConfigureInfo = getConfigureInfo();
-        View content = null;
-        int layoutId = getLayoutId();
-        if (mConfigureInfo.isAsyncInflate() && layoutId > 0) {
-            FrameLayout frameLayout = new ChildScrollFrameLayout(mActivity);
-            frameLayout.setLayoutParams(
-                    new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.MATCH_PARENT));
-            asyncInflateLayout(frameLayout, inflater, layoutId);
-            content = frameLayout;
-        } else {
-            ViewDataBinding binding = DataBindingUtil.inflate(inflater, layoutId, container, false);
-            content = packageContentView(mConfigureInfo, binding.getRoot());
-            init(binding);
-        }
-        return content;
+        return initViewFromConfigureInfo(mConfigureInfo, inflater, container, mActivity,
+                getLayoutId());
     }
 
     @Override
@@ -130,10 +114,6 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
             mIsForeground = true;
         }
     }
-
-    protected abstract void initData();
-
-    protected abstract void initView(ViewDataBinding dataBinding);
 
     protected abstract @LayoutRes
     int getLayoutId();
@@ -179,26 +159,11 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
         mSwitchListener = switchListener;
     }
 
-    private void asyncInflateLayout(final ViewGroup parent, LayoutInflater inflater,
-                                    @LayoutRes int layoutId) {
-        LiveData<View> inflate = getViewModel().asyncInflate(layoutId, inflater, parent);
-        inflate.observe(this, view -> {
-            View packageView = packageContentView(mConfigureInfo, view);
-            parent.addView(packageView);
-            init(DataBindingUtil.bind(view));
-        });
-    }
-
-    private void init(ViewDataBinding dataBinding) {
-        initView(dataBinding);
-        initData();
-    }
-
     protected ConfigureInfo getConfigureInfo() {
         return ConfigureInfo.defaultConfigure();
     }
 
-    private View packageContentView(ConfigureInfo configureInfo, View view) {
+    public View packageContentView(ConfigureInfo configureInfo, View view) {
         View contentView = view;
 
         if (configureInfo.isLoadingState()) {
@@ -299,5 +264,15 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
     @Override
     public RxPermissions getRxPermissions() {
         return mActivity.getRxPermissions();
+    }
+
+    @Override
+    public void attachContentView(ViewGroup viewGroup, View content) {
+        viewGroup.addView(content);
+    }
+
+    @Override
+    public LifecycleOwner getLifecycleOwner() {
+        return this;
     }
 }

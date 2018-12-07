@@ -32,12 +32,12 @@ public class MainFragment extends BaseFragment<FragmentViewModel> {
     ConfigureInfo mConfigureInfo;
 
     @Override
-    protected void initData() {
+    public void initData() {
         mConfigureInfo.toString();
     }
 
     @Override
-    protected void initView(ViewDataBinding binding) {
+    public void initView(ViewDataBinding binding) {
         FragmentMainBinding bind = (FragmentMainBinding) binding;
         mStrs = new ArrayList<>();
         for (int i = 0; i < 10; i++) {

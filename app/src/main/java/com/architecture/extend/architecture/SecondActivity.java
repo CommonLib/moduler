@@ -17,7 +17,7 @@ public class SecondActivity extends BaseActivity<SecondViewModel> {
     View mView;
 
     @Override
-    protected void initData() {
+    public void initData() {
         if (mView != null) {
             LogUtil.d("SecondActivity inject success" + this);
             System.out.println(mView);
@@ -25,7 +25,7 @@ public class SecondActivity extends BaseActivity<SecondViewModel> {
     }
 
     @Override
-    protected void initView(ViewDataBinding dataBinding) {
+    public void initView(ViewDataBinding dataBinding) {
 
     }
 

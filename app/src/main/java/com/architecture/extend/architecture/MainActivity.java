@@ -41,7 +41,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
     Intent mLauncher;
 
     @Override
-    protected void initData() {
+    public void initData() {
         if (mHandler != null) {
             LogUtil.d("MainActivity inject success" + mHandler);
         }
@@ -56,7 +56,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
 
     @DebugLog
     @Override
-    protected void initView(ViewDataBinding binding) {
+    public void initView(ViewDataBinding binding) {
         findViewById(R.id.act_btn_web).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
