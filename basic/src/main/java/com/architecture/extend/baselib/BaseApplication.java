@@ -11,6 +11,7 @@ import android.support.multidex.MultiDexApplication;
 import android.support.v4.app.Fragment;
 
 import com.alibaba.android.arouter.launcher.ARouter;
+import com.architecture.extend.baselib.aop.DebugLog;
 import com.blankj.utilcode.util.Utils;
 import com.orhanobut.logger.AndroidLogAdapter;
 import com.orhanobut.logger.DiskLogAdapter;
@@ -78,6 +79,7 @@ public class BaseApplication extends MultiDexApplication
         }
     }
 
+    @DebugLog
     protected void init(boolean debugMode) {
         FormatStrategy formatStrategy = PrettyFormatStrategy.newBuilder()
                 .tag(getClass().getSimpleName()).build();
