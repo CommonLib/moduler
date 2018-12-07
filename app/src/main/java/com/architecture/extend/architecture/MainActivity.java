@@ -26,8 +26,6 @@ import com.architecture.extend.baselib.util.LogUtil;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import in.srain.cube.views.ptr.PtrFrameLayout;
-
 public class MainActivity extends BaseActivity<MainViewModel> {
 
     @Inject
@@ -145,17 +143,12 @@ public class MainActivity extends BaseActivity<MainViewModel> {
 
     @Override
     public ConfigureInfo getConfigureInfo() {
-        return new ConfigureInfo.Builder().asyncInflate(true).loadingState(true).pullToRefresh(true)
-                .toolbar(true).build();
+        return ConfigureInfo.builder().asyncInflate(true).loadingState(true).pullToRefresh(true)
+                .toolbar(true).isToolbarShow(true).build();
     }
 
     @Override
     public void onBackPressed() {
         startActivity(mLauncher);
-    }
-
-    @Override
-    protected void onPullRefreshBegin(PtrFrameLayout frame) {
-        getViewModel().onPullToRefresh();
     }
 }

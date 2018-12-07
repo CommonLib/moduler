@@ -5,37 +5,29 @@ import android.app.Activity;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.MessageQueue;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.dagger.InjectionUtil;
 import com.architecture.extend.baselib.dagger.Injector;
 import com.architecture.extend.baselib.util.GenericUtil;
-import com.architecture.extend.baselib.util.ViewUtil;
 import com.architecture.extend.baselib.widget.LoadStateView;
-import com.blankj.utilcode.util.SizeUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjector;
-import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
-import in.srain.cube.views.ptr.header.MaterialHeader;
 
 
 /**
@@ -48,10 +40,6 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     private VM mViewModel;
     private boolean mIsForeground;
     private ViewForegroundSwitchListener mSwitchListener;
-    private ConfigureInfo mConfigureInfo;
-    private PtrFrameLayout mPullToRefreshView;
-    private LoadStateView mLoadStateView;
-    private Toolbar mToolbar;
     private RxPermissions mRxPermissions;
 
     @Inject
@@ -59,6 +47,7 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     @Inject
     MessageQueue mMessageQueue;
+    private ViewDelegate mViewDelegate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +64,11 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         if (savedInstanceState != null) {
             onRestoreInitData(savedInstanceState);
         }
-        mConfigureInfo = getConfigureInfo();
+        ConfigureInfo configureInfo = getConfigureInfo();
         ViewGroup parent = findViewById(android.R.id.content);
-        initViewFromConfigureInfo(mConfigureInfo, getLayoutInflater(), parent, this, getLayoutId());
+        mViewDelegate = new ViewDelegate(this);
+        mViewDelegate.initViewFromConfigureInfo(configureInfo, getLayoutInflater(), parent, this,
+                getLayoutId());
         mMessageQueue.addIdleHandler(this);
     }
 
@@ -145,39 +136,6 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         return mRxPermissions;
     }
 
-    private void initToolBar(Toolbar toolbar) {
-        setSupportActionBar(toolbar);
-        ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            //enable back button
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeButtonEnabled(true);
-        }
-    }
-
-    public View packageContentView(ConfigureInfo configureInfo, View view) {
-        View contentView = view;
-        if (configureInfo.isLoadingState()) {
-            mLoadStateView = ViewUtil.addLoadingStateView(contentView);
-            initLoadingStateView(mLoadStateView);
-            contentView = mLoadStateView;
-        }
-
-        if (configureInfo.isPullToRefresh()) {
-            mPullToRefreshView = ViewUtil.addPullToRefreshView(contentView);
-            initPullRefreshView(mPullToRefreshView);
-            contentView = mPullToRefreshView;
-        }
-
-        Boolean enableToolbar = configureInfo.isEnableToolbar();
-        if (enableToolbar != null && enableToolbar) {
-            contentView = ViewUtil.addToolBarView(this, R.layout.view_tool_bar, contentView);
-            mToolbar = contentView.findViewById(R.id.common_tl_toolbar);
-            initToolBar(mToolbar);
-        }
-        return contentView;
-    }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -199,7 +157,8 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         return (T) viewModel;
     }
 
-    protected abstract @LayoutRes int getLayoutId();
+    protected abstract @LayoutRes
+    int getLayoutId();
 
     protected void handleIntent(@NonNull Intent intent) {
     }
@@ -207,42 +166,9 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     protected void onRestoreInitData(@NonNull Bundle savedInstanceState) {
     }
 
-
+    @Override
     public ConfigureInfo getConfigureInfo() {
         return injectConfigureInfo;
-    }
-
-    protected void initPullRefreshView(PtrFrameLayout refreshView) {
-        MaterialHeader header = new MaterialHeader(this);
-        int[] colors = getResources().getIntArray(R.array.google_colors);
-        header.setColorSchemeColors(colors);
-        header.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));
-        header.setPadding(0, SizeUtils.dp2px(15), 0, SizeUtils.dp2px(10));
-        header.setPtrFrameLayout(refreshView);
-        refreshView.setHeaderView(header);
-        refreshView.addPtrUIHandler(header);
-        refreshView.setPinContent(true);
-        refreshView.setPtrHandler(new PtrDefaultHandler() {
-            @Override
-            public void onRefreshBegin(PtrFrameLayout frame) {
-                onPullRefreshBegin(frame);
-            }
-
-            @Override
-            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                View scrollView = content.findViewById(R.id.view_scroll_content);
-                if (scrollView != null) {
-                    content = scrollView;
-                }
-                return super.checkCanDoRefresh(frame, content, header);
-            }
-        });
-    }
-
-    protected void initLoadingStateView(LoadStateView loadStateView) {
-        DataBindingUtil
-                .inflate(LayoutInflater.from(this), R.layout.view_loading_state, loadStateView,
-                        true);
     }
 
     public void startPage(Bundle bundle, String path) {
@@ -257,15 +183,15 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     }
 
     public PtrFrameLayout getPullToRefreshView() {
-        return mPullToRefreshView;
+        return mViewDelegate.getPullToRefreshView();
     }
 
     public LoadStateView getLoadStateView() {
-        return mLoadStateView;
+        return mViewDelegate.getLoadStateView();
     }
 
     public Toolbar getToolbar() {
-        return mToolbar;
+        return mViewDelegate.getToolbar();
     }
 
     @Override
@@ -281,5 +207,15 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     @Override
     public LifecycleOwner getLifecycleOwner() {
         return this;
+    }
+
+    @Override
+    public BaseActivity getBindActivity() {
+        return this;
+    }
+
+    @Override
+    public ViewDelegate getViewDelegate() {
+        return mViewDelegate;
     }
 }

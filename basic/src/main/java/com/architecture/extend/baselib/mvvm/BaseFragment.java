@@ -4,7 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.ViewModelProviders;
-import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.MessageQueue;
@@ -16,22 +15,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.architecture.extend.baselib.R;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.dagger.InjectionUtil;
 import com.architecture.extend.baselib.dagger.Injector;
 import com.architecture.extend.baselib.util.GenericUtil;
-import com.architecture.extend.baselib.util.ViewUtil;
 import com.architecture.extend.baselib.widget.LoadStateView;
-import com.blankj.utilcode.util.SizeUtils;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
 import javax.inject.Inject;
 
 import dagger.android.AndroidInjector;
-import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
-import in.srain.cube.views.ptr.header.MaterialHeader;
 
 /**
  * Created by burtYang on 10/09/17.
@@ -44,12 +38,12 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
     private boolean mIsDestroyed;
     private BaseActivity mActivity;
     private ViewForegroundSwitchListener mSwitchListener;
-    private ConfigureInfo mConfigureInfo;
-    private PtrFrameLayout mPullToRefreshView;
-    private LoadStateView mLoadStateView;
     private AndroidInjector<Fragment> mInjector;
     @Inject
     MessageQueue mMessageQueue;
+    @Inject
+    ConfigureInfo mConfigureInfo;
+    private ViewDelegate mViewDelegate;
 
     @Override
     public void onAttach(Activity activity) {
@@ -79,8 +73,9 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        mConfigureInfo = getConfigureInfo();
-        return initViewFromConfigureInfo(mConfigureInfo, inflater, container, mActivity,
+        ConfigureInfo configureInfo = getConfigureInfo();
+        mViewDelegate = new ViewDelegate(this);
+        return mViewDelegate.initViewFromConfigureInfo(configureInfo, inflater, container, mActivity,
                 getLayoutId());
     }
 
@@ -159,63 +154,9 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
         mSwitchListener = switchListener;
     }
 
-    protected ConfigureInfo getConfigureInfo() {
-        return ConfigureInfo.defaultConfigure();
-    }
-
-    public View packageContentView(ConfigureInfo configureInfo, View view) {
-        View contentView = view;
-
-        if (configureInfo.isLoadingState()) {
-            mLoadStateView = ViewUtil.addLoadingStateView(contentView);
-            initLoadingStateView(mLoadStateView);
-            contentView = mLoadStateView;
-        }
-
-        if (configureInfo.isPullToRefresh()) {
-            mPullToRefreshView = ViewUtil.addPullToRefreshView(contentView);
-            initPullRefreshView(mPullToRefreshView);
-            contentView = mPullToRefreshView;
-        }
-
-        Boolean enableToolbar = configureInfo.isEnableToolbar();
-        Boolean actEnableToolbar = mActivity.getConfigureInfo().isEnableToolbar();
-        if (enableToolbar != null && enableToolbar && actEnableToolbar != null
-                && actEnableToolbar) {
-            ViewUtil.showSupportActionBar(mActivity);
-        } else if (enableToolbar == null) {
-            //sub fragment not specific show or not, follow act
-        } else {
-            ViewUtil.hideSupportActionBar(mActivity);
-        }
-        return contentView;
-    }
-
-    protected void initPullRefreshView(PtrFrameLayout refreshView) {
-        final MaterialHeader header = new MaterialHeader(mActivity);
-        int[] colors = getResources().getIntArray(R.array.google_colors);
-        header.setColorSchemeColors(colors);
-        header.setLayoutParams(new PtrFrameLayout.LayoutParams(-1, -2));
-        header.setPadding(0, SizeUtils.dp2px(15), 0, SizeUtils.dp2px(15));
-        header.setPtrFrameLayout(refreshView);
-        refreshView.setHeaderView(header);
-        refreshView.addPtrUIHandler(header);
-        refreshView.setPinContent(true);
-        refreshView.setPtrHandler(new PtrDefaultHandler() {
-            @Override
-            public void onRefreshBegin(PtrFrameLayout frame) {
-                onRefreshBegin(frame);
-            }
-
-            @Override
-            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                View scrollView = content.findViewById(R.id.view_scroll_content);
-                if (scrollView != null) {
-                    content = scrollView;
-                }
-                return super.checkCanDoRefresh(frame, content, header);
-            }
-        });
+    @Override
+    public ConfigureInfo getConfigureInfo() {
+        return mConfigureInfo;
     }
 
     public <T> T instanceViewModel(AndroidInjector<Fragment> injector) {
@@ -238,21 +179,16 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
     protected void onRefreshBegin(PtrFrameLayout frame) {
     }
 
-    protected void initLoadingStateView(LoadStateView loadStateView) {
-        DataBindingUtil
-                .inflate(LayoutInflater.from(mActivity), R.layout.view_loading_state, loadStateView,
-                        true);
-    }
-
     protected PtrFrameLayout getPullToRefreshView() {
-        return mPullToRefreshView;
+        return mViewDelegate.getPullToRefreshView();
     }
 
     protected LoadStateView getLoadStateView() {
-        return mLoadStateView;
+        return mViewDelegate.getLoadStateView();
     }
 
-    protected BaseActivity getBindActivity() {
+    @Override
+    public BaseActivity getBindActivity() {
         return mActivity;
     }
 
@@ -274,5 +210,10 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
     @Override
     public LifecycleOwner getLifecycleOwner() {
         return this;
+    }
+
+    @Override
+    public ViewDelegate getViewDelegate() {
+        return mViewDelegate;
     }
 }

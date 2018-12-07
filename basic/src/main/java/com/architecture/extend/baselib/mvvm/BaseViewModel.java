@@ -103,4 +103,8 @@ public abstract class BaseViewModel extends ViewModel
     protected void runOnWorkerThread(Runnable runnable) {
         mExecutor.execute(runnable);
     }
+
+    public void onPullToRefresh() {
+
+    }
 }
