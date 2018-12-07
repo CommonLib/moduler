@@ -1,3 +1,5 @@
+apply from: rootDir.absolutePath + "/configure/arouter.gradle"
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -9,11 +11,6 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments = [ moduleName : project.getName() ]
-            }
-        }
     }
     buildTypes {
         release {
@@ -33,10 +30,11 @@ android {
 }
 
 dependencies {
+    /*必须先进行lombok补全，才能进行ROOM的注解修改*/
     annotationProcessor 'org.projectlombok:lombok:1.18.4'
-    annotationProcessor 'com.alibaba:arouter-compiler:1.1.4'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.13'
     annotationProcessor 'com.google.dagger:dagger-android-processor:2.13'
     annotationProcessor 'android.arch.persistence.room:compiler:1.1.0'
+
     compileOnly 'org.projectlombok:lombok:1.18.4'
 }

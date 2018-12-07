@@ -3,3 +3,7 @@ apply plugin: 'android-aspectjx'
 aspectjx {
     include 'com.architecture.extend'
 }
+
+dependencies{
+
+}
