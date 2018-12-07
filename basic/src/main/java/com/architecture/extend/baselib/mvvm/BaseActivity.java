@@ -65,9 +65,8 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
             onRestoreInitData(savedInstanceState);
         }
         ConfigureInfo configureInfo = getConfigureInfo();
-        ViewGroup parent = findViewById(android.R.id.content);
         mViewDelegate = new ViewDelegate(this);
-        mViewDelegate.initViewFromConfigureInfo(configureInfo, getLayoutInflater(), parent, this,
+        mViewDelegate.initViewFromConfigureInfo(configureInfo, getLayoutInflater(), null, this,
                 getLayoutId());
         mMessageQueue.addIdleHandler(this);
     }

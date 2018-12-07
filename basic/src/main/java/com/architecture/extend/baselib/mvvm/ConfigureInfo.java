@@ -17,6 +17,6 @@ public class ConfigureInfo {
     private boolean loadingState;
 
     public static ConfigureInfo defaultConfigure(){
-        return ConfigureInfo.builder().build();
+        return ConfigureInfo.builder().asyncInflate(true).build();
     }
 }

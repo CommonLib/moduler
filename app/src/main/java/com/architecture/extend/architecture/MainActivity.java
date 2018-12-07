@@ -59,7 +59,7 @@ public class MainActivity extends BaseActivity<MainViewModel> {
             @Override
             public void onClick(View v) {
                 //                ARouter.getInstance().build(RouterConstants.Pic.PAGE_PIC).navigation();
-                startActivity(new Intent(MainActivity.this, SecondActivity.class));
+                startActivity(new Intent(MainActivity.this, MainActivity.class));
 
             }
         });
