@@ -25,6 +25,11 @@ public class WebActivity extends BaseActivity<WebViewModel> {
     }
 
     @Override
+    public Class<WebViewModel> getViewModelClass() {
+        return WebViewModel.class;
+    }
+
+    @Override
     protected int getLayoutId() {
         return R.layout.web_activity_main;
     }

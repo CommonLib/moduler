@@ -148,6 +148,11 @@ public class MainActivity extends BaseActivity<MainViewModel> {
     }
 
     @Override
+    public Class<MainViewModel> getViewModelClass() {
+        return MainViewModel.class;
+    }
+
+    @Override
     public void onBackPressed() {
         startActivity(mLauncher);
     }

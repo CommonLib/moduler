@@ -20,7 +20,6 @@ import android.view.ViewGroup;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.dagger.InjectionUtil;
 import com.architecture.extend.baselib.dagger.Injector;
-import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.widget.LoadStateView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -35,7 +34,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
  */
 
 public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatActivity
-        implements ViewLayer, MessageQueue.IdleHandler, RequestPermissionAble {
+        implements ViewLayer<VM>, MessageQueue.IdleHandler, RequestPermissionAble {
 
     private VM mViewModel;
     private boolean mIsForeground;
@@ -147,13 +146,12 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         return super.onOptionsItemSelected(item);
     }
 
-    public <T> T instanceViewModel(AndroidInjector<Activity> injector) {
-        Class viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
-        Object viewModel = ViewModelProviders.of(this).get(viewModelClazz);
+    public VM instanceViewModel(AndroidInjector<Activity> injector) {
+        VM viewModel = ViewModelProviders.of(this).get(getViewModelClass());
         if (injector instanceof Injector) {
             ((Injector) injector).injectViewModel(viewModel);
         }
-        return (T) viewModel;
+        return viewModel;
     }
 
     protected abstract @LayoutRes

@@ -10,7 +10,7 @@ import android.view.ViewGroup;
  * Created by byang059 on 9/20/17.
  */
 
-public interface ViewLayer {
+public interface ViewLayer<VM extends BaseViewModel>  {
 
     boolean isForeground();
 
@@ -35,4 +35,6 @@ public interface ViewLayer {
     ConfigureInfo getConfigureInfo();
 
     ViewDelegate getViewDelegate();
+
+    Class<VM> getViewModelClass();
 }

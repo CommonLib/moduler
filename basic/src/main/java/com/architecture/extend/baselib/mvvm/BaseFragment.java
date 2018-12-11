@@ -18,7 +18,6 @@ import android.view.ViewGroup;
 import com.architecture.extend.baselib.base.PermissionCallBack;
 import com.architecture.extend.baselib.dagger.InjectionUtil;
 import com.architecture.extend.baselib.dagger.Injector;
-import com.architecture.extend.baselib.util.GenericUtil;
 import com.architecture.extend.baselib.widget.LoadStateView;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 
@@ -31,7 +30,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
  * Created by burtYang on 10/09/17.
  */
 public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
-        implements ViewLayer, MessageQueue.IdleHandler, RequestPermissionAble {
+        implements ViewLayer<VM>, MessageQueue.IdleHandler, RequestPermissionAble {
 
     private VM mViewModel;
     private boolean mIsForeground;
@@ -75,8 +74,9 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
                              @Nullable Bundle savedInstanceState) {
         ConfigureInfo configureInfo = getConfigureInfo();
         mViewDelegate = new ViewDelegate(this);
-        return mViewDelegate.initViewFromConfigureInfo(configureInfo, inflater, container, mActivity,
-                getLayoutId());
+        return mViewDelegate
+                .initViewFromConfigureInfo(configureInfo, inflater, container, mActivity,
+                        getLayoutId());
     }
 
     @Override
@@ -159,13 +159,12 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
         return mConfigureInfo;
     }
 
-    public <T> T instanceViewModel(AndroidInjector<Fragment> injector) {
-        Class viewModelClazz = GenericUtil.getGenericsSuperType(this, 0);
-        Object viewModel = ViewModelProviders.of(this).get(viewModelClazz);
+    public VM instanceViewModel(AndroidInjector<Fragment> injector) {
+        VM viewModel = ViewModelProviders.of(this).get(getViewModelClass());
         if (injector instanceof Injector) {
             ((Injector) injector).injectViewModel(viewModel);
         }
-        return (T) viewModel;
+        return viewModel;
     }
 
     public void startPage(Bundle bundle, String path) {

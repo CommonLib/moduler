@@ -95,4 +95,9 @@ public class MainFragment extends BaseFragment<FragmentViewModel> {
         return ConfigureInfo.builder().asyncInflate(true).loadingState(true)
                 .pullToRefresh(false).toolbar(true).isToolbarShow(true).build();
     }
+
+    @Override
+    public Class<FragmentViewModel> getViewModelClass() {
+        return FragmentViewModel.class;
+    }
 }
