@@ -6,7 +6,6 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.MessageQueue;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,7 +29,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
  * Created by burtYang on 10/09/17.
  */
 public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
-        implements ViewLayer<VM>, MessageQueue.IdleHandler, RequestPermissionAble {
+        implements ViewLayer<VM>, RequestPermissionAble {
 
     private VM mViewModel;
     private boolean mIsForeground;
@@ -38,8 +37,6 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
     private BaseActivity mActivity;
     private ViewForegroundSwitchListener mSwitchListener;
     private AndroidInjector<Fragment> mInjector;
-    @Inject
-    MessageQueue mMessageQueue;
     @Inject
     ConfigureInfo mConfigureInfo;
     private ViewDelegate mViewDelegate;
@@ -65,7 +62,6 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
         if (savedInstanceState != null) {
             onRestoreInitData(savedInstanceState);
         }
-        mMessageQueue.addIdleHandler(this);
     }
 
     @Nullable
@@ -186,11 +182,6 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
     @Override
     public BaseActivity getBindActivity() {
         return mActivity;
-    }
-
-    @Override
-    public boolean queueIdle() {
-        return false;
     }
 
     @Override

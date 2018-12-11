@@ -7,7 +7,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.MessageQueue;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresPermission;
@@ -34,7 +33,7 @@ import in.srain.cube.views.ptr.PtrFrameLayout;
  */
 
 public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatActivity
-        implements ViewLayer<VM>, MessageQueue.IdleHandler, RequestPermissionAble {
+        implements ViewLayer<VM>, RequestPermissionAble {
 
     private VM mViewModel;
     private boolean mIsForeground;
@@ -44,8 +43,6 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
     @Inject
     public ConfigureInfo injectConfigureInfo;
 
-    @Inject
-    MessageQueue mMessageQueue;
     private ViewDelegate mViewDelegate;
 
     @Override
@@ -67,7 +64,6 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         mViewDelegate = new ViewDelegate(this);
         mViewDelegate.initViewFromConfigureInfo(configureInfo, getLayoutInflater(), null, this,
                 getLayoutId());
-        mMessageQueue.addIdleHandler(this);
     }
 
     @Override
@@ -186,11 +182,6 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
 
     public Toolbar getToolbar() {
         return mViewDelegate.getToolbar();
-    }
-
-    @Override
-    public boolean queueIdle() {
-        return false;
     }
 
     @Override
