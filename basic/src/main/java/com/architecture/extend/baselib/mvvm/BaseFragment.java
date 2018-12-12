@@ -160,6 +160,8 @@ public abstract class BaseFragment<VM extends BaseViewModel> extends Fragment
         if (injector instanceof Injector) {
             ((Injector) injector).injectViewModel(viewModel);
         }
+        getLifecycle().addObserver(viewModel);
+        setForegroundSwitchCallBack(viewModel);
         return viewModel;
     }
 

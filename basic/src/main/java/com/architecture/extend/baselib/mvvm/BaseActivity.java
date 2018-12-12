@@ -51,8 +51,6 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         super.onCreate(savedInstanceState);
         mIsForeground = true;
         mViewModel = instanceViewModel(injector);
-        getLifecycle().addObserver(mViewModel);
-        setForegroundSwitchCallBack(mViewModel);
         Intent intent = getIntent();
         if (intent != null) {
             handleIntent(intent);
@@ -147,6 +145,8 @@ public abstract class BaseActivity<VM extends BaseViewModel> extends AppCompatAc
         if (injector instanceof Injector) {
             ((Injector) injector).injectViewModel(viewModel);
         }
+        getLifecycle().addObserver(viewModel);
+        setForegroundSwitchCallBack(viewModel);
         return viewModel;
     }
 
